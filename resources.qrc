@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/">
+        <file>../chuankou20251222/checkBox.png</file>
+    </qresource>
+</RCC>
