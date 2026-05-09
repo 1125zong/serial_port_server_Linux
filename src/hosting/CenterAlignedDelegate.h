@@ -8,12 +8,28 @@
 #include <QApplication>
 #include <QPainter>
 #include <QTableWidget>
+#include <QColor>
 
 class CenterAlignedDelegate : public QStyledItemDelegate 
 {
 public:
     explicit CenterAlignedDelegate(QObject *parent = nullptr);
     void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
+};
+
+class LockRowDelegate : public QStyledItemDelegate
+{
+public:
+    explicit LockRowDelegate(int stateColumn, QObject *parent = nullptr)
+        : QStyledItemDelegate(parent),
+          m_stateColumn(stateColumn)
+    {
+    }
+
+    void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
+
+private:
+    int m_stateColumn;
 };
 
 

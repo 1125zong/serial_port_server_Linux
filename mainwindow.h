@@ -100,7 +100,6 @@ private slots:
     void link_info();
     void Status_information();
     void Error_Message();
-    void port_log();
     void onUpgradeProgress(int ack);         // 进度条前进
     void onUpgradeSuccess();                 // 成功收尾
     void onUpgradeFailed(const QString &err);// 失败收尾

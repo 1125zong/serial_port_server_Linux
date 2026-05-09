@@ -587,6 +587,7 @@ void MainWindow::onOperationSuccess(const QString &op)
     if (op == "port lock/unlock")
     {
         m_devCtl->readPortLockStatus();
+
         QList<QCheckBox *>checkBoxs = ui->tableWidget_4->findChildren<QCheckBox *>();
         for (QCheckBox *checkBox : checkBoxs)
         {
@@ -1331,6 +1332,7 @@ void MainWindow::on_pushButton_10_clicked()
 void MainWindow::on_name_modify_clicked()
 {
     QString newName = ui->new_name->text().trimmed();
+    QString oldName = m_udpDiscovery->dev.deviceName;
     if(newName.isEmpty())
     {
         QMessageBox::warning(this, "提示", "设备名称不能为空");
@@ -1344,12 +1346,6 @@ void MainWindow::on_name_modify_clicked()
         return;
     }
 
-    QString oldName;
-    if (m_devCtl && m_devCtl->currentDevice())
-    {
-        oldName = m_devCtl->currentDevice()->deviceName();
-    }
-    appendDeviceLog(QString("写入配置：设备名称，%1").arg(currentCheckedDeviceText()));
     if (!oldName.isEmpty() && oldName != newName)
     {
         appendDeviceLog(QString("配置修改：设备名称：%1 -> %2").arg(oldName, newName));
@@ -1398,15 +1394,8 @@ void MainWindow::on_pushButton_9_clicked()
     menu->addAction("端口连接信息", this, &MainWindow::link_info);
     menu->addAction("端口状态信息", this, &MainWindow::Status_information);
     menu->addAction("端口错误信息", this, &MainWindow::Error_Message);
-    menu->addAction("端口日志记录", this, &MainWindow::port_log);
 
     menu->exec(QCursor::pos());
-}
-
-
-void MainWindow::port_log()
-{
-
 }
 
 /* ----------------------------------------------------------
@@ -1841,6 +1830,9 @@ void MainWindow::initTables()
         tableWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     }
     ui->tableWidgetSearch->setItemDelegateForColumn(0, new CheckBoxCenterDelegate(ui->tableWidgetSearch, QSize(14, 14)));
+    ui->tableWidget_4->setItemDelegate(new LockRowDelegate(2, ui->tableWidget_4));
+    ui->tableWidget->setItemDelegate(new LockRowDelegate(4, ui->tableWidget));
+
 }
 
 void MainWindow::initTitleBar()
@@ -1910,9 +1902,9 @@ void MainWindow::bindDataToUI()
             for (int i = 0; i < list.size(); ++i) {
                 const auto &v = list.at(i);
                 ui->tableWidget_2->setItem(i, 0, new QTableWidgetItem(QString::number(v.portIndex)));
-                ui->tableWidget_2->setItem(i, 1, new QTableWidgetItem(v.locked ? "锁定" : "未锁定"));
+                ui->tableWidget_2->setItem(i, 1, new QTableWidgetItem(v.locked ? "未锁定" : "锁定"));
                 ui->tableWidget_2->setItem(i, 2, new QTableWidgetItem(v.modeText));
-                ui->tableWidget_2->setItem(i, 3, new QTableWidgetItem(v.connIPs.join("\n")));
+                ui->tableWidget_2->setItem(i, 3, new QTableWidgetItem(v.connIPs));
             }
         }
     });

@@ -46,26 +46,26 @@ bool ProtocolParser::validateFrame(const QByteArray &frame) {
 bool ProtocolParser::parsePortConnInfoResponse(const QByteArray &p, QList<PortConnInfo> &list)
 {
     list.clear();
-    if (p.size() < 2) {
+    if (p.size() < 2)
+    {
         Logger::instance()->log(Logger::Warning, "ProtocolParser", "端口连接信息响应长度不足");
         return false;
     }
-    int n = qFromBigEndian<quint16>(p.constData());
+    int n = qFromBigEndian<quint8>(p.mid(3).constData());
     Logger::instance()->log(Logger::Debug, "ProtocolParser", QString("parsePortConnInfoResponse: 端口数量=%1").arg(n));
-    int off = 2;
-    for (int i = 0; i < n && off + 21 <= p.size(); ++i) {
+    int off = 4;
+    for (int i = 0; i < n && off + 7 <= p.size(); ++i)
+    {
         PortConnInfo info;
-        info.portIndex = p[off];
-        info.locked    = p[off + 2] == 0;
-        info.modeText  = QStringList{"RealCOM", "TCP Server", "Redundant"}.value(p[off + 1], "?");
-        /* 后面 16 字节是 4 个 IP，按需解析 */
-        info.connIPs.clear();
-        for (int k = 0; k < 4; ++k) {
-            quint32 ip = qFromBigEndian<quint32>(p.constData() + off + 3 + k * 4);
-            if (ip) info.connIPs << QHostAddress(ip).toString();
-        }
+        info.portIndex = static_cast<quint8>(p.at(off));
+        off++;
+        info.locked    = (static_cast<quint8>(p.at(off)) == 0);     // 0=true=unlock
+        off++;
+        info.modeText  = QStringList{"RealCOM", "TCP Server", "Redundant"}.value(static_cast<quint8>(p.at(off)) - 1, "?");
+        off++;
+        info.connIPs = QHostAddress(qFromBigEndian<quint32>(reinterpret_cast<const uchar*>(p.constData() + off))).toString();
         list.append(info);
-        off += 21;
+        off += 4;
     }
     Logger::instance()->log(Logger::Debug, "ProtocolParser", QString("成功解析端口连接信息: %1个端口").arg(list.size()));
     return true;
@@ -78,12 +78,12 @@ bool ProtocolParser::parsePortStatusResponse(const QByteArray &p, QList<PortStat
         Logger::instance()->log(Logger::Warning, "ProtocolParser", "端口状态响应长度不足");
         return false;
     }
-    int n = qFromBigEndian<quint16>(p.constData());
-    Logger::instance()->log(Logger::Debug, "ProtocolParser", QString("parsePortStatusResponse: 端口数量=%1").arg(n));
-    int off = 2;
+    int n = qFromBigEndian<quint8>(p.mid(3).constData());
+    Logger::instance()->log(Logger::Info, "ProtocolParser", QString("parsePortStatusResponse: 端口数量=%1").arg(n));
+    int off = 4;
     for (int i = 0; i < n && off + 25 <= p.size(); ++i) {
         PortStatusInfo info;
-        info.portIndex     = p[off];
+        info.portIndex     = static_cast<quint8>(p.at(off));
         info.txCount       = qFromBigEndian<quint32>(p.constData() + off + 1);
         info.rxCount       = qFromBigEndian<quint32>(p.constData() + off + 5);
         info.txTotalCount  = qFromBigEndian<quint64>(p.constData() + off + 9);
@@ -102,12 +102,12 @@ bool ProtocolParser::parsePortErrorResponse(const QByteArray &p, QList<PortError
         Logger::instance()->log(Logger::Warning, "ProtocolParser", "端口错误响应长度不足");
         return false;
     }
-    int n = qFromBigEndian<quint16>(p.constData());
+    int n = qFromBigEndian<quint8>(p.mid(3).constData());
     Logger::instance()->log(Logger::Debug, "ProtocolParser", QString("parsePortErrorResponse: 端口数量=%1").arg(n));
-    int off = 2;
+    int off = 4;
     for (int i = 0; i < n && off + 17 <= p.size(); ++i) {
         PortErrorInfo info;
-        info.portIndex  = p[off];
+        info.portIndex  = static_cast<quint8>(p.at(off));
         info.frameErr   = qFromBigEndian<quint32>(p.constData() + off + 1);
         info.parityErr  = qFromBigEndian<quint32>(p.constData() + off + 5);
         info.overrunErr = qFromBigEndian<quint32>(p.constData() + off + 9);

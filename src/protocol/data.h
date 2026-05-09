@@ -333,7 +333,7 @@ struct PortConnInfo {
     int  portIndex;
     bool locked;
     QString modeText;
-    QStringList connIPs;
+    QString connIPs;
 };
 
 struct PortStatusInfo {
