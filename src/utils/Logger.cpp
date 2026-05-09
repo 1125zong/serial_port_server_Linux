@@ -41,7 +41,7 @@ void Logger::log(Level level, const QString &module, const QString &message) {
     
     if (m_consoleOutput)    //为false时，就输出entry
     {
-        qDebug().noquote() << entry;
+        qDebug().noquote() << entry;    // noquote自动取消双引号
     }
     
     if (m_logFile.isOpen())     //判断文件是否打开，如果打开将entry写入文件m_logFile中

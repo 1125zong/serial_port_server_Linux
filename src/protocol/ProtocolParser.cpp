@@ -293,7 +293,7 @@ bool ProtocolParser::parseNetworkConfigResponse(const QByteArray &payload, Netwo
     offset += 1;
 
     // 解析LAN1配置
-    config.lan1UseDhcp = Utils::safeRead<quint8>(payload, offset, 0) != 0;
+    config.lan1UseDhcp = Utils::safeRead<quint8>(payload, offset, 0) != 1;
     offset += 1;
 
     config.lan1Ip = Utils::parseIpAddress(payload, offset);

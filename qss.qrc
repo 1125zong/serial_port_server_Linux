@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/qss">
+        <file alias="app.qss">src/ui/qss/app.qss</file>
+        <file alias="mainwindow.qss">src/ui/qss/mainwindow.qss</file>
+        <file alias="dialogs.qss">src/ui/qss/dialogs.qss</file>
+        <file alias="tables.qss">src/ui/qss/tables.qss</file>
+    </qresource>
+</RCC>

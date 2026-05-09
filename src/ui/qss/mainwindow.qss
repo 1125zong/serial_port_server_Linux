@@ -1,0 +1,128 @@
+QWidget[windowKind="main"] {
+    background-color: #0a1929;
+}
+
+QWidget#centralwidget {
+    background-color: #0a1929;
+}
+
+CustomTitleBar,
+QWidget#customTitleBar {
+    min-height: 38px;
+    max-height: 38px;
+    background-color: #0a1929;
+    border-bottom: 1px solid #2d5a8c;
+}
+
+QLabel#titleTextLabel {
+    color: #c0d8f0;
+    font-size: 14px;
+    padding-left: 4px;
+}
+
+QLabel#titleLogo {
+    image: url(:/image/Logo2.png);
+    background: transparent;
+}
+
+QPushButton#titleMinButton,
+QPushButton#titleMaxButton,
+QPushButton#titleCloseButton {
+    min-width: 30px;
+    max-width: 30px;
+    min-height: 30px;
+    max-height: 30px;
+    padding: 0;
+    border: none;
+    border-radius: 3px;
+    background-color: transparent;
+}
+
+QPushButton#titleMinButton {
+    image: url(:/image/minimize.png);
+}
+
+QPushButton#titleMinButton:hover {
+    image: url(:/image/minimizeHover.png);
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+QPushButton#titleMaxButton {
+    image: url(:/image/magnify.png);
+}
+
+QPushButton#titleMaxButton:hover {
+    image: url(:/image/magnifyHover.png);
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+QPushButton#titleMaxButton[maximized="true"] {
+    image: url(:/image/reduce.png);
+}
+
+QPushButton#titleMaxButton[maximized="true"]:hover {
+    image: url(:/image/reduceHover.png);
+}
+
+QPushButton#titleCloseButton {
+    image: url(:/image/close.png);
+}
+
+QPushButton#titleCloseButton:hover {
+    image: url(:/image/closeHover.png);
+    background-color: rgba(255, 92, 108, 0.18);
+}
+
+QTabWidget::pane {
+    top: -1px;
+    background-color: #102a47;
+    border: 1px solid #2d5a8c;
+    border-radius: 4px;
+}
+
+QTabBar::tab {
+    min-height: 30px;
+    padding: 5px 14px;
+    color: #c0d8f0;
+    background-color: #102a47;
+    border: 1px solid #2d5a8c;
+    border-bottom: none;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+}
+
+QTabBar::tab:selected {
+    color: #ffffff;
+    background-color: #1a3b5f;
+    border-color: #4b93cc;
+}
+
+QTabBar::tab:hover {
+    color: #ffffff;
+    background-color: #255487;
+}
+
+QWidget#upgradeMask {
+    background-color: rgba(0, 0, 0, 0.58);
+}
+
+QLabel#upgradeMaskLabel {
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: 600;
+    background: transparent;
+}
+
+QProgressBar#upgradeProgress {
+    min-height: 18px;
+    color: #ffffff;
+    text-align: center;
+    background-color: #0f263f;
+    border: 1px solid #64b5f6;
+    border-radius: 4px;
+}
+
+QProgressBar#upgradeProgress::chunk {
+    background-color: #409ce1;
+    border-radius: 3px;
+}

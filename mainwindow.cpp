@@ -17,6 +17,10 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
+    ui->devLogTextEdit->setReadOnly(true);
+    ui->lan1_mask->setReadOnly(true);
+    ui->lan1_gateway->setReadOnly(true);
+
     m_statusLabel = new QLabel("欢迎使用", this);
     m_statusLabel->setStyleSheet(
                 "QLabel {"
@@ -102,6 +106,29 @@ MainWindow::MainWindow(QWidget *parent)
         }
         else if (action == "设备名修改成功")
         {
+            if (!m_pendingDeviceName.isEmpty())
+            {
+                if (m_devCtl && m_devCtl->currentDevice())
+                {
+                    m_devCtl->currentDevice()->setDeviceName(m_pendingDeviceName);
+                }
+                UdpDiscovery::dev.deviceName = m_pendingDeviceName;
+                for (int row = 0; row < ui->tableWidgetSearch->rowCount(); ++row)
+                {
+                    QTableWidgetItem *checkItem = ui->tableWidgetSearch->item(row, 0);
+                    if (checkItem && checkItem->checkState() == Qt::Checked)
+                    {
+                        QTableWidgetItem *nameItem = ui->tableWidgetSearch->item(row, 4);
+                        if (!nameItem)
+                        {
+                            nameItem = new QTableWidgetItem();
+                            ui->tableWidgetSearch->setItem(row, 4, nameItem);
+                        }
+                        nameItem->setText(m_pendingDeviceName);
+                        break;
+                    }
+                }
+            }
             appendDeviceLog(QString("修改设备名称成功：%1").arg(currentCheckedDeviceText()));
         }
         else if (action != "配置成功")
@@ -116,6 +143,7 @@ MainWindow::MainWindow(QWidget *parent)
         if (action == "设备名修改成功")
         {
             ui->new_name->clear();
+            m_pendingDeviceName.clear();
         }
     });
     /*---------------------------------------------------------------*/
@@ -233,6 +261,7 @@ void MainWindow::on_Search_Btn_clicked()
     // 将焦点设置到表格上，防止禁用按钮后焦点转移到清空列表按钮
     ui->tableWidgetSearch->setFocus();
     ui->Search_Btn->setEnabled(false);
+    ui->llogin_btn->setEnabled(false);
 
     // 清除所有行--即清空表格tableWidgetSearch
     ui->tableWidgetSearch->setRowCount(0);
@@ -240,7 +269,7 @@ void MainWindow::on_Search_Btn_clicked()
     m_devCtl->searchDevices();
     connect(m_buttonCoolDownTimer, &QTimer::timeout, this, [this]() {
         ui->Search_Btn->setEnabled(true);
-        Logger::instance()->log(Logger::Debug, "MainWindow", "搜索按钮冷却结束，已重新启用");
+        ui->llogin_btn->setEnabled(true);
     });
 }
 
@@ -521,7 +550,7 @@ void MainWindow::onOperationSuccess(const QString &op)
         ui->lan1_ip      ->setText(cfg.lan1Ip);
         ui->lan1_mask    ->setText(cfg.lan1Netmask);
         ui->lan1_gateway ->setText(cfg.lan1Gateway);
-        ui->lan1_comboBox->setCurrentIndex(cfg.lan1UseDhcp ? 1 : 0);   // 0=Static 1=DHCP
+        ui->lan1_comboBox->setCurrentIndex(cfg.lan1UseDhcp ? 0 : 1);   // 1=Static 0=DHCP
         /* ========== 速度（不可选） ========== */
         ui->lan1_speed_comboBox->setCurrentIndex(cfg.lan1Speed);   // 0=Auto 1=100M-FD ...
         //  设备速度上位机不可控制，故让其只显示
@@ -530,11 +559,24 @@ void MainWindow::onOperationSuccess(const QString &op)
         Logger::instance()->log(Logger::Info, "MainWindow", "Read Network Config");
         appendDeviceLog("读取配置成功：网络配置");
     }
-    if (op == "Update device information")
+    if (op == "Lock/UnLock Device")
     {
-        Logger::instance()->log(Logger::Info, "MainWindow", "Update device information");
-        ui->tableWidgetSearch->setRowCount(0);
-        m_devCtl->searchDevices();
+        Logger::instance()->log(Logger::Info, "MainWindow", "Lock Device");
+        QList<QTableWidgetItem *> items = ui->tableWidgetSearch->findItems(UdpDiscovery::dev.lan1Mac, Qt::MatchContains);
+        if (!items.isEmpty())
+        {
+            int row = items.first()->row();
+            QTableWidgetItem *item = ui->tableWidgetSearch->item(row, 1);
+
+            if (item ->text() == "未锁定")
+            {
+                item->setText("已锁定");
+            }
+            else
+            {
+                item->setText("未锁定");
+            }
+        }
     }
     if (op == "Equipment configuration update")
     {
@@ -658,7 +700,7 @@ void MainWindow::on_Basic_Config_Btn_clicked()
     NetworkConfig cfg;
 
     // 根据协议02-4.3.2因为01和02代表lan1和lan2---03代表lan1 lan2。所以我直接使用03,默认直接同时设置2个
-    cfg.lanCount = 3;
+    cfg.lanCount = 1;
     cfg.lan1UseDhcp = (ui->lan1_comboBox->currentText() == "DHCP");
     cfg.lan1Ip      = ui->lan1_ip   ->text();
     cfg.lan1Netmask = ui->lan1_mask ->text();
@@ -685,7 +727,7 @@ void MainWindow::on_Basic_Config_Btn_clicked()
         appendDeviceLog("配置修改：未读取到旧网络配置，无法比较修改项");
     }
     
-    Logger::instance()->log(Logger::Info, "MainWindow", QString("正在写入网络配置：LAN1=%1/%2/%3 (DHCP:%4), LAN2=%5/%6/%7 (DHCP:%8)").arg(cfg.lan1Ip).arg(cfg.lan1Netmask).arg(cfg.lan1Gateway).arg(cfg.lan1UseDhcp).arg(cfg.lan2Ip).arg(cfg.lan2Netmask).arg(cfg.lan2Gateway).arg(cfg.lan2UseDhcp));
+    Logger::instance()->log(Logger::Info, "MainWindow", QString("正在写入网络配置：LAN1=%1/%2/%3 (DHCP:%4)").arg(cfg.lan1Ip).arg(cfg.lan1Netmask).arg(cfg.lan1Gateway).arg(cfg.lan1UseDhcp));
     
     m_devCtl->writeNetworkConfig(cfg);
     m_lastNetworkConfig = cfg;
@@ -1052,7 +1094,7 @@ void MainWindow::on_use_monitoring_btn_4_clicked()
  * ---------------------------------------------------------- */
 void MainWindow::on_lock_btn_clicked()
 {
-    if (QMessageBox::question(this, "确认", "锁定后需要解锁码才能解锁，继续？", QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes) != QMessageBox::Yes) return;
+    if (QMessageBox::question(this, "确认", "锁定后需要解锁码才能解锁，是否继续？", QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes) != QMessageBox::Yes) return;
     Logger::instance()->log(Logger::Info, "MainWindow", "正在锁定设备");
     appendDeviceLog(QString("请求锁定设备：%1").arg(currentCheckedDeviceText()));
     m_devCtl->lockDevice();   // 组帧 0x08 0x06
@@ -1322,6 +1364,7 @@ void MainWindow::on_name_modify_clicked()
     }
 
     Logger::instance()->log(Logger::Info, "MainWindow", QString("正在修改设备名称为：%1").arg(newName));
+    m_pendingDeviceName = newName;
     /* 调用新架构接口 */
     m_devCtl->writeDeviceName(newName);   // 内部组帧 0x02 0x01
 }
@@ -1522,8 +1565,8 @@ void MainWindow::appendDeviceLog(const QString &message)
     }
 
     const QString line = QString("[%1] %2")
-                             .arg(QTime::currentTime().toString("HH:mm:ss"))
-                             .arg(message);
+            .arg(QTime::currentTime().toString("HH:mm:ss"))
+            .arg(message);
     QObject *logWidget = findChild<QObject*>("devLogTextEdit");
     if (!logWidget)
     {
@@ -1538,7 +1581,8 @@ void MainWindow::appendDeviceLog(const QString &message)
 
 QString MainWindow::searchTableDeviceText(int row) const
 {
-    auto textAt = [this, row](int column) -> QString {
+    auto textAt = [this, row](int column) -> QString
+    {
         QTableWidgetItem *item = ui->tableWidgetSearch->item(row, column);
         return item ? item->text().trimmed() : QString();
     };
@@ -1579,7 +1623,8 @@ QString MainWindow::currentCheckedDeviceText() const
 QStringList MainWindow::networkConfigChanges(const NetworkConfig &oldCfg, const NetworkConfig &newCfg) const
 {
     QStringList changes;
-    auto addChange = [&changes](const QString &name, const QString &oldValue, const QString &newValue) {
+    auto addChange = [&changes](const QString &name, const QString &oldValue, const QString &newValue)
+    {
         if (oldValue != newValue)
         {
             changes << QString("%1：%2 -> %3").arg(name, oldValue, newValue);
@@ -2260,5 +2305,29 @@ void MainWindow::onItemChanged(QTableWidgetItem *item)
                 }
             }
         }
+    }
+}
+
+// 为 QTableWidget 的某行设置颜色
+void MainWindow::setTableRowColor(QTableWidget *table, int row, const QColor &color)
+{
+    if (!table)
+        return;
+
+    if (row < 0 || row >= table->rowCount())
+        return;
+
+    for (int col = 0; col < table->columnCount(); ++col)
+    {
+        QTableWidgetItem *item = table->item(row, col);
+
+        // 如果单元格没有 item，必须先创建，否则设置不了背景色
+        if (!item)
+        {
+            item = new QTableWidgetItem;
+            table->setItem(row, col, item);
+        }
+
+        item->setBackground(QBrush(color));
     }
 }

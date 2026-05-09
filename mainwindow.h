@@ -130,8 +130,6 @@ private slots:
     void on_PortNewNameCBox_stateChanged(int arg1);
 
 private:
-    Ui::MainWindow *ui;
-    DeviceController *m_devCtl;   // 唯一数据成员
     void initTables();
     void initTitleBar();
     void bindDataToUI();
@@ -144,6 +142,11 @@ private:
     QList<int> getSelectedRowIndices() const;
     QByteArray collectSelectedLockPorts(int i) const;
     bool validateFirmwarePackage(const QString &filePath, QByteArray &outPkg);
+    void setTableRowColor(QTableWidget *table, int row, const QColor &color);
+
+private:
+    Ui::MainWindow *ui;
+    DeviceController *m_devCtl;   // 唯一数据成员
     QProgressBar *m_progress = nullptr;
     QWidget *m_mask = nullptr;
     PendingOperation m_pendingOperation;
@@ -160,11 +163,10 @@ private:
     bool m_hasLastSerialPortConfig = false;
     QStringList m_pendingLockPortNames;
     QStringList m_pendingUnlockPortNames;
+    QString m_pendingDeviceName;
     QString m_PortOldName;
-    //2026.01.20新增
     ConfigDialog* m_configDialog;
     QLabel* m_statusLabel;
-
     //    struct LockPortsResult {
     //        QByteArray ports;    // 实际使用的端口数据
     //        QByteArray usedCount;       // 实际使用的端口个数

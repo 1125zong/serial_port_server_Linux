@@ -198,7 +198,7 @@ void DeviceController::lockDevice()
 {
     m_logger->log(Logger::Info, "DeviceController", "Locking device");
     m_pendingOperation = PendingOperation::LockDevice;
-    m_pendingOperationName = "Lock Device";
+    m_pendingOperationName = "Lock/UnLock Device";
     QByteArray cmd = ProtocolBuilder::buildDeviceLock();
     logSend(cmd);
     m_connManager->sendCommand(cmd);
@@ -208,7 +208,7 @@ void DeviceController::unlockDevice(const QString &code)
 {
     m_logger->log(Logger::Info, "DeviceController", "Unlocking device");
     m_pendingOperation = PendingOperation::UnlockDevice;
-    m_pendingOperationName = "Unlock Device";
+    m_pendingOperationName = "Lock/UnLock Device";
     QByteArray cmd = ProtocolBuilder::buildDeviceUnlock(code);
     logSend(cmd);
     m_connManager->sendCommand(cmd);
@@ -745,7 +745,6 @@ void DeviceController::handleDeviceLockResponse(const QByteArray &payload)
     if(judge == "01")
     {
         emit setWordToUnlockLab(Word);
-        m_pendingOperationName = "Update device information";
         emit operationSuccess(m_pendingOperationName);
     }
     else
@@ -760,6 +759,7 @@ void DeviceController::handleDeviceUnLockResponse(const QByteArray &payload)
     if(judge == "01")
     {
         emit operateOK("设备解锁成功");
+        emit operationSuccess(m_pendingOperationName);
     }
     else
     {

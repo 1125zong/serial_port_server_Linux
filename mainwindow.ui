@@ -447,7 +447,7 @@ QTableWidget
 }
 QTableWidget::item 
 {
-    background-color: #102a47;
+    
     color: #c0d8f0;
     padding: 2px 4px;
 }
@@ -920,7 +920,7 @@ QPlainTextEdit#devLogTextEdit QScrollBar::sub-page:vertical
          </size>
         </property>
         <property name="currentIndex">
-         <number>2</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="page_3">
          <widget class="QTextBrowser" name="textBrowser">
@@ -1079,11 +1079,6 @@ QTableWidget#tableWidget::item
                 <item>
                  <property name="text">
                   <string>静态ip</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>无</string>
                  </property>
                 </item>
                </widget>
