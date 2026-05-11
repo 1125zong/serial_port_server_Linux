@@ -18,8 +18,8 @@ public:
     
 private:
     // Port calculation formula:
-    // dataPort = startPort + (portIndex - 1) * 2
-    // cmdPort = dataPort + 1
+    // dataPort = startPort + (portIndex - 1)
+    // cmdPort = startPort + 16 + (portIndex - 1)
 };
 
 #endif // PORTCALCULATOR_H

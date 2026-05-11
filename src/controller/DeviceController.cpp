@@ -513,6 +513,10 @@ void DeviceController::onFrameReceived(const QByteArray &frame)
         m_pendingOperation = PendingOperation::None;
         handleSelfCheck(payload);
         break;
+    case PendingOperation::WriteWatchDog:
+        m_pendingOperation = PendingOperation::None;
+        handleWriteWatchDog(payload);
+        break;
     case PendingOperation::WriteMultiSerialConfig:
     case PendingOperation::ResetPort:
 
@@ -862,13 +866,26 @@ void DeviceController::handleSelfCheck(const QByteArray &payload)
         for (int i = 0; i < data.size(); i++)
         {
             quint8 value = static_cast<quint8>(data.at(i));  // 获取字节的数值
-//            QString name = QString::number(value);  // 转换为十进制字符串
             QString name = QString("端口%1").arg(value);
             portNames.append(name);
         }
         QString message = QString("成功自检%1个端口: %2").arg(portNum).arg(portNames.join(", "));
         qDebug() << "portNames：" << portNames;
         emit operateOK(message);
+    }
+}
+
+void DeviceController::handleWriteWatchDog(const QByteArray &payload)
+{
+    QString judge = QString::fromLatin1(payload.mid(0,1).toHex());
+    if(judge == "01")
+    {
+        emit operateOK("看门狗配置成功");
+        emit operationSuccess(m_pendingOperationName);
+    }
+    else
+    {
+        emit operateError("看门狗配置失败");
     }
 }
 

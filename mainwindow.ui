@@ -652,7 +652,7 @@ QPlainTextEdit#devLogTextEdit QScrollBar::sub-page:vertical
 </string>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="page">
        <property name="styleSheet">
@@ -920,7 +920,7 @@ QPlainTextEdit#devLogTextEdit QScrollBar::sub-page:vertical
          </size>
         </property>
         <property name="currentIndex">
-         <number>3</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="page_3">
          <widget class="QTextBrowser" name="textBrowser">

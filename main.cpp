@@ -14,7 +14,6 @@ int main(int argc, char *argv[])
     Logger::instance()->enableConsoleOutput(true);       // 启用控制台输出
     QNetworkProxy::setApplicationProxy(QNetworkProxy::NoProxy);
 
-
     MainWindow w;
     w.show();
     return a.exec();

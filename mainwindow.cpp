@@ -454,9 +454,9 @@ void MainWindow::onOperationSuccess(const QString &op)
                         "固件版本：%4\r\n"
                         "设备状态：%5\r\n"
                         "网口数量：%6\r\n"
-                        "IP1 地址：%7\r\n"
-                        "MAC1 地址：%8\r\n"
-                        "电源1：%12\r\n"
+                        "IP 地址：%7\r\n"
+                        "MAC 地址：%8\r\n"
+                        "电源：%12\r\n"
                         "LCD 显示：%11\r\n"
                         "设备锁定：%14"
                         )
@@ -468,8 +468,8 @@ void MainWindow::onOperationSuccess(const QString &op)
                     .arg(m->validLanCount())
                     .arg(m->lan1Ip())
                     .arg(m->lan1Mac())
-                    .arg(m->lcdState() == QPORT_LCDState::HasLCD ? "有" : "无")
-                    .arg(m->power1State() == QPORT_PowerState::PowerOn ? "On" : "Off")
+                    .arg(m->lcdState() == QPORT_LCDState::HasLCD ? "开启" : "关闭")
+                    .arg(m->power1State() == QPORT_PowerState::PowerOn ? "开启" : "关闭")
                     .arg(m->lockState() == QPORT_DeviceLockState::Locked ? "已锁定" : "未锁定")
                     );
 
@@ -1302,14 +1302,14 @@ void MainWindow::on_pushButton_5_clicked()
     // 单例模式：只创建一个实例
     if (!m_configDialog)
     {
-        m_configDialog = new ConfigDialog(this);
+        m_configDialog = new ConfigDialog(nullptr);
 
         // 对话框关闭时的处理（可选）
         connect(m_configDialog, &QDialog::finished, [this]()
         {
             // 可以选择保留对话框实例或删除
-            // m_configDialog->deleteLater();
-            // m_configDialog = nullptr;
+             m_configDialog->deleteLater();
+             m_configDialog = nullptr;
         });
     }
 
@@ -1561,11 +1561,7 @@ void MainWindow::appendDeviceLog(const QString &message)
     {
         return;
     }
-
-    if (!QMetaObject::invokeMethod(logWidget, "append", Q_ARG(QString, line)))
-    {
-        QMetaObject::invokeMethod(logWidget, "appendPlainText", Q_ARG(QString, line));
-    }
+    QMetaObject::invokeMethod(logWidget, "appendPlainText", Q_ARG(QString, line));
 }
 
 QString MainWindow::searchTableDeviceText(int row) const

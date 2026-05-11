@@ -47,112 +47,243 @@ UdpDiscovery::~UdpDiscovery()
 // 通过UDP套接字以广播的形式向port为48899，ip为192.168.5.x网段的主机发送UDP_SEARCH_MSG的消息，并启动 搜索超时定时器。
 void UdpDiscovery::startSearch()
 {
-    if (m_isSearching) {
+    if (m_isSearching)
+    {
         m_logger->log(Logger::Warning, "UdpDiscovery", "Search already in progress");
         return;
     }
 
+    // 记录当前搜索设备数量
     m_deviceCount = 0;
     m_isSearching = true;
 
     // 如果之前已经绑定过，先关闭，避免重复 bind 异常
     if (m_socket->state() != QAbstractSocket::UnconnectedState)
     {
+        m_logger->log(Logger::Debug, "UdpDiscovery", "UDP socket 已经绑定过，先关闭后重新绑定");
         m_socket->close();
     }
 
-    // 如果你加了设备去重集合，这里也要清空
+    // 如果你有设备去重集合，可以在这里清空
     // m_foundDeviceKeys.clear();
 
-    // 1. 绑定端口
-    if (!m_socket->bind(QHostAddress::Any, UDP_PORT, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint))
+    m_logger->log(Logger::Info, "UdpDiscovery",
+                  QString("正在绑定UDP端口 %1").arg(UDP_PORT));
+
+    // Linux 下建议明确使用 AnyIPv4，避免 IPv6/IPv4 混用问题
+    if (!m_socket->bind(QHostAddress::AnyIPv4,
+                        UDP_PORT,
+                        QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint))
     {
-        QString error = QString("Failed to bind UDP port %1: %2").arg(UDP_PORT).arg(m_socket->errorString());
+        QString error = QString("Failed to bind UDP port %1: %2")
+                            .arg(UDP_PORT)
+                            .arg(m_socket->errorString());
+
         m_logger->log(Logger::Error, "UdpDiscovery", error);
+
         m_isSearching = false;
         emit searchError(error);
         return;
     }
 
-    m_logger->log(Logger::Info, "UdpDiscovery", QString("成功绑定UDP端口 %1").arg(UDP_PORT));
+    m_logger->log(Logger::Info, "UdpDiscovery",
+                  QString("成功绑定UDP端口 %1").arg(UDP_PORT));
+
     emit bindSucceeded(UDP_PORT);
 
+
     QByteArray searchMsg(ProtocolConstants::UDP_SEARCH_MSG);
+
+    m_logger->log(Logger::Info, "UdpDiscovery",
+                  QString("搜索消息内容: %1, HEX: %2")
+                      .arg(QString(searchMsg))
+                      .arg(QString(searchMsg.toHex(' '))));
 
     QStringList broadcastAddresses;
     QSet<QString> broadcastAddressSet;
 
     foreach (const QNetworkInterface &interface, QNetworkInterface::allInterfaces())
     {
-
         QString ifName = interface.humanReadableName();
+        QNetworkInterface::InterfaceFlags flags = interface.flags();
 
-        // 过滤未运行网卡
-        if (!(interface.flags() & QNetworkInterface::IsRunning))
-            continue;
+        m_logger->log(Logger::Info, "UdpDiscovery",
+                      QString("检测到网卡: %1, flags=%2")
+                          .arg(ifName)
+                          .arg((int)flags));
 
-        // 过滤回环网卡
-        if (interface.flags() & QNetworkInterface::IsLoopBack)
-            continue;
-
-        // 过滤虚拟网卡
-        if (ifName.contains("VMware", Qt::CaseInsensitive) || ifName.contains("Virtual", Qt::CaseInsensitive) || ifName.contains("VirtualBox", Qt::CaseInsensitive) || ifName.contains("Loopback", Qt::CaseInsensitive))
+        // 1. 过滤未启用网卡
+        if (!(flags & QNetworkInterface::IsUp))
         {
-
             m_logger->log(Logger::Debug, "UdpDiscovery",
-                          QString("跳过虚拟网卡: %1").arg(ifName));
+                          QString("跳过未启用网卡: %1").arg(ifName));
             continue;
         }
 
-        // 如果你的串口服务器只接有线网卡，可以先跳过无线网卡
-        if (ifName.contains("WLAN", Qt::CaseInsensitive) || ifName.contains("Wi-Fi", Qt::CaseInsensitive) || ifName.contains("无线", Qt::CaseInsensitive))
+        // 2. 过滤未运行网卡
+        if (!(flags & QNetworkInterface::IsRunning))
         {
-
-            m_logger->log(Logger::Debug, "UdpDiscovery", QString("跳过无线网卡: %1").arg(ifName));
+            m_logger->log(Logger::Debug, "UdpDiscovery",
+                          QString("跳过未运行网卡: %1").arg(ifName));
             continue;
         }
+
+        // 3. 过滤回环网卡
+        if (flags & QNetworkInterface::IsLoopBack)
+        {
+            m_logger->log(Logger::Debug, "UdpDiscovery",
+                          QString("跳过回环网卡: %1").arg(ifName));
+            continue;
+        }
+
+        // 4. 过滤不支持广播的网卡
+        if (!(flags & QNetworkInterface::CanBroadcast))
+        {
+            m_logger->log(Logger::Debug, "UdpDiscovery",
+                          QString("跳过不支持广播的网卡: %1").arg(ifName));
+            continue;
+        }
+
+#if defined(Q_OS_WIN)
+
+        /*
+         * Windows 下保留你原来的过滤逻辑。
+         * Windows 网卡名称通常比较明确，比如：
+         * VMware Network Adapter
+         * VirtualBox Host-Only Network
+         * WLAN
+         * Wi-Fi
+         */
+        if (ifName.contains("VMware", Qt::CaseInsensitive) ||
+            ifName.contains("Virtual", Qt::CaseInsensitive) ||
+            ifName.contains("VirtualBox", Qt::CaseInsensitive) ||
+            ifName.contains("Loopback", Qt::CaseInsensitive))
+        {
+            m_logger->log(Logger::Debug, "UdpDiscovery",
+                          QString("Windows下跳过虚拟网卡: %1").arg(ifName));
+            continue;
+        }
+
+        // 如果你的设备只接有线网卡，Windows 下可以继续跳过无线网卡
+        if (ifName.contains("WLAN", Qt::CaseInsensitive) ||
+            ifName.contains("Wi-Fi", Qt::CaseInsensitive) ||
+            ifName.contains("无线", Qt::CaseInsensitive))
+        {
+            m_logger->log(Logger::Debug, "UdpDiscovery",
+                          QString("Windows下跳过无线网卡: %1").arg(ifName));
+            continue;
+        }
+
+#elif defined(Q_OS_LINUX)
+
+        /*
+         * Linux / 麒麟 下不要用 VMware、Virtual、Wi-Fi 这些名字过滤。
+         *
+         * 原因：
+         * Linux 下真实可用网卡的 humanReadableName() 可能和 Windows 不一样，
+         * 有些虚拟机桥接、有些 USB 转网口、有些国产系统命名方式可能会被误判。
+         *
+         * 所以 Linux 下只过滤明显的虚拟桥接网卡。
+         */
+        if (ifName.startsWith("docker", Qt::CaseInsensitive) ||
+            ifName.startsWith("br-", Qt::CaseInsensitive) ||
+            ifName.startsWith("virbr", Qt::CaseInsensitive))
+        {
+            m_logger->log(Logger::Debug, "UdpDiscovery",
+                          QString("Linux下跳过虚拟桥接网卡: %1").arg(ifName));
+            continue;
+        }
+
+#endif
 
         foreach (const QNetworkAddressEntry &entry, interface.addressEntries())
         {
-
             QHostAddress ipAddr = entry.ip();
             QHostAddress broadcastAddr = entry.broadcast();
 
             // 只处理 IPv4
             if (ipAddr.protocol() != QAbstractSocket::IPv4Protocol)
+            {
                 continue;
+            }
+
+            m_logger->log(Logger::Info, "UdpDiscovery",
+                          QString("网卡=%1, IP=%2, Broadcast=%3")
+                              .arg(ifName)
+                              .arg(ipAddr.toString())
+                              .arg(broadcastAddr.toString()));
 
             if (broadcastAddr.isNull())
+            {
+                m_logger->log(Logger::Debug, "UdpDiscovery",
+                              QString("网卡 %1 的广播地址为空，跳过").arg(ifName));
                 continue;
+            }
 
             QString addr = broadcastAddr.toString();
 
             // 广播地址去重
-            if (broadcastAddressSet.contains(addr)) {
-                m_logger->log(Logger::Info, "UdpDiscovery", QString("广播地址重复，已跳过: %1，来源网卡: %2").arg(addr).arg(ifName));
+            if (broadcastAddressSet.contains(addr))
+            {
+                m_logger->log(Logger::Info, "UdpDiscovery",
+                              QString("广播地址重复，已跳过: %1，来源网卡: %2")
+                                  .arg(addr)
+                                  .arg(ifName));
                 continue;
             }
 
             broadcastAddressSet.insert(addr);
             broadcastAddresses << addr;
 
-            m_logger->log(Logger::Info, "UdpDiscovery", QString("在网卡 %1 上找到广播地址: %2").arg(ifName).arg(addr));
+            m_logger->log(Logger::Info, "UdpDiscovery",
+                          QString("在网卡 %1 上找到广播地址: %2")
+                              .arg(ifName)
+                              .arg(addr));
         }
     }
 
-    if (broadcastAddresses.isEmpty()) {
+    /*
+     * 如果没有枚举到任何广播地址，则使用全局广播。
+     * 但是 Linux 多网卡环境下，255.255.255.255 不一定从正确网卡发出去。
+     */
+    if (broadcastAddresses.isEmpty())
+    {
         m_logger->log(Logger::Warning, "UdpDiscovery",
                       "未能获取到网卡广播地址，将使用默认全局广播地址 255.255.255.255");
 
         broadcastAddresses << "255.255.255.255";
     }
 
-    for (const QString &addr : broadcastAddresses) {
+    /*
+     * 兜底补发：
+     * 你已经验证第一个函数向 192.168.5.255 发送可以搜索到设备，
+     * 所以这里无论自动枚举结果如何，都保证额外发一次 192.168.5.255。
+     */
+    if (!broadcastAddresses.contains("192.168.5.255"))
+    {
+        m_logger->log(Logger::Warning, "UdpDiscovery",
+                      "自动枚举未包含 192.168.5.255，手动加入该广播地址");
+
+        broadcastAddresses << "192.168.5.255";
+    }
+
+    broadcastAddresses.removeDuplicates();
+
+    int successCount = 0;
+
+    for (const QString &addr : broadcastAddresses)
+    {
+        m_logger->log(Logger::Info, "UdpDiscovery",
+                      QString("准备向广播地址 %1:%2 发送搜索包")
+                          .arg(addr)
+                          .arg(UDP_PORT));
+
         qint64 sent = m_socket->writeDatagram(searchMsg,
                                               QHostAddress(addr),
                                               UDP_PORT);
 
-        if (sent == -1) {
+        if (sent == -1)
+        {
             QString error = QString("向广播地址 %1 发送失败: %2")
                                 .arg(addr)
                                 .arg(m_socket->errorString());
@@ -161,12 +292,30 @@ void UdpDiscovery::startSearch()
             continue;
         }
 
+        successCount++;
+
         m_logger->log(Logger::Info, "UdpDiscovery",
                       QString("向广播地址 %1 发送成功 (%2 bytes)")
                           .arg(addr)
                           .arg(sent));
     }
 
+    if (successCount == 0)
+    {
+        QString error = "所有广播地址发送失败，无法开始设备搜索";
+        m_logger->log(Logger::Error, "UdpDiscovery", error);
+
+        m_socket->close();
+        m_isSearching = false;
+        emit searchError(error);
+        return;
+    }
+
+    m_logger->log(Logger::Info, "UdpDiscovery",
+                  QString("UDP广播发送完成，共成功发送 %1 个广播地址，等待设备响应...")
+                      .arg(successCount));
+
+    // 启动搜索超时定时器
     m_searchTimer->start();
 }
 

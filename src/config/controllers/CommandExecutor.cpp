@@ -3,10 +3,11 @@
 #include <QStandardPaths>
 #include <unistd.h>
 #include <sys/types.h>
-//#include <sys/signal.h>
+#include <signal.h>
 #include <QDebug>
 #include <QFileInfo>
 #include "../../utils/Logger.h"
+
 
 CommandExecutor::CommandExecutor()
 {
@@ -112,9 +113,9 @@ CommandExecutor::ExecuteResult CommandExecutor::signalDaemonReload()
             continue;
         }
 
-//        if (kill(pid, SIGUSR1) == -1) {
-//            return ExecuteResult(false, QString("向进程 %1 发送信号失败").arg(pid));
-//        }
+        if (kill(pid, SIGUSR1) == -1) {
+            return ExecuteResult(false, QString("向进程 %1 发送信号失败").arg(pid));
+        }
     }
 
     return ExecuteResult(true, QString("已向 %1 个 wq_nportd 进程发送重载信号").arg(pids.size()));
@@ -232,5 +233,5 @@ QString CommandExecutor::getPrivilegeCommand()
 bool CommandExecutor::hasRootPrivileges()
 {
     // 获取当前进程的有效用户ID，返回0表示root权限
-//    return (geteuid() == 0);
+    return (geteuid() == 0);
 }

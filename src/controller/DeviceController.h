@@ -163,6 +163,7 @@ private:
     void handleWriteSerialConfig(const QByteArray &payload);
     void handleReadPortMode(const QByteArray &payload);
     void handleSelfCheck(const QByteArray &payload);
+    void handleWriteWatchDog(const QByteArray &payload);
 
     void sendUpgradeHandshake();   // 发送升级握手帧
     void sendFinalCheck();

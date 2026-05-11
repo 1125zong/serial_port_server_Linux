@@ -1,22 +1,18 @@
-# Qt build directories
 build-*/
 debug/
 release/
 Debug/
 Release/
 
-# Qt Creator user config
 *.pro.user
 *.pro.user.*
 
-# Qt generated files
 moc_*.cpp
 qrc_*.cpp
 ui_*.h
 Makefile
 Makefile.*
 
-# C/C++ build output
 *.o
 *.obj
 *.exe
@@ -27,25 +23,13 @@ Makefile.*
 *.pdb
 *.ilk
 
-# Visual Studio
 .vs/
-*.suo
-*.user
-*.VC.db
-*.VC.opendb
-x64/
-x86/
-
-# VS Code / Code X
 .vscode/
 .idea/
 
-# Logs and temporary files
 *.log
 *.tmp
 *.bak
-*.swp
 
-# OS files
 .DS_Store
 Thumbs.db
