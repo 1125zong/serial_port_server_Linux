@@ -9,6 +9,17 @@
 #include "src/utils/Logger.h"  // 日志系统
 #include <QMetaObject>
 #include <QTime>
+#include <QDir>
+#include <QProcess>
+#include <QTextStream>
+#include <QSet>
+#include <QMap>
+#include <algorithm>
+
+#if defined(Q_OS_LINUX)
+#include <sys/stat.h>
+#include <sys/sysmacros.h>
+#endif
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -1277,23 +1288,304 @@ void MainWindow::on_pushButton_3_clicked()
 void MainWindow::on_pushButton_4_clicked()
 {
 #if defined(Q_OS_WIN)
-    /* Windows：查注册表 */
     QSettings reg("HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Services\\NPort",
                   QSettings::NativeFormat);
-    bool installed = reg.contains("DisplayName");   // MOXA 服务存在即认为驱动装好
+    const bool installed = reg.contains("DisplayName");
+    QMessageBox::information(this,
+                             "驱动检测",
+                             installed ? "MOXA NPort 驱动已安装。" : "驱动未安装，请先安装驱动。");
 #elif defined(Q_OS_LINUX)
-    /* Linux：查 systemd 服务或 /lib/modules/$(uname -r)/extra/nport*.ko */
-    bool installed = QFile::exists("/lib/modules/" + QSysInfo::kernelVersion() +
-                                   "/extra/moxa/nport.ko");
-#else
-    bool installed = false;
-#endif
+    const QString driverDir = "/usr/lib/wq_nport/driver";
+    const QString configPath = driverDir + "/wq_nportd.cf";
+    QStringList okItems;
+    QStringList warnItems;
+    QStringList errorItems;
 
-    QMessageBox::information(
-                this,
-                "驱动检测",
-                installed ? "✅ MOXA NPort 驱动已安装！" : "❌ 驱动未安装，请先安装驱动。"
-                            );
+    auto addOk = [&okItems](const QString &msg) { okItems << QString("OK  %1").arg(msg); };
+    auto addWarn = [&warnItems](const QString &msg) { warnItems << QString("WARN  %1").arg(msg); };
+    auto addError = [&errorItems](const QString &msg) { errorItems << QString("ERROR  %1").arg(msg); };
+
+    const QFileInfo driverInfo(driverDir);
+    if (driverInfo.exists() && driverInfo.isDir())
+    {
+        addOk(QString("驱动目录存在：%1").arg(driverDir));
+    }
+    else
+    {
+        addError(QString("驱动目录不存在：%1").arg(driverDir));
+    }
+
+    const QStringList tools = {"mxaddsvr", "mxdelsvr", "mxrmnod", "mxloadsvr"};
+    for (const QString &tool : tools)
+    {
+        const QFileInfo toolInfo(driverDir + "/" + tool);
+        if (!toolInfo.exists())
+        {
+            addError(QString("驱动工具缺失：%1").arg(toolInfo.absoluteFilePath()));
+        }
+        else if (!toolInfo.isExecutable())
+        {
+            addError(QString("驱动工具不可执行：%1").arg(toolInfo.absoluteFilePath()));
+        }
+        else
+        {
+            addOk(QString("驱动工具可执行：%1").arg(tool));
+        }
+    }
+
+    struct PortEntry
+    {
+        int minor = -1;
+        QString ip;
+        int dataPort = -1;
+        int cmdPort = -1;
+        QString ttyName;
+        QString coutName;
+    };
+
+    int ttyMajor = -1;
+    int calloutMajor = -1;
+    QList<PortEntry> entries;
+    QFile configFile(configPath);
+
+    if (!configFile.exists())
+    {
+        addError(QString("配置文件不存在：%1").arg(configPath));
+    }
+    else if (!configFile.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        addError(QString("配置文件无法读取：%1").arg(configFile.errorString()));
+    }
+    else
+    {
+        QTextStream in(&configFile);
+        int lineNo = 0;
+        while (!in.atEnd())
+        {
+            const QString line = in.readLine();
+            ++lineNo;
+            const QString trimmed = line.trimmed();
+            if (trimmed.isEmpty() || trimmed.startsWith('#'))
+            {
+                continue;
+            }
+
+            if (trimmed.startsWith("ttymajor="))
+            {
+                bool ok = false;
+                ttyMajor = trimmed.mid(QString("ttymajor=").size()).toInt(&ok);
+                if (!ok)
+                {
+                    addWarn(QString("ttymajor 解析失败：第 %1 行").arg(lineNo));
+                    ttyMajor = -1;
+                }
+                continue;
+            }
+
+            if (trimmed.startsWith("calloutmajor="))
+            {
+                bool ok = false;
+                calloutMajor = trimmed.mid(QString("calloutmajor=").size()).toInt(&ok);
+                if (!ok)
+                {
+                    addWarn(QString("calloutmajor 解析失败：第 %1 行").arg(lineNo));
+                    calloutMajor = -1;
+                }
+                continue;
+            }
+
+            const QStringList fields = trimmed.split(QRegularExpression("\\s+"), QString::SkipEmptyParts);
+            if (fields.size() < 10)
+            {
+                addWarn(QString("配置行字段不足：第 %1 行").arg(lineNo));
+                continue;
+            }
+
+            bool minorOk = false;
+            bool dataOk = false;
+            bool cmdOk = false;
+            PortEntry entry;
+            entry.minor = fields.at(0).toInt(&minorOk);
+            entry.ip = fields.at(1);
+            entry.dataPort = fields.at(2).toInt(&dataOk);
+            entry.cmdPort = fields.at(3).toInt(&cmdOk);
+            entry.ttyName = fields.at(6);
+            entry.coutName = fields.at(7);
+
+            if (!minorOk || !dataOk || !cmdOk)
+            {
+                addWarn(QString("配置行数字字段解析失败：第 %1 行").arg(lineNo));
+                continue;
+            }
+            entries << entry;
+        }
+        configFile.close();
+
+        addOk(QString("配置文件可读取：%1").arg(configPath));
+        ttyMajor >= 0 ? addOk(QString("ttymajor=%1").arg(ttyMajor)) : addWarn("配置文件缺少有效 ttymajor");
+        calloutMajor >= 0 ? addOk(QString("calloutmajor=%1").arg(calloutMajor)) : addWarn("配置文件缺少有效 calloutmajor");
+        addOk(QString("解析到 %1 个映射端口").arg(entries.size()));
+    }
+
+    QProcess pgrepProcess;
+    pgrepProcess.start("/usr/bin/pgrep", QStringList() << "-x" << "wq_nportd");
+    if (!pgrepProcess.waitForFinished(3000)) {
+        addWarn("检查 wq_nportd 进程超时");
+    } else {
+        const QString pidsText = QString::fromUtf8(pgrepProcess.readAllStandardOutput()).trimmed();
+        if (pgrepProcess.exitCode() != 0 || pidsText.isEmpty()) {
+            addError("wq_nportd 守护进程未运行");
+        } else {
+            const QStringList pids = pidsText.split('\n', QString::SkipEmptyParts);
+            addOk(QString("wq_nportd 正在运行，PID：%1").arg(pids.join(", ")));
+            for (const QString &pid : pids) {
+                QProcess psProcess;
+                psProcess.start("/bin/ps", QStringList() << "-o" << "user=" << "-p" << pid);
+                if (psProcess.waitForFinished(3000)) {
+                    const QString user = QString::fromUtf8(psProcess.readAllStandardOutput()).trimmed();
+                    if (user == "root") {
+                        addOk(QString("wq_nportd PID %1 运行用户：root").arg(pid));
+                    } else if (!user.isEmpty()) {
+                        addWarn(QString("wq_nportd PID %1 运行用户不是 root：%2").arg(pid, user));
+                    }
+                }
+            }
+        }
+    }
+
+    auto checkCharDevice = [](const QString &path, int expectedMajor, int expectedMinor, QString *detail) -> bool {
+        struct stat st;
+        const QByteArray encodedPath = QFile::encodeName(path);
+        if (::stat(encodedPath.constData(), &st) != 0) {
+            if (detail) {
+                *detail = "节点不存在";
+            }
+            return false;
+        }
+        if (!S_ISCHR(st.st_mode)) {
+            if (detail) {
+                *detail = "不是字符设备";
+            }
+            return false;
+        }
+        const int actualMajor = static_cast<int>(major(st.st_rdev));
+        const int actualMinor = static_cast<int>(minor(st.st_rdev));
+        if (expectedMajor >= 0 && actualMajor != expectedMajor) {
+            if (detail) {
+                *detail = QString("major 不匹配，当前 %1，期望 %2").arg(actualMajor).arg(expectedMajor);
+            }
+            return false;
+        }
+        if (expectedMinor >= 0 && actualMinor != expectedMinor) {
+            if (detail) {
+                *detail = QString("minor 不匹配，当前 %1，期望 %2").arg(actualMinor).arg(expectedMinor);
+            }
+            return false;
+        }
+        if (detail) {
+            *detail = QString("major=%1, minor=%2").arg(actualMajor).arg(actualMinor);
+        }
+        return true;
+    };
+
+    QSet<int> usedMinors;
+    QSet<QString> usedTtys;
+    QSet<QString> usedCouts;
+    QMap<QString, QList<PortEntry>> entriesByIp;
+    const QRegularExpression ttyRegex("^ttyw[0-9a-fA-F]{2}$");
+    const QRegularExpression coutRegex("^cur[0-9a-fA-F]{2}$");
+    int badPortRuleCount = 0;
+    int missingNodeCount = 0;
+    int badNodeCount = 0;
+
+    for (const PortEntry &entry : entries) {
+        if (usedMinors.contains(entry.minor)) {
+            addWarn(QString("重复 minor：%1").arg(entry.minor));
+        }
+        usedMinors.insert(entry.minor);
+
+        if (!ttyRegex.match(entry.ttyName).hasMatch()) {
+            addWarn(QString("TTY 名称格式异常：%1").arg(entry.ttyName));
+        }
+        if (!coutRegex.match(entry.coutName).hasMatch()) {
+            addWarn(QString("Callout 名称格式异常：%1").arg(entry.coutName));
+        }
+        if (usedTtys.contains(entry.ttyName)) {
+            addWarn(QString("重复 TTY 名称：%1").arg(entry.ttyName));
+        }
+        if (usedCouts.contains(entry.coutName)) {
+            addWarn(QString("重复 Callout 名称：%1").arg(entry.coutName));
+        }
+        usedTtys.insert(entry.ttyName);
+        usedCouts.insert(entry.coutName);
+
+        if (entry.cmdPort - entry.dataPort != 16) {
+            ++badPortRuleCount;
+        }
+        entriesByIp[entry.ip].append(entry);
+
+        QString ttyDetail;
+        if (!checkCharDevice("/dev/" + entry.ttyName, ttyMajor, entry.minor, &ttyDetail)) {
+            ttyDetail == "节点不存在" ? ++missingNodeCount : ++badNodeCount;
+            addWarn(QString("/dev/%1 异常：%2").arg(entry.ttyName, ttyDetail));
+        }
+
+        QString coutDetail;
+        if (!checkCharDevice("/dev/" + entry.coutName, calloutMajor, entry.minor, &coutDetail)) {
+            coutDetail == "节点不存在" ? ++missingNodeCount : ++badNodeCount;
+            addWarn(QString("/dev/%1 异常：%2").arg(entry.coutName, coutDetail));
+        }
+    }
+
+    if (!entries.isEmpty()) {
+        badPortRuleCount == 0
+                ? addOk("映射端口规则正常：cmdPort - dataPort = 16")
+                : addError(QString("%1 个端口映射规则异常，应满足 cmdPort = dataPort + 16").arg(badPortRuleCount));
+
+        (missingNodeCount == 0 && badNodeCount == 0)
+                ? addOk("设备节点存在且 major/minor 匹配配置")
+                : addWarn(QString("设备节点检查发现问题：缺失 %1 个，异常 %2 个").arg(missingNodeCount).arg(badNodeCount));
+
+        for (auto it = entriesByIp.constBegin(); it != entriesByIp.constEnd(); ++it) {
+            QList<PortEntry> ports = it.value();
+            std::sort(ports.begin(), ports.end(), [](const PortEntry &a, const PortEntry &b) {
+                return a.dataPort < b.dataPort;
+            });
+            for (int i = 1; i < ports.size(); ++i) {
+                if (ports.at(i).dataPort != ports.at(i - 1).dataPort + 1 ||
+                    ports.at(i).cmdPort != ports.at(i - 1).cmdPort + 1) {
+                    addWarn(QString("设备 %1 的 data/cmd 端口不是连续范围").arg(it.key()));
+                    break;
+                }
+            }
+        }
+    } else if (configFile.exists()) {
+        addWarn("配置文件中未解析到串口映射");
+    }
+
+    const QString status = errorItems.isEmpty()
+            ? (warnItems.isEmpty() ? "驱动检测通过" : "驱动检测完成，有警告")
+            : "驱动检测失败";
+
+    QString report = QString("=== %1 ===\n\n").arg(status);
+    if (!errorItems.isEmpty()) {
+        report += "错误：\n" + errorItems.join('\n') + "\n\n";
+    }
+    if (!warnItems.isEmpty()) {
+        report += "警告：\n" + warnItems.join('\n') + "\n\n";
+    }
+    if (!okItems.isEmpty()) {
+        report += "正常：\n" + okItems.join('\n');
+    }
+
+    appendDeviceLog(QString("驱动检测：%1，错误=%2，警告=%3")
+                    .arg(status)
+                    .arg(errorItems.size())
+                    .arg(warnItems.size()));
+    QMessageBox::information(this, "驱动检测", report);
+#else
+    QMessageBox::information(this, "驱动检测", "当前平台暂不支持驱动检测。");
+#endif
 };
 
 //串口映射按钮
