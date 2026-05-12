@@ -1595,6 +1595,8 @@ void MainWindow::on_pushButton_5_clicked()
     if (!m_configDialog)
     {
         m_configDialog = new ConfigDialog(nullptr);
+        connect(m_configDialog, &ConfigDialog::deviceLogRequested,
+                this, &MainWindow::appendDeviceLog);
 
         // 对话框关闭时的处理（可选）
         connect(m_configDialog, &QDialog::finished, [this]()

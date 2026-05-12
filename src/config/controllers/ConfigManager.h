@@ -41,9 +41,6 @@ public:
     // 删除整个设备及其所有端口
     OperationResult deleteDevice(const QString& deviceIp);
     
-    // 从设备中删除选定的端口
-    OperationResult deleteSelectedPorts(const QString& deviceIp, const QList<int>& minors);
-    
     // 获取当前配置数据（只读）
     const ConfigurationData& getConfiguration() const;
     
@@ -64,8 +61,8 @@ private:
     // 辅助函数: 为单个端口执行mxaddsvr
     OperationResult executeMxaddsvrForPort(const PortModel& port, int portCount);
     
-    // 辅助函数: 为单个端口执行mxdelsvr
-    OperationResult executeMxdelsvrForPort(int minor);
+    // Check that /dev/ttywXX nodes were created after adding a device.
+    OperationResult verifyDeviceNodes(const QString& deviceIp) const;
 };
 
 #endif // CONFIGMANAGER_H

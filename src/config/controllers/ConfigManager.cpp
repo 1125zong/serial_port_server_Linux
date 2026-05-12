@@ -2,7 +2,9 @@
 #include "../utils/InputValidator.h"
 #include "../utils/PortCalculator.h"
 #include "../../utils/Logger.h"
+#include <QFileInfo>
 #include <QSet>
+#include <QStringList>
 #include <algorithm>
 
 ConfigManager::ConfigManager()
@@ -158,6 +160,10 @@ ConfigManager::OperationResult ConfigManager::batchAddPorts(const QString& devic
     }
 
     m_config.parseFromFile(m_configFilePath);
+    OperationResult nodeResult = verifyDeviceNodes(deviceIp);
+    if (!nodeResult.first) {
+        return nodeResult;
+    }
 
     return OperationResult(true, QString("Successfully added %1 ports").arg(portCount));
 }
@@ -235,6 +241,10 @@ ConfigManager::OperationResult ConfigManager::selectiveAddPorts(const QString& d
     }
 
     m_config.parseFromFile(m_configFilePath);
+    OperationResult nodeResult = verifyDeviceNodes(deviceIp);
+    if (!nodeResult.first) {
+        return nodeResult;
+    }
 
     return OperationResult(true, QString("Successfully added %1 ports").arg(sortedPortIndices.size()));
 }
@@ -264,37 +274,7 @@ ConfigManager::OperationResult ConfigManager::deleteDevice(const QString& device
     return OperationResult(true, "Device deleted successfully");
 }
 
-ConfigManager::OperationResult ConfigManager::deleteSelectedPorts(const QString& deviceIp,
-                                                                  const QList<int>& minors)
-{
-    ConfigDeviceModel* device = m_config.getDevice(deviceIp);
-    if (!device) {
-        return OperationResult(false, QString("Device not found: %1").arg(deviceIp));
-    }
 
-    if (minors.isEmpty()) {
-        return OperationResult(false, "No ports selected for deletion");
-    }
-
-    OperationResult backupResult = createBackupBeforeModification();
-    if (!backupResult.first) {
-        return backupResult;
-    }
-
-    for (int minor : minors) {
-        OperationResult execResult = executeMxdelsvrForPort(minor);
-        if (!execResult.first) {
-            m_config.parseFromFile(m_configFilePath);
-            return OperationResult(false, QString("Failed to execute mxdelsvr: %1\nBackup: %2")
-                                   .arg(execResult.second)
-                                   .arg(m_lastBackupPath));
-        }
-    }
-
-    m_config.parseFromFile(m_configFilePath);
-
-    return OperationResult(true, QString("Successfully deleted %1 ports").arg(minors.size()));
-}
 
 const ConfigurationData& ConfigManager::getConfiguration() const
 {
@@ -330,6 +310,30 @@ void ConfigManager::restoreFromBackup()
     }
 }
 
+ConfigManager::OperationResult ConfigManager::verifyDeviceNodes(const QString& deviceIp) const
+{
+    const ConfigDeviceModel* device = m_config.getDevice(deviceIp);
+    if (!device) {
+        return OperationResult(false, QString("Add failed: device %1 was not found in configuration").arg(deviceIp));
+    }
+
+    QStringList missingNodes;
+    for (const PortModel& port : device->ports()) {
+        const QString ttyPath = "/dev/" + port.ttyName();
+        if (!QFileInfo::exists(ttyPath)) {
+            missingNodes << ttyPath;
+        }
+    }
+
+    if (!missingNodes.isEmpty()) {
+        return OperationResult(false,
+                               QString("Add failed: missing device node(s): %1")
+                               .arg(missingNodes.join(", ")));
+    }
+
+    return OperationResult(true, "");
+}
+
 ConfigManager::OperationResult ConfigManager::executeMxaddsvrForPort(const PortModel& port, int portCount)
 {
     CommandExecutor::ExecuteResult result = CommandExecutor::executeMxaddsvr(
@@ -347,17 +351,6 @@ ConfigManager::OperationResult ConfigManager::executeMxaddsvrForPort(const PortM
 
     if (!result.first)
     {
-        return OperationResult(false, result.second);
-    }
-
-    return OperationResult(true, "");
-}
-
-ConfigManager::OperationResult ConfigManager::executeMxdelsvrForPort(int minor)
-{
-    CommandExecutor::ExecuteResult result = CommandExecutor::executeMxdelsvr(minor);
-
-    if (!result.first) {
         return OperationResult(false, result.second);
     }
 

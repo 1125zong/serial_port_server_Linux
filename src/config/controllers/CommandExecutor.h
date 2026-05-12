@@ -20,10 +20,6 @@ public:
                                          const QString& interface, int mode,
                                          const QString& backupIp = QString());
     
-    // 执行mxdelsvr命令删除端口
-    // mxdelsvr [次设备号]
-    static ExecuteResult executeMxdelsvr(int minor);
-    
     // 执行mxdelsvr命令通过IP删除整个设备
     // mxdelsvr [IP]
     static ExecuteResult executeMxdelsvrByIp(const QString& ip);
@@ -35,6 +31,9 @@ public:
     // 执行mxrmnod命令删除TTY设备节点
     // mxrmnod [tty名称]
     static ExecuteResult executeMxrmnod(const QString& ttyName);
+
+    // Reload driver service and refresh device nodes from wq_nportd.cf.
+    static ExecuteResult executeMxloadsvr();
     
     // 通知守护进程重新加载配置
     // 使用systemctl或service命令

@@ -1,6 +1,7 @@
 #include "ConfigDialog.h"
 #include "BatchAddDialog.h"
 #include "SelectiveAddDialog.h"
+#include "../utils/PortCalculator.h"
 #include <QMessageBox>
 #include <QHeaderView>
 #include <QIcon>
@@ -82,10 +83,6 @@ void ConfigDialog::createToolbar()
     m_deleteDeviceAction->setToolTip("删除选中的设备及其所有端口");
     connect(m_deleteDeviceAction, &QAction::triggered, this, &ConfigDialog::onDeleteDeviceClicked);
     
-    // 删除端口操作
-    m_deletePortsAction = m_toolbar->addAction("删除端口");
-    m_deletePortsAction->setToolTip("删除选中的端口");
-    connect(m_deletePortsAction, &QAction::triggered, this, &ConfigDialog::onDeletePortsClicked);
     
     m_toolbar->addSeparator();
     
@@ -195,22 +192,16 @@ void ConfigDialog::clearTree()
 void ConfigDialog::updateActionStates()
 {
     QList<QTreeWidgetItem*> selectedItems = m_treeWidget->selectedItems();
-    
-    bool hasSelection = !selectedItems.isEmpty();
     bool hasDeviceSelection = false;
-    bool hasPortSelection = false;
-    
+
     for (QTreeWidgetItem* item : selectedItems) {
         QString type = item->data(COL_NAME, Qt::UserRole).toString();
         if (type == "device") {
             hasDeviceSelection = true;
-        } else if (type == "port") {
-            hasPortSelection = true;
         }
     }
-    
+
     m_deleteDeviceAction->setEnabled(hasDeviceSelection);
-    m_deletePortsAction->setEnabled(hasPortSelection);
 }
 
 QString ConfigDialog::getSelectedDeviceIp() const
@@ -219,37 +210,37 @@ QString ConfigDialog::getSelectedDeviceIp() const
     if (selectedItems.isEmpty()) {
         return QString();
     }
-    
+
     QTreeWidgetItem* item = selectedItems.first();
     QString type = item->data(COL_NAME, Qt::UserRole).toString();
-    
+
     if (type == "device") {
         return item->text(COL_IP);
     } else if (type == "port") {
-        // 获取父设备IP
         QTreeWidgetItem* parent = item->parent();
         if (parent) {
             return parent->text(COL_IP);
         }
     }
-    
+
     return QString();
 }
 
-QList<int> ConfigDialog::getSelectedPortMinors() const
+QString ConfigDialog::buildAddedPortInfo(const QList<int>& portIndices, int startPort) const
 {
-    QList<int> minors;
-    QList<QTreeWidgetItem*> selectedItems = m_treeWidget->selectedItems();
-    
-    for (QTreeWidgetItem* item : selectedItems) {
-        QString type = item->data(COL_NAME, Qt::UserRole).toString();
-        if (type == "port") {
-            int minor = item->data(COL_MINOR, Qt::UserRole).toInt();
-            minors.append(minor);
-        }
+    QList<int> sortedIndices = portIndices;
+    std::sort(sortedIndices.begin(), sortedIndices.end());
+
+    QStringList parts;
+    for (int portIndex : sortedIndices) {
+        QPair<int, int> ports = PortCalculator::calculatePorts(portIndex, startPort);
+        parts << QString("端口%1(data=%2,cmd=%3)")
+                 .arg(portIndex)
+                 .arg(ports.first)
+                 .arg(ports.second);
     }
-    
-    return minors;
+
+    return parts.join("，");
 }
 
 void ConfigDialog::showError(const QString& title, const QString& message)
@@ -309,6 +300,14 @@ void ConfigDialog::onBatchAddClicked()
         
         // 刷新树
         populateTree();
+        QList<int> portIndices;
+        for (int i = 1; i <= portCount; ++i) {
+            portIndices << i;
+        }
+        emit deviceLogRequested(QString("成功添加%1设备：添加%2个端口+%3")
+                                .arg(ip)
+                                .arg(portCount)
+                                .arg(buildAddedPortInfo(portIndices, startPort)));
         showInfo("添加成功", result.second);
         m_statusBar->showMessage("端口添加成功");
     }
@@ -342,6 +341,10 @@ void ConfigDialog::onSelectiveAddClicked()
         
         // 刷新树
         populateTree();
+        emit deviceLogRequested(QString("成功添加%1设备：添加%2个端口+%3")
+                                .arg(ip)
+                                .arg(portIndices.size())
+                                .arg(buildAddedPortInfo(portIndices, startPort)));
         showInfo("添加成功", result.second);
         m_statusBar->showMessage("端口添加成功");
     }
@@ -382,49 +385,6 @@ void ConfigDialog::onDeleteDeviceClicked()
     populateTree();
     showInfo("删除成功", result.second);
     m_statusBar->showMessage("设备删除成功");
-}
-
-void ConfigDialog::onDeletePortsClicked()
-{
-    QList<int> minors = getSelectedPortMinors();
-    if (minors.isEmpty()) {
-        showError("删除失败", "请先选择要删除的端口");
-        return;
-    }
-    
-    QString deviceIp = getSelectedDeviceIp();
-    if (deviceIp.isEmpty()) {
-        showError("删除失败", "无法确定设备IP");
-        return;
-    }
-    
-    // 确认删除
-    QMessageBox::StandardButton reply = QMessageBox::question(
-                this,
-                "确认删除",
-                QString("确定要删除 %1 个端口吗？").arg(minors.size()),
-                QMessageBox::Yes | QMessageBox::No
-                );
-    
-    if (reply != QMessageBox::Yes) {
-        return;
-    }
-    
-    m_statusBar->showMessage("正在删除端口...");
-    
-    // Execute delete
-    ConfigManager::OperationResult result = m_configManager->deleteSelectedPorts(deviceIp, minors);
-    
-    if (!result.first) {
-        showError("删除失败", QString("删除端口失败:\n%1").arg(result.second));
-        m_statusBar->showMessage("删除失败");
-        return;
-    }
-    
-    // Refresh tree
-    populateTree();
-    showInfo("删除成功", result.second);
-    m_statusBar->showMessage("端口删除成功");
 }
 
 void ConfigDialog::onValidateClicked()

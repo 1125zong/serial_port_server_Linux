@@ -8,53 +8,60 @@
 #include <QFileInfo>
 #include "../../utils/Logger.h"
 
+namespace
+{
+QString shellQuote(const QString& value)
+{
+    QString quoted = value;
+    quoted.replace("'", "'\\''");
+    return "'" + quoted + "'";
+}
+}
+
 
 CommandExecutor::CommandExecutor()
 {
 
 }
 
-
-/*---------- 使用mxaddsvr命令。若有相同的IP会提示是否覆盖原来的配置。会导致程序卡死 ----------*/
-/*----------  -----------*/
-/*---------- mxaddsvr 192.168.1.100 8 -----------*/
-/*---------- mxaddsvr 192.168.1.100 8 950 966 -----------*/
 CommandExecutor::ExecuteResult CommandExecutor::executeMxaddsvr(const QString& ip, int portCount, int dataPort, int cmdPort,
                                                                 int minor, int fifo, int ssl,
                                                                 const QString& interface, int mode,
                                                                 const QString& backupIp)
 {
-    QString mxaddsvrPath = "/usr/lib/wq_nport/driver/mxaddsvr";
-    QStringList args;
+    const QString driverDir = "/usr/lib/wq_nport/driver";
+    QStringList mxaddsvrArgs;
 
     if(!backupIp.isEmpty())
     {
         // 冗余模式
-        args << mxaddsvrPath << "-r" << ip << backupIp << QString::number(portCount);
+        mxaddsvrArgs << "-r" << ip << backupIp << QString::number(portCount);
         // 如果指定了数据端口和命令端口，添加到参数中
         if (dataPort > 0 && cmdPort > 0) {
-            args << QString::number(dataPort) << QString::number(cmdPort);
+            mxaddsvrArgs << QString::number(dataPort) << QString::number(cmdPort);
         }
     }
     else
     {
         // real COM模式
-        args << mxaddsvrPath << ip << QString::number(portCount);
+        mxaddsvrArgs << ip << QString::number(portCount);
         // 如果指定了数据端口和命令端口，添加到参数中
         if (dataPort > 0 && cmdPort > 0) {
-            args << QString::number(dataPort) << QString::number(cmdPort);
+            mxaddsvrArgs << QString::number(dataPort) << QString::number(cmdPort);
         }
     }
-    return executeCommand("", args, true);
-}
 
+    QStringList quotedArgs;
+    for (const QString& arg : mxaddsvrArgs) {
+        quotedArgs << shellQuote(arg);
+    }
 
-CommandExecutor::ExecuteResult CommandExecutor::executeMxdelsvr(int minor)
-{
-    QString mxdelsvrPath = "/usr/lib/wq_nport/driver/mxdelsvr";
+    const QString script = QString("cd %1 && printf 'y\\n' | ./mxaddsvr %2 && ./mxloadsvr")
+            .arg(shellQuote(driverDir))
+            .arg(quotedArgs.join(" "));
+
     QStringList args;
-    args << mxdelsvrPath << QString::number(minor);
-    
+    args << "/bin/sh" << "-c" << script;
     return executeCommand("", args, true);
 }
 
@@ -81,6 +88,15 @@ CommandExecutor::ExecuteResult CommandExecutor::executeMxrmnod(const QString& tt
     QString mxrmnodPath = "/usr/lib/wq_nport/driver/mxrmnod";
     QStringList args;
     args << mxrmnodPath << ttyName;
+
+    return executeCommand("", args, true);
+}
+
+CommandExecutor::ExecuteResult CommandExecutor::executeMxloadsvr()
+{
+    QString mxloadsvrPath = "/usr/lib/wq_nport/driver/mxloadsvr";
+    QStringList args;
+    args << mxloadsvrPath;
 
     return executeCommand("", args, true);
 }

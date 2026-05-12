@@ -40,8 +40,10 @@ void SelectiveAddDialog::setupUi()
     
     // 起始端口
     m_startPortSpin = new QSpinBox(this);
-    m_startPortSpin->setRange(1, 65535);
+    m_startPortSpin->setRange(950, 950);
     m_startPortSpin->setValue(950);
+    m_startPortSpin->setReadOnly(true);
+    m_startPortSpin->setButtonSymbols(QAbstractSpinBox::NoButtons);
     formLayout->addRow("起始端口:", m_startPortSpin);
     connect(m_startPortSpin, QOverload<int>::of(&QSpinBox::valueChanged),
             this, &SelectiveAddDialog::onStartPortChanged);

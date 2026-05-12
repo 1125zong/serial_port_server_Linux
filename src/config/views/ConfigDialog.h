@@ -16,13 +16,15 @@ public:
     explicit ConfigDialog(QWidget *parent = nullptr);
     ~ConfigDialog();
 
+signals:
+    void deviceLogRequested(const QString& message);
+
 private slots:
     // Action slots
     void onRefreshClicked();
     void onBatchAddClicked();
     void onSelectiveAddClicked();
     void onDeleteDeviceClicked();
-    void onDeletePortsClicked();
     void onValidateClicked();
     
     // Tree widget slots
@@ -42,7 +44,7 @@ private:
     // Helper methods
     void updateActionStates();
     QString getSelectedDeviceIp() const;
-    QList<int> getSelectedPortMinors() const;
+    QString buildAddedPortInfo(const QList<int>& portIndices, int startPort) const;
     void showError(const QString& title, const QString& message);
     void showInfo(const QString& title, const QString& message);
     
@@ -57,7 +59,6 @@ private:
     QAction* m_batchAddAction;
     QAction* m_selectiveAddAction;
     QAction* m_deleteDeviceAction;
-    QAction* m_deletePortsAction;
     QAction* m_validateAction;
     
     // Business logic
