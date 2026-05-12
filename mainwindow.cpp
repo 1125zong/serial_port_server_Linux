@@ -14,6 +14,7 @@
 #include <QTextStream>
 #include <QSet>
 #include <QMap>
+#include <QAction>
 #include <algorithm>
 
 #if defined(Q_OS_LINUX)
@@ -180,7 +181,14 @@ MainWindow::MainWindow(QWidget *parent)
     
     bindDataToUI();
 
-    
+    connect(ui->findDev_btn, &QAction::triggered, this, &MainWindow::on_Search_Btn_clicked);
+    connect(ui->closeList_btn, &QAction::triggered, this, &MainWindow::on_pushButton_2_clicked);
+    connect(ui->login_btn, &QAction::triggered, this, &MainWindow::on_llogin_btn_clicked);
+    connect(ui->driveFind_btn, &QAction::triggered, this, &MainWindow::on_pushButton_4_clicked);
+    connect(ui->portMap_btn, &QAction::triggered, this, &MainWindow::on_pushButton_5_clicked);
+    connect(ui->disconnect_btn, &QAction::triggered, this, &MainWindow::on_pushButton_7_clicked);
+
+
     // 创建菜单项---2026.01.20新增
     //    QMenu* configMenu = menuBar()->addMenu("配置管理(&C)");
     //    QAction* nportConfigAction = configMenu->addAction("NPort 配置(&N)");
@@ -271,16 +279,16 @@ void MainWindow::on_Search_Btn_clicked()
 
     // 将焦点设置到表格上，防止禁用按钮后焦点转移到清空列表按钮
     ui->tableWidgetSearch->setFocus();
-    ui->Search_Btn->setEnabled(false);
-    ui->llogin_btn->setEnabled(false);
+    ui->findDev_btn->setEnabled(false);
+    ui->login_btn->setEnabled(false);
 
     // 清除所有行--即清空表格tableWidgetSearch
     ui->tableWidgetSearch->setRowCount(0);
     m_statusLabel->setText("正在搜索设备...");
     m_devCtl->searchDevices();
     connect(m_buttonCoolDownTimer, &QTimer::timeout, this, [this]() {
-        ui->Search_Btn->setEnabled(true);
-        ui->llogin_btn->setEnabled(true);
+        ui->findDev_btn->setEnabled(true);
+        ui->login_btn->setEnabled(true);
     });
 }
 
@@ -389,7 +397,7 @@ void MainWindow::onDeviceConnected()
     }
 
 
-    ui->llogin_btn->setText("返回");
+    ui->login_btn->setText("返回");
     TcpClient::TcpSocketState = true;
     ui->stackedWidget->setCurrentIndex(1);
 
@@ -405,7 +413,7 @@ void MainWindow::onDeviceDisconnected()
     // 回到主页面（索引 0）
     ui->stackedWidget->setCurrentIndex(0);
     TcpClient::TcpSocketState = false;
-    ui->llogin_btn->setText("登陆后台");
+    ui->login_btn->setText("登陆后台");
 
     int row = m_devCtl->getCheckedRows(ui->tableWidgetSearch, 0);
     QTableWidgetItem *checkItem = row >= 0 ? ui->tableWidgetSearch->item(row, 0) : nullptr;
@@ -2018,54 +2026,8 @@ void MainWindow::initTables()
         ui->tableWidget_4->setItem(i, 3, new QTableWidgetItem(""));
     }
 
-
-    /* 6. 端口模式/同步列表 ui->tableWidget_6 */
-    ui->tableWidget_6->setColumnCount(5);
-    ui->tableWidget_6->setHorizontalHeaderLabels({"选择", "端口号", "工作模式", "IP1地址", "IP2地址"});
-
     // 给主界面按钮添加图表
     QIcon icon;
-    // 正常状态
-    icon.addPixmap(QPixmap(":/image/deviceSearch(2).png"), QIcon::Normal, QIcon::Off);
-    // 按钮按下
-    icon.addPixmap(QPixmap(":/image/deviceSearch(1).png"), QIcon::Active, QIcon::Off);
-    ui->Search_Btn->setIcon(icon);
-    ui->Search_Btn->setIconSize(QSize(25,25));
-
-    // 正常状态
-    icon.addPixmap(QPixmap(":/image/delete.png"), QIcon::Normal, QIcon::Off);
-    // 按钮按下
-    icon.addPixmap(QPixmap(":/image/deleteClick.png"), QIcon::Active, QIcon::Off);
-    ui->pushButton_2->setIcon(icon);
-    ui->pushButton_2->setIconSize(QSize(25, 25));
-
-    // 正常状态
-    icon.addPixmap(QPixmap(":/image/login.png"), QIcon::Normal, QIcon::Off);
-    // 按钮按下
-    icon.addPixmap(QPixmap(":/image/loginClick.png"), QIcon::Active, QIcon::Off);
-    ui->llogin_btn->setIcon(icon);
-    ui->llogin_btn->setIconSize(QSize(25, 25));
-
-    // 正常状态
-    icon.addPixmap(QPixmap(":/image/driveDetection.png"), QIcon::Normal, QIcon::Off);
-    // 按钮按下
-    icon.addPixmap(QPixmap(":/image/driveDetectionClick.png"), QIcon::Active, QIcon::Off);
-    ui->pushButton_4->setIcon(icon);
-    ui->pushButton_4->setIconSize(QSize(25, 25));
-
-    // 正常状态
-    icon.addPixmap(QPixmap(":/image/mapping.png"), QIcon::Normal, QIcon::Off);
-    // 按钮按下
-    icon.addPixmap(QPixmap(":/image/mappingClick.png"), QIcon::Active, QIcon::Off);
-    ui->pushButton_5->setIcon(icon);
-    ui->pushButton_5->setIconSize(QSize(20, 20));
-
-    // 正常状态
-    icon.addPixmap(QPixmap(":/image/disconnect.png"), QIcon::Normal, QIcon::Off);
-    // 按钮按下
-    icon.addPixmap(QPixmap(":/image/disconnectClick.png"), QIcon::Active, QIcon::Off);
-    ui->pushButton_7->setIcon(icon);
-    ui->pushButton_7->setIconSize(QSize(25, 25));
 
 
     /* -------------------------- 给登陆后的界面按钮添加图标 ---------------------------------- */
@@ -2137,23 +2099,22 @@ void MainWindow::initTitleBar()
     setAttribute(Qt::WA_NoSystemBackground, false);
     setAttribute(Qt::WA_DeleteOnClose, true); // 关闭时销毁窗口
 
+    this->setWindowFlags(Qt::FramelessWindowHint);  // 隐藏原来的标题栏
     // 3. 添加自定义标题栏到现有的中心控件
     CustomTitleBar *titleBar = new CustomTitleBar(ui->centralwidget);
-    
-    // 4. 获取现有的布局
-    QGridLayout *existingLayout = qobject_cast<QGridLayout*>(ui->centralwidget->layout());
-    if (existingLayout)
-    {
-        // 调整布局，为标题栏腾出空间
-        existingLayout->setRowStretch(0, 0);
-        existingLayout->setRowStretch(1, 1);
-        
-        // 移动现有的stackedWidget到第二行
-        QWidget *stackedWidget = ui->stackedWidget;
-        existingLayout->removeWidget(stackedWidget);
-        existingLayout->addWidget(titleBar, 0, 0, 1, existingLayout->columnCount());
-        existingLayout->addWidget(stackedWidget, 1, 0, 1, existingLayout->columnCount());
-    }
+    this->setMenuWidget(titleBar);  // 把它放到 QMainWindow 最上面的菜单栏区域新
+
+    // 关闭工具栏可移动
+    ui->toolBar->setMovable(false);
+
+    // 关闭工具栏浮动
+    ui->toolBar->setFloatable(false);
+
+    // 限制工具栏只能在顶部
+    ui->toolBar->setAllowedAreas(Qt::TopToolBarArea);
+
+    // 可选：禁止右键弹出工具栏菜单
+    ui->toolBar->setContextMenuPolicy(Qt::PreventContextMenu);
 }
 
 void MainWindow::bindDataToUI()

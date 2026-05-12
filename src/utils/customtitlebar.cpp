@@ -34,7 +34,6 @@ CustomTitleBar::CustomTitleBar(QWidget *parent)
     // 强制标题栏水平占满父布局，垂直固定高度（解决左上角白块核心）
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     // 设置背景透明
-//    setAttribute(Qt::WA_TranslucentBackground, true);
     setStyleSheet("background-color: transparent;");
     Logger::instance()->log(Logger::Debug, "CustomTitleBar", "标题栏初始化完成");
 }
@@ -73,12 +72,14 @@ void CustomTitleBar::initWidgets()
                             QPushButton
                             {
                             border: none;
-                            image: url(":/image/minimize.png");
+                            border-image: url(":/image/minimize.png");
+                            background-color: transparent;
+                            padding: 0px;
                             margin-right: 7px;
                             }
                             QPushButton:hover
                             {
-                            image: url(":/image/minimizeHover.png");
+                            border-image: url(":/image/minimizeHover.png");
                             }
                             QPushButton:pressed
                             {
@@ -109,12 +110,14 @@ void CustomTitleBar::initWidgets()
                             QPushButton
                             {
                             border: none;
-                            image: url(":/image/magnify.png");
+                            border-image: url(":/image/magnify.png");
+                            background-color: transparent;
+                            padding: 0px;
                             margin-right: 2px;
                             }
                             QPushButton:hover
                             {
-                            image: url(":/image/magnifyHover.png");
+                            border-image: url(":/image/magnifyHover.png");
                             }
                             QPushButton:pressed
                             {
@@ -145,12 +148,14 @@ void CustomTitleBar::initWidgets()
                               QPushButton
                               {
                               border: none;
-                              image: url(":/image/close.png");
+                              border-image: url(":/image/close.png");
+                              background-color: transparent;
+                              padding: 0px;
                               margin-right: 2px;
                               }
                               QPushButton:hover
                               {
-                              image: url(":/image/closeHover.png");
+                              border-image: url(":/image/closeHover.png");
                               }
                               QPushButton:pressed
                               {
@@ -216,12 +221,14 @@ void CustomTitleBar::initConnections()
                                             QPushButton
                                             {
                                             border: none;
-                                            image: url(":/image/magnify.png");
+                                            border-image: url(":/image/magnify.png");
+                                            background-color: transparent;
+                                            padding: 0px;
                                             margin-right: 2px;
                                             }
                                             QPushButton:hover
                                             {
-                                            image: url(":/image/magnifyHover.png");
+                                            border-image: url(":/image/magnifyHover.png");
                                             }
                                             QPushButton:pressed
                                             {
@@ -255,12 +262,14 @@ void CustomTitleBar::initConnections()
                                             QPushButton
                                             {
                                             border: none;
-                                            image: url(":/image/reduce.png");
+                                            border-image: url(":/image/reduce.png");
+                                            background-color: transparent;
+                                            padding: 0px;
                                             margin-right: 2px;
                                             }
                                             QPushButton:hover
                                             {
-                                            image: url(":/image/reduceHover.png");
+                                            border-image: url(":/image/reduceHover.png");
                                             }
                                             QPushButton:pressed
                                             {

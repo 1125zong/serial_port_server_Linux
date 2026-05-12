@@ -2,154 +2,28 @@
 <ui version="4.0">
  <class>MainWindow</class>
  <widget class="QMainWindow" name="MainWindow">
+  <property name="enabled">
+   <bool>true</bool>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
     <width>1310</width>
-    <height>650</height>
+    <height>583</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>1310</width>
-    <height>650</height>
+    <height>583</height>
    </size>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">/* ========== 1. 全局基础样式 ========== */
-* {
-    font-family: &quot;微软雅黑&quot;, &quot;Microsoft YaHei&quot;, sans-serif;
-    font-size: 16px;
-}
-QWidget 
-{
-    color: #c0d8f0;
-}
-
-QMainWindow#MainWindow
-{
-	background-color: #163250;
-}
-/*------------------- QMessageBox -------------------*/
-QMessageBox 
-{
-    background-color: #1D4685;
-    padding: 0px;
-}
-
-QMessageBox QLabel 
-{
-    font-size: 14px;
-    padding: 10px;
-}
-
-QMessageBox QPushButton 
-{
-    background-color: #1a3b5f;
-    border: 1px solid #2d5a8c;
-    border-radius: 3px;
-    padding: 4px 8px;
-	color: white;
-	min-width: 80px;
-}
-
-QMessageBox QPushButton:hover 
-{
-    background-color: #2d5a8c;
-}
-
-QMessageBox QPushButton:pressed 
-{
-    background-color: rgba(255,68,68,1);
-    outline: none;
-}
-QMessageBox QPushButton:focus 
-{
-    outline: none;
-}
-
-/* 标题样式 */
-QMessageBox QLabel#qt_msgbox_label {
-    font-size: 16px;
-    color: rgba(255,255,255,1);
-    padding: 15px 10px 5px 10px;
-}
-
-/* 图标标签样式 */
-QMessageBox QLabel#qt_msgboxex_icon_label {
-    padding: 15px;
-}
-
-/* 设置消息框的图标颜色（通过资源图片或使用图标字体） */
-/* 如果使用图标，可以这样设置： */
-QMessageBox QCheckBox {
-    color: #93c5fd;
-    spacing: 5px;
-}
-
-QMessageBox QCheckBox::indicator {
-    width: 16px;
-    height: 16px;
-}
-
-
-/*-------------- 菜单整体样式QMenu -------------*/
-QMenu
- {
-	background-color: #F3F3F3;
-    border: none;
-    padding: 4px;
-    color: black;
-    font-size: 13px;
-}
-
-/* 菜单项 */
-QMenu::item {
-    padding: 3px 20px 3px 30px;  /* 上右下左 */
-    margin: 2px;
-    border-radius: 3px;
-    min-width: 120px;
-}
-
-/* 菜单项悬停 */
-QMenu::item:selected {
-    background-color: #0066cc;
-    color: white;
-}
-
-/* 菜单项禁用 */
-QMenu::item:disabled {
-    color: #888;
-}
-
-/* 分隔符 */
-QMenu::separator {
-    height: 1px;
-    background-color: red;
-    margin: 4px 10px;
-}
-
-/*======= QStatusBar =============*/
-QStatusBar#statusbar
-{
-	background-color: #0b253d;
-    border-top: 1px solid #2d5a8c;
-    min-height: 24px;
-}
-
-QStatusBar#statusbar::item 
-{
-    border: none;
-}
-
-
-
-
-</string>
+   <string notr="true"/>
   </property>
   <widget class="QWidget" name="centralwidget">
    <property name="sizePolicy">
@@ -165,11 +39,14 @@ QStatusBar#statusbar::item
     </size>
    </property>
    <property name="styleSheet">
-    <string notr="true">QWidget { background-color: transparent; }</string>
+    <string notr="true"/>
    </property>
-   <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="0">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
      <widget class="QStackedWidget" name="stackedWidget">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
       <property name="sizePolicy">
        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
         <horstretch>0</horstretch>
@@ -179,477 +56,12 @@ QStatusBar#statusbar::item
       <property name="font">
        <font>
         <family>微软雅黑</family>
-        <pointsize>-1</pointsize>
         <weight>75</weight>
         <bold>true</bold>
        </font>
       </property>
       <property name="styleSheet">
-       <string notr="true">/*   QProgressBar  */
-QProgressBar 
-{ 
-	color: white; 
-} 
-QProgressBar::chunk 
-{ 
-	background-color: #4CAF50; 
-}
-
-
-/*------------------- QGroupBox -------------------*/
-QGroupBox
-{
-	border: 1.5px solid rgba(201,201,201,0.5);
-	border-radius: 5px;
-    margin-top: 1.5ex;
-}
-QGroupBox:title
-{
-	subcontrol-origin: margin;
-	subcontrol-position: top left; /* 标题在margin框的左上角开始 */
-	left: 13px; /* 距离左边框10像素 */
-	top: 0px; /* 关键！向上偏移，具体数值需与margin-top配合调试 */
-}
-
-/* ========== 2. 窗口与容器 ========== */
-QMainWindow, QDialog {
-    border: 1px solid #2d5a8c;
-}
-
-/* ========== 3. 标签页 ========== */
-QTabWidget 
-{
-    background-color: transparent;
-}
-QTabWidget::pane 
-{
-    background-color: #1B3C61;
-    border: 1px solid #1a3b5f;
-	outline: none;
-}
-QTabBar::tab 
-{
-    background-color: #102a47;
-    color: #c0d8f0;
-    padding: 6px 12px;
-    margin-right: 2px;
-    border: 1px solid #1a3b5f;
-    border-top-left-radius: 4px;
-    border-top-right-radius: 4px;
-	border-bottom: 1px solid #18406B;
-}
-QTabBar::tab:selected 
-{
-    background-color: #1a3b5f;
-    color: #ffffff;
-	border-bottom: 1px solid #255487;
-}
-QTabBar::tab:focus
-{
-	outline: none;
-}
-/* ========== 4. 按钮 ========== */
-QPushButton 
-{
-    background-color: #1a3b5f;
-    border: 1px solid #2d5a8c;
-    padding: 4px 8px;
-    border-radius: 3px;
-    color: #c0d8f0;
-	outline: none;
-}
-QPushButton:hover
-{ 
-	background-color: #2d5a8c; 
-}
-
-QPushButton:pressed 
-{
-	background-color: rgba(255,68, 68,1); 
-	outline: none;
-}
-QPushButton:focus 
-{
-    outline: none;
-    border: 1px solid #2d5a8c; /* 保持与普通状态相同的边框 */
-}
-QPushButton#Basic_Config_Btn:hover,
-QPushButton#use_monitoring_btn_4:hover,
-QPushButton#work_mode_btn:hover,
-QPushButton#duan_can_btn:hover,
-QPushButton#watchdog_btn:hover
-{
-    image: url(:/image/AppConfig.png);
-    color: transparent;
-    background-color: #1A3B5F;
-}
-QPushButton#Basic_Config_Btn:pressed,
-QPushButton#use_monitoring_btn_4:pressed,
-QPushButton#work_mode_btn:pressed,
-QPushButton#duan_can_btn:pressed,
-QPushButton#watchdog_btn:pressed
-{
-	image: none;
-	color: white;
-   	background-color: rgba(255,0,0,0.5);
-}
-
-
-QPushButton#unlock_btn:hover,
-QPushButton#Port_unlock_btn:hover
-{
-	image: url(:/image/unlock.png);
-    color: transparent;
-    background-color: #1A3B5F;
-}
-QPushButton#lock_btn:hover,
-QPushButton#Port_lockout_btn:hover
-{
-    image: url(:/image/lock.png);
-    color: transparent;
-    background-color: #1A3B5F;
-}
-
-QPushButton#lock_btn:pressed,
-QPushButton#unlock_btn:pressed,
-QPushButton#Port_unlock_btn:pressed,
-QPushButton#Port_lockout_btn:pressed
-{
-	image: none;
-	color: white;
-   	background-color: rgba(255,0,0,0.5);
-}
-/* ========== 5. 单选/复选框 ========== */
-QTableWidget#tableWidgetSearch::indicator 
-{
-    width: 14px;
-    height: 14px;
-    background-color: #1a3b5f;
-    border: 1px solid #2d5a8c;
-    border-radius: 2px;
-	margin : 0px;
-}
-QTableWidget#tableWidgetSearch::indicator:checked
-{
-    image: url(:/image/CheckBoxDown.png);
-    background-color: transparent;
-    border: 1px solid #2d5a8c;
-    border-radius: 2px;
-    width: 14px;
-    height: 14px;
-}
-QTableWidget#tableWidgetSearch::indicator:hover
-{
-	background-color: #1B4676;
-}
-
-
-QCheckBox 
-{ 
-	color: #c0d8f0; 
-	outline: none;
-}
-
-QCheckBox::indicator
-{
-    width: 14px;
-    height: 14px;
-    background-color: #1a3b5f;
-    border: 1px solid #2d5a8c;
-    border-radius: 2px;
-}
-QCheckBox::indicator:checked 
-{
-    image: url(:/image/CheckBoxDown.png);
-    background-color: transparent;
-    border: 1px solid #2d5a8c;
-    border-radius: 2px;
-    width: 14px;
-    height: 14px;
-}
-QCheckBox::indicator:hover
-{
-	background-color: #1B4676;
-}
-
-/* ========== 6. 输入控件 ========== */
-QLineEdit, QComboBox 
-{
-    background-color: #102a47;
-    border: 1px solid #2d5a8c;
-    padding: 3px 6px;
-    border-radius: 3px;
-    color: #c0d8f0;
-}
-QLineEdit:hover
-{
-	background: #1B4676;
-	border: none;
-	border-bottom: 2px solid #558BC8;
-}
-QLineEdit:focus
-{
-	background: #1B4676;
-	border: none;
-	border-bottom: 2px solid #558BC8;
-}
-QComboBox:hover
-{
-	background: #1B4676;
-} 
-QComboBox::drop-down 
-{
-	border-left: 1px solid #2d5a8c; 
-}
-QComboBox::down-arrow 
-{
-    image: url(:/image/QComboBoxDown.png);
-    width: 10px;
-    height: 10px;
-}
-QComboBox::down-arrow:hover
-{
-	image: url(:/image/QComboBoxDownHover.png);
-    width: 10px;
-    height: 10px;
-}
-QComboBox QAbstractItemView
-{
-	background-color:rgba(16,42,71,0.5);
-    border:1px solid rgba(16,42,71,0.5);
-    border-radius:0px 0px 5px 5px;
-	font-size:14px;
-    outline: none;  	/* 移除焦点虚线 */
-}
-QComboBox QAbstractItemView::item
-{
-	height:25px;
-	color:white;
-	background-color: rgba(16,42,71,0.5);
-}
-QComboBox QAbstractItemView::item:hover
-{ 
- 	 background-color:#409CE1;
-	  color:#ffffff;
-}
-QComboBox QAbstractItemView::item:selected
-{
-	  background-color:#409CE1;
-	  color:#ffffff;
-}
-/* ========== 7. 表格 ========== */
-QTableWidget 
-{
-    background-color: #102a47;
-    border: 1px solid #2d5a8c;
-    gridline-color: #1a3b5f;
-	outline: none; 
-}
-QTableWidget::item 
-{
-    
-    color: #c0d8f0;
-    padding: 2px 4px;
-}
-QTableWidget::item:selected {
-    background-color: #2d5a8c;
-    color: #ffffff;
-}
-QHeaderView::section
- {
-    background-color: #1a3b5f;
-    color: #c0d8f0;
-    border: 1px solid #2d5a8c;
-    padding: 4px;
-}
-
-/* 垂直滚轮 */
-QScrollBar:vertical
-{ 
-	width: 8px;
-    border-style:flat;
-    border-radius: 4px;
-    border:0px;
-    background-color: transparent;
-} 
-QScrollBar::handle:vertical
-{ 
-    background: rgba(173,204,237,0.50);
-    border-radius: 4px;
-    width:8px; 
-    min-height:91px; 
-    border-style:flat;
-}
-QScrollBar::handle:vertical::hover{ 
-    background: rgba(85,85,85,0.90);
-    border-radius: 4px;
-    width:16px; 
-}
-/* 滑块按下时的状态 */
-QScrollBar::handle:vertical::pressed
-{ 
-    background: rgba(85,85,85,0.90);
-    border-radius:4px;
-    width:16px; 
-}
-QScrollBar::sub-page:vertical {
-    background: rgba(16,42,71,0.5);
-	border-style:flat;
-}
-QScrollBar::add-page:vertical {
-	background: rgba(16,42,71,0.5);
-	border-style:flat;
-}
-QScrollBar::add-line:vertical{
-   background: rgba(16,42,71,0.5);
-}
-QScrollBar::sub-line:vertical {
-   background: rgba(16,42,71,0.5);
-}
-
-/* 整数微调框 */
-QSpinBox
-{
-	padding-top: 2px;
-	padding-bottom: 2px;
-	padding-left: 4px;
-	padding-right: 15px;
-	border: 1px solid #2d5a8c;
-	border-radius: 3px;
-	background-color: #102a47;
-	selection-color: rgb(235,235,235);
-	selection-background-color: rgb(83,121,180);
-	font-size: 15px;
-	height: 26px;
-}
-QSpinBox:hover 
-{
-    background-color: #1A4473;
-	border: 1px solid #2d5a8c;
-	border-radius: 3px;	
-}
-QSpinBox::up-button
-{
-	subcontrol-origin: border;
-	subcontrol-position: top right;
-	border: none;
-	width: 20px;
-	margin-top: 2px;
-	margin-right: 1px;
-	margin-bottom: 0px;
-}
-QSpinBox::up-arrow
-{
-	image: url(:/image/QSpinBoxUp.png);
-	width: 25px;
-	height: 25px;
-}
-QSpinBox::up-arrow:hover
-{
-	image: url(:/image/QSpinBoxUpHover.png);
-	width: 25px;
-	height: 25px;
-}
-QSpinBox::up-button:hover
-{
-	border: none;
-}
-QSpinBox::down-button
-{
-	subcontrol-origin: border;
-	subcontrol-position: bottom right;
-	border: none;
-	width: 20px;
-	margin-top: 0px;
-	margin-right: 1px;
-	margin-bottom: 2px;
-}
-QSpinBox::down-arrow
-{
-	image: url(:/image/QSpinBoxDown.png);
-	width: 25px;
-	height: 25px;
-}
-QSpinBox::down-arrow:hover
-{
-	image: url(:/image/QSpinBoxDownHover.png);
-	width: 25px;
-	height: 25px;
-}
-QSpinBox::down-button:hover
-{
-	border: none;
-}
-
-/*-------------- 设备日志 QPlainTextEdit -------------*/
-QPlainTextEdit#devLogTextEdit
-{
-    background-color: #0F263F;
-    color: #D8ECFF;
-    border: 1px solid #2E6BA0;
-    border-radius: 6px;
-    padding: 10px 12px;
-    selection-background-color: #2E86C9;
-    selection-color: #FFFFFF;
-    font-family: &quot;Consolas&quot;, &quot;Microsoft YaHei&quot;, monospace;
-    font-size: 14px;
-    line-height: 22px;
-}
-
-QPlainTextEdit#devLogTextEdit:hover
-{
-    border: 1px solid #4B93CC;
-    background-color: #102B48;
-}
-
-QPlainTextEdit#devLogTextEdit:focus
-{
-    border: 1px solid #64B5F6;
-    background-color: #102B48;
-}
-
-QPlainTextEdit#devLogTextEdit:disabled
-{
-    color: #71879B;
-    background-color: #102033;
-    border: 1px solid #27445F;
-}
-
-QPlainTextEdit#devLogTextEdit QScrollBar:vertical
-{
-    background-color: #0B1D31;
-    width: 12px;
-    margin: 4px 3px 4px 0px;
-    border: none;
-    border-radius: 6px;
-}
-
-QPlainTextEdit#devLogTextEdit QScrollBar::handle:vertical
-{
-    background-color: #3A76A8;
-    min-height: 32px;
-    border-radius: 5px;
-}
-
-QPlainTextEdit#devLogTextEdit QScrollBar::handle:vertical:hover
-{
-    background-color: #5AA2D8;
-}
-
-QPlainTextEdit#devLogTextEdit QScrollBar::add-line:vertical,
-QPlainTextEdit#devLogTextEdit QScrollBar::sub-line:vertical
-{
-    height: 0px;
-    border: none;
-    background: transparent;
-}
-
-QPlainTextEdit#devLogTextEdit QScrollBar::add-page:vertical,
-QPlainTextEdit#devLogTextEdit QScrollBar::sub-page:vertical
-{
-    background: transparent;
-}
-</string>
+       <string notr="true"/>
       </property>
       <property name="currentIndex">
        <number>0</number>
@@ -661,10 +73,10 @@ QPlainTextEdit#devLogTextEdit QScrollBar::sub-page:vertical
        <widget class="QTableWidget" name="tableWidgetSearch">
         <property name="geometry">
          <rect>
-          <x>127</x>
-          <y>0</y>
-          <width>1151</width>
-          <height>541</height>
+          <x>10</x>
+          <y>10</y>
+          <width>1268</width>
+          <height>500</height>
          </rect>
         </property>
         <property name="sizePolicy">
@@ -676,222 +88,12 @@ QPlainTextEdit#devLogTextEdit QScrollBar::sub-page:vertical
         <property name="minimumSize">
          <size>
           <width>960</width>
-          <height>541</height>
+          <height>500</height>
          </size>
         </property>
         <property name="styleSheet">
          <string notr="true"/>
         </property>
-       </widget>
-       <widget class="QWidget" name="layoutWidget">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>0</y>
-          <width>112</width>
-          <height>571</height>
-         </rect>
-        </property>
-        <layout class="QVBoxLayout" name="verticalLayout">
-         <item>
-          <widget class="QPushButton" name="Search_Btn">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>110</width>
-             <height>40</height>
-            </size>
-           </property>
-           <property name="font">
-            <font>
-             <family>微软雅黑</family>
-             <pointsize>-1</pointsize>
-             <weight>75</weight>
-             <bold>true</bold>
-            </font>
-           </property>
-           <property name="styleSheet">
-            <string notr="true"/>
-           </property>
-           <property name="text">
-            <string>搜索设备</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="pushButton_2">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>110</width>
-             <height>40</height>
-            </size>
-           </property>
-           <property name="font">
-            <font>
-             <family>微软雅黑</family>
-             <pointsize>-1</pointsize>
-             <weight>75</weight>
-             <bold>true</bold>
-            </font>
-           </property>
-           <property name="styleSheet">
-            <string notr="true"/>
-           </property>
-           <property name="text">
-            <string>清空列表</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="llogin_btn">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>110</width>
-             <height>40</height>
-            </size>
-           </property>
-           <property name="font">
-            <font>
-             <family>微软雅黑</family>
-             <pointsize>-1</pointsize>
-             <weight>75</weight>
-             <bold>true</bold>
-            </font>
-           </property>
-           <property name="styleSheet">
-            <string notr="true"/>
-           </property>
-           <property name="text">
-            <string>登陆后台</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="pushButton_4">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>110</width>
-             <height>40</height>
-            </size>
-           </property>
-           <property name="font">
-            <font>
-             <family>微软雅黑</family>
-             <pointsize>-1</pointsize>
-             <weight>75</weight>
-             <bold>true</bold>
-            </font>
-           </property>
-           <property name="styleSheet">
-            <string notr="true"/>
-           </property>
-           <property name="text">
-            <string>驱动检测</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="pushButton_5">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>110</width>
-             <height>40</height>
-            </size>
-           </property>
-           <property name="font">
-            <font>
-             <family>微软雅黑</family>
-             <pointsize>-1</pointsize>
-             <weight>75</weight>
-             <bold>true</bold>
-            </font>
-           </property>
-           <property name="styleSheet">
-            <string notr="true"/>
-           </property>
-           <property name="text">
-            <string>串口映射</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="pushButton_7">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>110</width>
-             <height>40</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>断开连接</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <spacer name="horizontalSpacer_35">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeType">
-            <enum>QSizePolicy::Fixed</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>100</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
-          <spacer name="verticalSpacer">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>50</width>
-             <height>237</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-        </layout>
        </widget>
       </widget>
       <widget class="QWidget" name="page_2">
@@ -1340,7 +542,7 @@ QTableWidget#tableWidget::item
                </size>
               </property>
               <property name="text">
-               <string>固件版本：</string>
+               <string>固件版本号</string>
               </property>
              </widget>
             </item>
@@ -1858,7 +1060,7 @@ QPushButton#name_modify:pressed
                  <x>30</x>
                  <y>40</y>
                  <width>641</width>
-                 <height>181</height>
+                 <height>185</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -2727,7 +1929,6 @@ QPushButton#reset_btn:pressed
              <property name="font">
               <font>
                <family>微软雅黑</family>
-               <pointsize>-1</pointsize>
                <weight>75</weight>
                <bold>true</bold>
               </font>
@@ -3916,7 +3117,6 @@ QPushButton#reset_btn:pressed
            <property name="font">
             <font>
              <family>微软雅黑</family>
-             <pointsize>-1</pointsize>
              <weight>75</weight>
              <bold>true</bold>
             </font>
@@ -3949,7 +3149,6 @@ QPushButton#reset_btn:pressed
            <property name="font">
             <font>
              <family>微软雅黑</family>
-             <pointsize>-1</pointsize>
              <weight>75</weight>
              <bold>true</bold>
             </font>
@@ -3982,7 +3181,6 @@ QPushButton#reset_btn:pressed
            <property name="font">
             <font>
              <family>微软雅黑</family>
-             <pointsize>-1</pointsize>
              <weight>75</weight>
              <bold>true</bold>
             </font>
@@ -4015,7 +3213,6 @@ QPushButton#reset_btn:pressed
            <property name="font">
             <font>
              <family>微软雅黑</family>
-             <pointsize>-1</pointsize>
              <weight>75</weight>
              <bold>true</bold>
             </font>
@@ -4048,7 +3245,6 @@ QPushButton#reset_btn:pressed
            <property name="font">
             <font>
              <family>微软雅黑</family>
-             <pointsize>-1</pointsize>
              <weight>75</weight>
              <bold>true</bold>
             </font>
@@ -4081,7 +3277,6 @@ QPushButton#reset_btn:pressed
            <property name="font">
             <font>
              <family>微软雅黑</family>
-             <pointsize>-1</pointsize>
              <weight>75</weight>
              <bold>true</bold>
             </font>
@@ -4108,7 +3303,6 @@ QPushButton#reset_btn:pressed
            <property name="font">
             <font>
              <family>微软雅黑</family>
-             <pointsize>-1</pointsize>
              <weight>75</weight>
              <bold>true</bold>
             </font>
@@ -4159,7 +3353,6 @@ QPushButton#factory_reset_btn:pressed
            <property name="font">
             <font>
              <family>微软雅黑</family>
-             <pointsize>-1</pointsize>
              <weight>75</weight>
              <bold>true</bold>
             </font>
@@ -4172,65 +3365,103 @@ QPushButton#factory_reset_btn:pressed
         </layout>
        </widget>
       </widget>
-      <widget class="QWidget" name="page_24">
-       <widget class="QTableWidget" name="tableWidget_6">
-        <property name="geometry">
-         <rect>
-          <x>50</x>
-          <y>20</y>
-          <width>1081</width>
-          <height>411</height>
-         </rect>
-        </property>
-       </widget>
-       <widget class="QPushButton" name="pushButton_3">
-        <property name="geometry">
-         <rect>
-          <x>1010</x>
-          <y>440</y>
-          <width>121</width>
-          <height>41</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>返回</string>
-        </property>
-       </widget>
-       <widget class="QPushButton" name="pushButton_6">
-        <property name="geometry">
-         <rect>
-          <x>50</x>
-          <y>440</y>
-          <width>121</width>
-          <height>41</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>配置</string>
-        </property>
-       </widget>
-      </widget>
      </widget>
     </item>
    </layout>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
-  <action name="actiondakai">
+  <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <property name="toolButtonStyle">
+    <enum>Qt::ToolButtonTextBesideIcon</enum>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="findDev_btn"/>
+   <addaction name="closeList_btn"/>
+   <addaction name="login_btn"/>
+   <addaction name="driveFind_btn"/>
+   <addaction name="portMap_btn"/>
+   <addaction name="disconnect_btn"/>
+  </widget>
+  <action name="findDev_btn">
+   <property name="icon">
+    <iconset resource="image.qrc">
+     <normaloff>:/image/deviceSearch(2).png</normaloff>:/image/deviceSearch(2).png</iconset>
+   </property>
    <property name="text">
-    <string>dakai</string>
+    <string>搜索设备</string>
    </property>
   </action>
-  <action name="actionopen">
+  <action name="closeList_btn">
+   <property name="icon">
+    <iconset resource="image.qrc">
+     <normaloff>:/image/delete.png</normaloff>:/image/delete.png</iconset>
+   </property>
    <property name="text">
-    <string>open</string>
+    <string>清空列表</string>
+   </property>
+   <property name="toolTip">
+    <string>清空列表</string>
    </property>
   </action>
-  <action name="action">
+  <action name="login_btn">
+   <property name="icon">
+    <iconset theme="登陆后台" resource="image.qrc">
+     <normaloff>:/image/login.png</normaloff>:/image/login.png</iconset>
+   </property>
    <property name="text">
     <string>登陆后台</string>
    </property>
+   <property name="toolTip">
+    <string>登陆后台</string>
+   </property>
+  </action>
+  <action name="driveFind_btn">
+   <property name="icon">
+    <iconset resource="image.qrc">
+     <normaloff>:/image/driveDetection.png</normaloff>:/image/driveDetection.png</iconset>
+   </property>
+   <property name="text">
+    <string>驱动检测</string>
+   </property>
+   <property name="toolTip">
+    <string>驱动检测</string>
+   </property>
+  </action>
+  <action name="portMap_btn">
+   <property name="icon">
+    <iconset resource="image.qrc">
+     <normaloff>:/image/mapping.png</normaloff>:/image/mapping.png</iconset>
+   </property>
+   <property name="text">
+    <string>端口映射</string>
+   </property>
+   <property name="toolTip">
+    <string>端口映射</string>
+   </property>
+  </action>
+  <action name="disconnect_btn">
+   <property name="icon">
+    <iconset resource="image.qrc">
+     <normaloff>:/image/disconnect.png</normaloff>:/image/disconnect.png</iconset>
+   </property>
+   <property name="text">
+    <string>断开连接</string>
+   </property>
+   <property name="toolTip">
+    <string>断开连接</string>
+   </property>
   </action>
  </widget>
- <resources/>
+ <resources>
+  <include location="image.qrc"/>
+ </resources>
  <connections/>
 </ui>
