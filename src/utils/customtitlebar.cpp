@@ -28,9 +28,8 @@ CustomTitleBar::CustomTitleBar(QWidget *parent)
     // ========== 2. 启用正确的控件/布局初始化 ==========
     initWidgets();
     initConnections();
-
     // ========== 3. 标题栏基础设置（关键：占满宽度+固定高度） ==========
-    setMinimumHeight(20); // 固定高度，替代原来的32px（和按钮尺寸匹配）
+    setMinimumHeight(40); // 固定高度，替代原来的32px（和按钮尺寸匹配）
     // 强制标题栏水平占满父布局，垂直固定高度（解决左上角白块核心）
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     // 设置背景透明
@@ -45,21 +44,13 @@ void CustomTitleBar::initWidgets()
     Logger::instance()->log(Logger::Debug, "CustomTitleBar", "初始化标题栏控件");
     // 1. 创建标题标签
     m_titleLabel = new QLabel("设备查找", this);
-    m_logoLab = new QLabel(" ", this);
     m_titleLabel->setFixedSize(60,20);
-    m_logoLab->setFixedSize(250,45);
     // 设置默认文字颜色
     m_titleLabel->setStyleSheet(R"(
                                 QLabel
                                 {
                                 color: rgb(192, 216, 240);
                                 font-size: 14px;
-                                }
-                                )");
-    m_logoLab->setStyleSheet(R"(
-                                QLabel
-                                {
-                                image: url(:/image/Logo2.png);
                                 }
                                 )");
 
@@ -181,13 +172,12 @@ void CustomTitleBar::initWidgets()
     m_layout = new QHBoxLayout(this);
     m_layout->addWidget(m_titleLabel);       // 标题左对齐
     m_layout->addStretch();                  // 左侧拉伸，使Logo居中
-    m_layout->addWidget(m_logoLab);          // Logo居中
     m_layout->addStretch();                  // 右侧拉伸，使Logo居中
     m_layout->addWidget(m_minBtn);           // 最小化按钮
     m_layout->addWidget(m_maxBtn);           // 最大化按钮
     m_layout->addWidget(m_closeBtn);         // 关闭按钮
     m_layout->setContentsMargins(8, 0, 0, 0); // 左内边距8px，匹配系统标题栏
-    m_layout->setSpacing(0);                 // 按钮间距0
+    m_layout->setSpacing(5);                 // 按钮间距0
     // 设置布局到标题栏
     setLayout(m_layout);
     Logger::instance()->log(Logger::Debug, "CustomTitleBar", "标题栏控件初始化完成");

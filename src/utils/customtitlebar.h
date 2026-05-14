@@ -23,7 +23,6 @@ private:
 
     // 控件指针
     QLabel *m_titleLabel;
-    QLabel *m_logoLab;
     QPushButton *m_closeBtn;
     QPushButton *m_maxBtn;
     QPushButton *m_minBtn;

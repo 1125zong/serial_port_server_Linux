@@ -181,12 +181,12 @@ MainWindow::MainWindow(QWidget *parent)
     
     bindDataToUI();
 
-    connect(ui->findDev_btn, &QAction::triggered, this, &MainWindow::on_Search_Btn_clicked);
-    connect(ui->closeList_btn, &QAction::triggered, this, &MainWindow::on_pushButton_2_clicked);
-    connect(ui->login_btn, &QAction::triggered, this, &MainWindow::on_llogin_btn_clicked);
-    connect(ui->driveFind_btn, &QAction::triggered, this, &MainWindow::on_pushButton_4_clicked);
-    connect(ui->portMap_btn, &QAction::triggered, this, &MainWindow::on_pushButton_5_clicked);
-    connect(ui->disconnect_btn, &QAction::triggered, this, &MainWindow::on_pushButton_7_clicked);
+    connect(ui->findDev_btn, &QAction::triggered, this, &MainWindow::handleFindDeviceTriggered);
+    connect(ui->closeList_btn, &QAction::triggered, this, &MainWindow::handleCloseListTriggered);
+    connect(ui->login_btn, &QAction::triggered, this, &MainWindow::handleLoginTriggered);
+    connect(ui->driveFind_btn, &QAction::triggered, this, &MainWindow::handleDriveFindTriggered);
+    connect(ui->portMap_btn, &QAction::triggered, this, &MainWindow::handlePortMapTriggered);
+    connect(ui->disconnect_btn, &QAction::triggered, this, &MainWindow::handleDisconnectTriggered);
 
 
     // 创建菜单项---2026.01.20新增
@@ -261,7 +261,7 @@ void MainWindow::startPackageUpgrade(const QString &filePath)
 /* ============================================================
 一、设备搜索
 ============================================================ */
-void MainWindow::on_Search_Btn_clicked()
+void MainWindow::handleFindDeviceTriggered()
 {
     appendDeviceLog("点击搜索设备");
 
@@ -351,7 +351,7 @@ void MainWindow::onSearchCompleted(int count)
 /* ============================================================
 二、连接 / 断开
 ============================================================ */
-void MainWindow::on_llogin_btn_clicked()
+void MainWindow::handleLoginTriggered()
 {
     if (TcpClient::TcpSocketState == false)      //未连接
     {
@@ -1287,13 +1287,13 @@ void MainWindow::on_pushButton_clicked()
 };
 
 
-void MainWindow::on_pushButton_2_clicked()         { ui->tableWidgetSearch->clearContents(); };
-void MainWindow::on_pushButton_3_clicked()
+void MainWindow::handleCloseListTriggered()         { ui->tableWidgetSearch->clearContents(); };
+void MainWindow::handleReturnToSearchPage()
 {
     ui->stackedWidget->setCurrentIndex(0);
 
 };
-void MainWindow::on_pushButton_4_clicked()
+void MainWindow::handleDriveFindTriggered()
 {
 #if defined(Q_OS_WIN)
     QSettings reg("HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Services\\NPort",
@@ -1597,7 +1597,7 @@ void MainWindow::on_pushButton_4_clicked()
 };
 
 //串口映射按钮
-void MainWindow::on_pushButton_5_clicked()
+void MainWindow::handlePortMapTriggered()
 {
     // 单例模式：只创建一个实例
     if (!m_configDialog)
@@ -2115,6 +2115,12 @@ void MainWindow::initTitleBar()
 
     // 可选：禁止右键弹出工具栏菜单
     ui->toolBar->setContextMenuPolicy(Qt::PreventContextMenu);
+
+    // 在工具栏中添加LOGO
+    QLabel *logoLabel = new QLabel(ui->toolBar);
+    logoLabel->setPixmap(QPixmap(":/image/Logo2.png").scaled(125, 50, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+    ui->toolBar->insertWidget(ui->findDev_btn, logoLabel);
+
 }
 
 void MainWindow::bindDataToUI()
@@ -2294,7 +2300,7 @@ bool MainWindow::validateFirmwarePackage(const QString &filePath, QByteArray &ou
 }
 
 
-void MainWindow::on_pushButton_7_clicked()
+void MainWindow::handleDisconnectTriggered()
 {
     bool a = m_devCtl->deviceDisconnected();
     if(a == false)

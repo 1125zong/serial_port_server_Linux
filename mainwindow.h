@@ -55,8 +55,8 @@ public:
 
 private slots:
     /* ======= UI 触发（保持原有槽名字，信号槽自动关联） ======= */
-    void on_Search_Btn_clicked();
-    void on_llogin_btn_clicked();
+    void handleFindDeviceTriggered();
+    void handleLoginTriggered();
     void on_overview_btn_clicked();
     void on_basic_settings_clicked();
     void on_Basic_Config_Btn_clicked();
@@ -75,10 +75,10 @@ private slots:
     void on_Port_lockout_btn_clicked();
     void on_Port_unlock_btn_clicked();
     void on_pushButton_clicked();
-    void on_pushButton_2_clicked();
-    void on_pushButton_3_clicked();
-    void on_pushButton_4_clicked();
-    void on_pushButton_5_clicked();
+    void handleCloseListTriggered();
+    void handleReturnToSearchPage();
+    void handleDriveFindTriggered();
+    void handlePortMapTriggered();
     void on_pushButton_10_clicked();
     void on_name_modify_clicked();
 
@@ -105,7 +105,7 @@ private slots:
     void onUpgradeFailed(const QString &err);// 失败收尾
     void showUpgradeMask(int totalPkts);
     void onItemChanged(QTableWidgetItem *item);
-    void on_pushButton_7_clicked();
+    void handleDisconnectTriggered();
 
     //2026.01.20新增
     //    void onOpenConfigDialog();

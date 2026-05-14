@@ -592,11 +592,10 @@ QProgressBar::chunk {
 
 
 QToolBar#toolBar {
-    background-color: #123453;
+    background-color: #163250;
     border: none;
     padding: 0px;
     margin: 0px;
-    spacing: 8px;
 }
 
 QToolBar#toolBar::handle {
@@ -611,3 +610,22 @@ QToolBar#toolBar::separator {
     width: 0px;
     background: transparent;
 }
+
+/* 鼠标悬停 */
+QToolBar QToolButton:hover {
+    background-color: #255385;
+}
+
+/* 鼠标按下瞬间 */
+QToolBar QToolButton:pressed {
+    background-color: #224D7B;
+}
+
+QToolBar QToolButton
+{
+   border: none;
+   padding: 8px 8px;
+   margin-top: 10px;
+   background: transparent;
+}
+
