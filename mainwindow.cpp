@@ -2118,7 +2118,8 @@ void MainWindow::initTitleBar()
 
     // 在工具栏中添加LOGO
     QLabel *logoLabel = new QLabel(ui->toolBar);
-    logoLabel->setPixmap(QPixmap(":/image/Logo2.png").scaled(125, 50, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+    logoLabel->setObjectName("logoLabel");
+    logoLabel->setPixmap(QPixmap(":/image/Logo2.png").scaled(150, 60, Qt::KeepAspectRatio, Qt::SmoothTransformation));
     ui->toolBar->insertWidget(ui->findDev_btn, logoLabel);
 
 }

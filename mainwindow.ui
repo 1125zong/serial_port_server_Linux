@@ -5,6 +5,14 @@
   <property name="enabled">
    <bool>true</bool>
   </property>
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1290</width>
+    <height>580</height>
+   </rect>
+  </property>
   <property name="sizePolicy">
    <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
     <horstretch>0</horstretch>
@@ -41,8 +49,8 @@
      <rect>
       <x>9</x>
       <y>9</y>
-      <width>1114</width>
-      <height>854</height>
+      <width>1141</width>
+      <height>481</height>
      </rect>
     </property>
     <property name="sizePolicy">
@@ -73,7 +81,7 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>1101</width>
+        <width>1041</width>
         <height>451</height>
        </rect>
       </property>
@@ -3364,6 +3372,12 @@ QPushButton#factory_reset_btn:pressed
    <property name="windowTitle">
     <string>toolBar</string>
    </property>
+   <property name="iconSize">
+    <size>
+     <width>24</width>
+     <height>24</height>
+    </size>
+   </property>
    <property name="toolButtonStyle">
     <enum>Qt::ToolButtonTextBesideIcon</enum>
    </property>
@@ -3395,6 +3409,12 @@ QPushButton#factory_reset_btn:pressed
    <property name="text">
     <string>搜索设备</string>
    </property>
+   <property name="iconText">
+    <string>  搜索设备</string>
+   </property>
+   <property name="toolTip">
+    <string>搜索设备</string>
+   </property>
   </action>
   <action name="closeList_btn">
    <property name="icon">
@@ -3403,6 +3423,9 @@ QPushButton#factory_reset_btn:pressed
    </property>
    <property name="text">
     <string>清空列表</string>
+   </property>
+   <property name="iconText">
+    <string>  清空列表</string>
    </property>
    <property name="toolTip">
     <string>清空列表</string>
@@ -3416,6 +3439,9 @@ QPushButton#factory_reset_btn:pressed
    <property name="text">
     <string>登陆后台</string>
    </property>
+   <property name="iconText">
+    <string>  登陆后台</string>
+   </property>
    <property name="toolTip">
     <string>登陆后台</string>
    </property>
@@ -3427,6 +3453,9 @@ QPushButton#factory_reset_btn:pressed
    </property>
    <property name="text">
     <string>驱动检测</string>
+   </property>
+   <property name="iconText">
+    <string>  驱动检测</string>
    </property>
    <property name="toolTip">
     <string>驱动检测</string>
@@ -3440,6 +3469,9 @@ QPushButton#factory_reset_btn:pressed
    <property name="text">
     <string>端口映射</string>
    </property>
+   <property name="iconText">
+    <string>  端口映射</string>
+   </property>
    <property name="toolTip">
     <string>端口映射</string>
    </property>
@@ -3451,6 +3483,9 @@ QPushButton#factory_reset_btn:pressed
    </property>
    <property name="text">
     <string>断开连接</string>
+   </property>
+   <property name="iconText">
+    <string>  断开连接</string>
    </property>
    <property name="toolTip">
     <string>断开连接</string>

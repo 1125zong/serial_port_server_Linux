@@ -593,7 +593,7 @@ QProgressBar::chunk {
 
 QToolBar#toolBar {
     background-color: #163250;
-    border: none;
+    border-right: 0.5 solid rgba(43, 96, 155, 0.5);
     padding: 0px;
     margin: 0px;
 }
@@ -623,9 +623,17 @@ QToolBar QToolButton:pressed {
 
 QToolBar QToolButton
 {
+   width: 125px;
+   height: 25px;
    border: none;
    padding: 8px 8px;
-   margin-top: 10px;
+   margin-top: 5px;
+   margin-left: 5px;
    background: transparent;
 }
 
+QLabel#logoLabel
+{
+   margin-left: 8px;
+   margin-right: 8px;
+}
