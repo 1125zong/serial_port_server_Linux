@@ -57,8 +57,8 @@ private slots:
     /* ======= UI 触发（保持原有槽名字，信号槽自动关联） ======= */
     void handleFindDeviceTriggered();
     void handleLoginTriggered();
-    void on_overview_btn_clicked();
-    void on_basic_settings_clicked();
+    void handleOverviewTriggered();
+    void handleBasicSettingsTriggered();
     void on_Basic_Config_Btn_clicked();
     void on_reset_btn_clicked();
     void on_self_check_btn_clicked();
@@ -68,18 +68,18 @@ private slots:
     void on_lock_btn_clicked();
     void on_unlock_btn_clicked();
     void on_watchdog_btn_clicked();
-    void on_factory_reset_btn_clicked();
-    void on_restart_btn_clicked();
+    void handleFactoryResetTriggered();
+    void handleRestartTriggered();
     void on_upgrade_btn_clicked();
     void on_browse_btn_clicked();
     void on_Port_lockout_btn_clicked();
     void on_Port_unlock_btn_clicked();
-    void on_pushButton_clicked();
+    void handleBackTriggered();
     void handleCloseListTriggered();
     void handleReturnToSearchPage();
     void handleDriveFindTriggered();
     void handlePortMapTriggered();
-    void on_pushButton_10_clicked();
+    void handlePortSettingsTriggered();
     void on_name_modify_clicked();
 
     /* ======= DeviceController 回调 ======= */
@@ -91,10 +91,10 @@ private slots:
     void onOperationSuccess(const QString &op);
     void onOperationFailed(const QString &op, const QString &err);
 
-    void on_device_manage_btn_clicked();
+    void handleDeviceLogTriggered();
     void lockorunlock();
 
-    void on_pushButton_9_clicked();
+    void handlePortManageTriggered();
     void Self_Check();
     void portLockout();
     void link_info();
@@ -142,6 +142,12 @@ private:
     QByteArray collectSelectedLockPorts(int i) const;
     bool validateFirmwarePackage(const QString &filePath, QByteArray &outPkg);
     void setTableRowColor(QTableWidget *table, int row, const QColor &color);
+    void setToolBar3Compact(bool compact);
+    void initToolButtonObjectNames();
+    void initToolBarActionIcons();
+
+protected:
+    bool eventFilter(QObject *watched, QEvent *event) override;
 
 private:
     Ui::MainWindow *ui;
@@ -154,6 +160,7 @@ private:
     UdpDiscovery *m_udpDiscovery = nullptr;
     bool itemsAdded = false;
     bool Resend = false;
+    bool m_toolBar3FilterEnabled = true;
     QTimer *m_buttonCoolDownTimer; // 防止搜索按钮重复点击
     SerialPortConfig m_serialPort;
     NetworkConfig m_lastNetworkConfig;

@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1290</width>
-    <height>580</height>
+    <width>1403</width>
+    <height>630</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -47,10 +47,10 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>9</x>
-      <y>9</y>
-      <width>1141</width>
-      <height>481</height>
+      <x>0</x>
+      <y>-20</y>
+      <width>1181</width>
+      <height>581</height>
      </rect>
     </property>
     <property name="sizePolicy">
@@ -70,7 +70,7 @@
      <string notr="true"/>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="page">
      <property name="styleSheet">
@@ -79,8 +79,8 @@
      <widget class="QTableWidget" name="tableWidgetSearch">
       <property name="geometry">
        <rect>
-        <x>0</x>
-        <y>0</y>
+        <x>10</x>
+        <y>30</y>
         <width>1041</width>
         <height>451</height>
        </rect>
@@ -103,9 +103,9 @@
       </property>
       <property name="geometry">
        <rect>
-        <x>150</x>
+        <x>0</x>
         <y>10</y>
-        <width>1131</width>
+        <width>1171</width>
         <height>541</height>
        </rect>
       </property>
@@ -122,14 +122,14 @@
        </size>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>4</number>
       </property>
       <widget class="QWidget" name="page_3">
        <widget class="QTextBrowser" name="textBrowser">
         <property name="geometry">
          <rect>
           <x>10</x>
-          <y>10</y>
+          <y>20</y>
           <width>256</width>
           <height>461</height>
          </rect>
@@ -178,7 +178,7 @@ p, li { white-space: pre-wrap; }
         <property name="geometry">
          <rect>
           <x>280</x>
-          <y>10</y>
+          <y>20</y>
           <width>661</width>
           <height>461</height>
          </rect>
@@ -197,245 +197,10 @@ QTableWidget#tableWidget::item
        </widget>
       </widget>
       <widget class="QWidget" name="page_4">
-       <widget class="QGroupBox" name="groupBox_5">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>10</y>
-          <width>271</width>
-          <height>351</height>
-         </rect>
-        </property>
-        <property name="title">
-         <string>设备配置</string>
-        </property>
-        <widget class="QPushButton" name="Basic_Config_Btn">
-         <property name="geometry">
-          <rect>
-           <x>90</x>
-           <y>300</y>
-           <width>111</width>
-           <height>41</height>
-          </rect>
-         </property>
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>111</width>
-           <height>41</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>111</width>
-           <height>41</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>应用配置</string>
-         </property>
-        </widget>
-        <widget class="QWidget" name="layoutWidget">
-         <property name="geometry">
-          <rect>
-           <x>20</x>
-           <y>30</y>
-           <width>229</width>
-           <height>251</height>
-          </rect>
-         </property>
-         <layout class="QVBoxLayout" name="verticalLayout_2">
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_8">
-            <item>
-             <widget class="QLabel" name="label_9">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>51</width>
-                <height>24</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>IP 配置</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QComboBox" name="lan1_comboBox">
-              <item>
-               <property name="text">
-                <string>DHCP</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>静态ip</string>
-               </property>
-              </item>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout">
-            <item>
-             <widget class="QLabel" name="label">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>43</width>
-                <height>24</height>
-               </size>
-              </property>
-              <property name="layoutDirection">
-               <enum>Qt::LeftToRight</enum>
-              </property>
-              <property name="text">
-               <string>  速度</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QComboBox" name="lan1_speed_comboBox">
-              <item>
-               <property name="text">
-                <string>10M Half</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>10M Full</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>100M Half</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>100M Full</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>0</string>
-               </property>
-              </item>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_2">
-            <item>
-             <widget class="QLabel" name="label_6">
-              <property name="text">
-               <string>IP 地址     </string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLineEdit" name="lan1_ip">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>141</width>
-                <height>39</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>340</width>
-                <height>39</height>
-               </size>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_5">
-            <item>
-             <widget class="QLabel" name="label_7">
-              <property name="text">
-               <string>子网掩码</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLineEdit" name="lan1_mask">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>141</width>
-                <height>39</height>
-               </size>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_6">
-            <item>
-             <widget class="QLabel" name="label_8">
-              <property name="text">
-               <string>默认网关</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLineEdit" name="lan1_gateway">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>141</width>
-                <height>39</height>
-               </size>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-         </layout>
-        </widget>
-       </widget>
        <widget class="QGroupBox" name="groupBox_9">
         <property name="geometry">
          <rect>
-          <x>680</x>
+          <x>660</x>
           <y>10</y>
           <width>331</width>
           <height>171</height>
@@ -508,7 +273,7 @@ QTableWidget#tableWidget::item
        <widget class="QGroupBox" name="groupBox_10">
         <property name="geometry">
          <rect>
-          <x>680</x>
+          <x>660</x>
           <y>190</y>
           <width>331</width>
           <height>171</height>
@@ -696,7 +461,7 @@ QPushButton#upgrade_btn:pressed
        <widget class="QGroupBox" name="groupBox_8">
         <property name="geometry">
          <rect>
-          <x>300</x>
+          <x>290</x>
           <y>10</y>
           <width>361</width>
           <height>351</height>
@@ -933,6 +698,241 @@ QPushButton#name_modify:pressed
          </layout>
         </widget>
        </widget>
+       <widget class="QGroupBox" name="groupBox_5">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>10</y>
+          <width>271</width>
+          <height>351</height>
+         </rect>
+        </property>
+        <property name="title">
+         <string>设备配置</string>
+        </property>
+        <widget class="QPushButton" name="Basic_Config_Btn">
+         <property name="geometry">
+          <rect>
+           <x>90</x>
+           <y>300</y>
+           <width>111</width>
+           <height>41</height>
+          </rect>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>111</width>
+           <height>41</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>111</width>
+           <height>41</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>应用配置</string>
+         </property>
+        </widget>
+        <widget class="QWidget" name="layoutWidget">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>30</y>
+           <width>229</width>
+           <height>251</height>
+          </rect>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_2">
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_8">
+            <item>
+             <widget class="QLabel" name="label_9">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>51</width>
+                <height>24</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>IP 配置</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="lan1_comboBox">
+              <item>
+               <property name="text">
+                <string>DHCP</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>静态ip</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout">
+            <item>
+             <widget class="QLabel" name="label">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>43</width>
+                <height>24</height>
+               </size>
+              </property>
+              <property name="layoutDirection">
+               <enum>Qt::LeftToRight</enum>
+              </property>
+              <property name="text">
+               <string>  速度</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="lan1_speed_comboBox">
+              <item>
+               <property name="text">
+                <string>10M Half</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>10M Full</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>100M Half</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>100M Full</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>0</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_2">
+            <item>
+             <widget class="QLabel" name="label_6">
+              <property name="text">
+               <string>IP 地址     </string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="lan1_ip">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>141</width>
+                <height>39</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>340</width>
+                <height>39</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_5">
+            <item>
+             <widget class="QLabel" name="label_7">
+              <property name="text">
+               <string>子网掩码</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="lan1_mask">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>141</width>
+                <height>39</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_6">
+            <item>
+             <widget class="QLabel" name="label_8">
+              <property name="text">
+               <string>默认网关</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="lan1_gateway">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>141</width>
+                <height>39</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </widget>
       </widget>
       <widget class="QWidget" name="page_5">
        <layout class="QGridLayout" name="gridLayout_8">
@@ -945,7 +945,7 @@ QPushButton#name_modify:pressed
            <widget class="QLabel" name="label_33">
             <property name="geometry">
              <rect>
-              <x>10</x>
+              <x>0</x>
               <y>10</y>
               <width>101</width>
               <height>19</height>
@@ -958,7 +958,7 @@ QPushButton#name_modify:pressed
            <widget class="QPlainTextEdit" name="devLogTextEdit">
             <property name="geometry">
              <rect>
-              <x>10</x>
+              <x>0</x>
               <y>40</y>
               <width>1101</width>
               <height>471</height>
@@ -975,7 +975,7 @@ QPushButton#name_modify:pressed
         <item row="0" column="1">
          <widget class="QStackedWidget" name="stacked_port">
           <property name="currentIndex">
-           <number>1</number>
+           <number>0</number>
           </property>
           <widget class="QWidget" name="page_7">
            <widget class="QWidget" name="layoutWidget">
@@ -1045,8 +1045,8 @@ QPushButton#name_modify:pressed
            <widget class="QGroupBox" name="groupBox_6">
             <property name="geometry">
              <rect>
-              <x>20</x>
-              <y>20</y>
+              <x>0</x>
+              <y>10</y>
               <width>621</width>
               <height>241</height>
              </rect>
@@ -1279,8 +1279,8 @@ QPushButton#reset_btn:pressed
            <widget class="QGroupBox" name="groupBox_7">
             <property name="geometry">
              <rect>
-              <x>650</x>
-              <y>20</y>
+              <x>640</x>
+              <y>10</y>
               <width>281</width>
               <height>241</height>
              </rect>
@@ -1567,7 +1567,7 @@ QPushButton#reset_btn:pressed
            <widget class="QCheckBox" name="checkBox_53">
             <property name="geometry">
              <rect>
-              <x>9</x>
+              <x>10</x>
               <y>0</y>
               <width>128</width>
               <height>25</height>
@@ -1580,7 +1580,7 @@ QPushButton#reset_btn:pressed
            <widget class="QTableWidget" name="tableWidget_3">
             <property name="geometry">
              <rect>
-              <x>9</x>
+              <x>10</x>
               <y>30</y>
               <width>945</width>
               <height>475</height>
@@ -1627,9 +1627,9 @@ QPushButton#reset_btn:pressed
        <widget class="QTabWidget" name="tabWidget">
         <property name="geometry">
          <rect>
-          <x>0</x>
-          <y>20</y>
-          <width>1131</width>
+          <x>10</x>
+          <y>13</y>
+          <width>1141</width>
           <height>491</height>
          </rect>
         </property>
@@ -2466,7 +2466,7 @@ QPushButton#reset_btn:pressed
            <rect>
             <x>500</x>
             <y>0</y>
-            <width>621</width>
+            <width>631</width>
             <height>431</height>
            </rect>
           </property>
@@ -2491,7 +2491,7 @@ QPushButton#reset_btn:pressed
             <rect>
              <x>10</x>
              <y>60</y>
-             <width>601</width>
+             <width>611</width>
              <height>361</height>
             </rect>
            </property>
@@ -2992,7 +2992,7 @@ QPushButton#reset_btn:pressed
            <rect>
             <x>410</x>
             <y>0</y>
-            <width>681</width>
+            <width>711</width>
             <height>441</height>
            </rect>
           </property>
@@ -3004,7 +3004,7 @@ QPushButton#reset_btn:pressed
             <rect>
              <x>20</x>
              <y>60</y>
-             <width>641</width>
+             <width>681</width>
              <height>371</height>
             </rect>
            </property>
@@ -3084,299 +3084,13 @@ QPushButton#reset_btn:pressed
        </widget>
       </widget>
      </widget>
-     <widget class="QWidget" name="layoutWidget">
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>30</y>
-        <width>122</width>
-        <height>324</height>
-       </rect>
-      </property>
-      <layout class="QVBoxLayout" name="verticalLayout_3">
-       <item>
-        <widget class="QPushButton" name="basic_settings">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>120</width>
-           <height>35</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>75</width>
-           <height>35</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>微软雅黑</family>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
-         </property>
-         <property name="text">
-          <string>基本设置</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="overview_btn">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>120</width>
-           <height>35</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>75</width>
-           <height>35</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>微软雅黑</family>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
-         </property>
-         <property name="text">
-          <string>设备总览</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="pushButton_10">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>120</width>
-           <height>35</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>75</width>
-           <height>35</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>微软雅黑</family>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
-         </property>
-         <property name="text">
-          <string>端口设置</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="pushButton_9">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>120</width>
-           <height>35</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>75</width>
-           <height>35</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>微软雅黑</family>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
-         </property>
-         <property name="text">
-          <string>端口管理</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="device_manage_btn">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>120</width>
-           <height>35</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>75</width>
-           <height>35</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>微软雅黑</family>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
-         </property>
-         <property name="text">
-          <string>设备日志</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="restart_btn">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>120</width>
-           <height>35</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>75</width>
-           <height>35</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>微软雅黑</family>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
-         </property>
-         <property name="text">
-          <string>重         启</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="factory_reset_btn">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>120</width>
-           <height>35</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>微软雅黑</family>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
-         </property>
-         <property name="layoutDirection">
-          <enum>Qt::LeftToRight</enum>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">QPushButton#factory_reset_btn:hover
-{
-	image: url(:/image/FactorySettings.png);
-	color: transparent;
-	background-color: #1A3B5F;
-}
-
-QPushButton#factory_reset_btn:pressed
-{
-	image: none;
-	color: white;
-	background-color: rgba(255,0,0,0.5);
-}</string>
-         </property>
-         <property name="text">
-          <string>恢复出厂设置</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="pushButton">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>120</width>
-           <height>35</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>75</width>
-           <height>35</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>微软雅黑</family>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
-         </property>
-         <property name="text">
-          <string>返         回</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
     </widget>
    </widget>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <widget class="QToolBar" name="toolBar">
    <property name="windowTitle">
-    <string>toolBar</string>
-   </property>
-   <property name="iconSize">
-    <size>
-     <width>24</width>
-     <height>24</height>
-    </size>
+    <string>toolBar_2</string>
    </property>
    <property name="toolButtonStyle">
     <enum>Qt::ToolButtonTextBesideIcon</enum>
@@ -3389,17 +3103,56 @@ QPushButton#factory_reset_btn:pressed
    </attribute>
    <addaction name="separator"/>
    <addaction name="findDev_btn"/>
+   <addaction name="closeList_btn"/>
    <addaction name="separator"/>
    <addaction name="login_btn"/>
    <addaction name="separator"/>
-   <addaction name="closeList_btn"/>
+   <addaction name="disconnect_btn"/>
+   <addaction name="reboot_btn"/>
    <addaction name="separator"/>
+  </widget>
+  <widget class="QToolBar" name="toolBar_2">
+   <property name="windowTitle">
+    <string>toolBar_2</string>
+   </property>
+   <property name="toolButtonStyle">
+    <enum>Qt::ToolButtonTextBesideIcon</enum>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>LeftToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="basicSetting_btn"/>
+   <addaction name="separator"/>
+   <addaction name="portSetting_btn"/>
+   <addaction name="devOverview_btn"/>
+   <addaction name="separator"/>
+   <addaction name="portManage_btn"/>
+   <addaction name="devLog_btn"/>
+   <addaction name="separator"/>
+   <addaction name="factoryReset_btn"/>
+   <addaction name="backUp_btn"/>
+  </widget>
+  <widget class="QToolBar" name="toolBar_3">
+   <property name="windowTitle">
+    <string>toolBar_3</string>
+   </property>
+   <property name="toolButtonStyle">
+    <enum>Qt::ToolButtonTextBesideIcon</enum>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
    <addaction name="driveFind_btn"/>
    <addaction name="separator"/>
    <addaction name="portMap_btn"/>
    <addaction name="separator"/>
    <addaction name="disconnect_btn"/>
-   <addaction name="separator"/>
   </widget>
   <action name="findDev_btn">
    <property name="icon">
@@ -3491,13 +3244,106 @@ QPushButton#factory_reset_btn:pressed
     <string>断开连接</string>
    </property>
   </action>
-  <action name="LOGO">
+  <action name="basicSetting_btn">
    <property name="icon">
     <iconset resource="image.qrc">
-     <normaloff>:/image/Logo2.png</normaloff>:/image/Logo2.png</iconset>
+     <normaloff>:/image/basicSettings.png</normaloff>:/image/basicSettings.png</iconset>
    </property>
    <property name="text">
-    <string/>
+    <string>基本设置</string>
+   </property>
+   <property name="iconText">
+    <string>  基本设置</string>
+   </property>
+   <property name="toolTip">
+    <string>基本设置</string>
+   </property>
+  </action>
+  <action name="devOverview_btn">
+   <property name="icon">
+    <iconset resource="image.qrc">
+     <normaloff>:/image/deviceOverview.png</normaloff>:/image/deviceOverview.png</iconset>
+   </property>
+   <property name="text">
+    <string>设备总览</string>
+   </property>
+   <property name="iconText">
+    <string>  设备总览</string>
+   </property>
+  </action>
+  <action name="portSetting_btn">
+   <property name="icon">
+    <iconset resource="image.qrc">
+     <normaloff>:/image/settingsPort.png</normaloff>:/image/settingsPort.png</iconset>
+   </property>
+   <property name="text">
+    <string>端口设置</string>
+   </property>
+   <property name="iconText">
+    <string>  端口设置</string>
+   </property>
+  </action>
+  <action name="portManage_btn">
+   <property name="icon">
+    <iconset resource="image.qrc">
+     <normaloff>:/image/portManage.png</normaloff>:/image/portManage.png</iconset>
+   </property>
+   <property name="text">
+    <string>端口管理</string>
+   </property>
+   <property name="iconText">
+    <string>  端口管理</string>
+   </property>
+  </action>
+  <action name="devLog_btn">
+   <property name="icon">
+    <iconset resource="image.qrc">
+     <normaloff>:/image/systemManage.png</normaloff>:/image/systemManage.png</iconset>
+   </property>
+   <property name="text">
+    <string>设备日志</string>
+   </property>
+   <property name="iconText">
+    <string>  设备日志</string>
+   </property>
+  </action>
+  <action name="reboot_btn">
+   <property name="icon">
+    <iconset resource="image.qrc">
+     <normaloff>:/image/reboot.png</normaloff>:/image/reboot.png</iconset>
+   </property>
+   <property name="text">
+    <string>重启</string>
+   </property>
+   <property name="iconText">
+    <string>  重        启</string>
+   </property>
+  </action>
+  <action name="factoryReset_btn">
+   <property name="icon">
+    <iconset resource="image.qrc">
+     <normaloff>:/image/FactorySettings.png</normaloff>:/image/FactorySettings.png</iconset>
+   </property>
+   <property name="text">
+    <string>重置设置</string>
+   </property>
+   <property name="iconText">
+    <string>  重置设置</string>
+   </property>
+   <property name="toolTip">
+    <string>重置设置</string>
+   </property>
+  </action>
+  <action name="backUp_btn">
+   <property name="icon">
+    <iconset resource="image.qrc">
+     <normaloff>:/image/back.png</normaloff>:/image/back.png</iconset>
+   </property>
+   <property name="text">
+    <string>返回</string>
+   </property>
+   <property name="iconText">
+    <string>  返        回</string>
    </property>
   </action>
  </widget>

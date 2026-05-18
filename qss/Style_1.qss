@@ -172,7 +172,8 @@ QTabBar::tab:focus {
    Buttons
    ========================================================================== */
 
-QPushButton {
+QPushButton,
+QToolButton {
     color: #c0d8f0;
     background-color: #1a3b5f;
     border: 1px solid #2d5a8c;
@@ -181,16 +182,19 @@ QPushButton {
     outline: none;
 }
 
-QPushButton:hover {
+QPushButton:hover,
+QToolButton:hover {
     background-color: #2d5a8c;
 }
 
-QPushButton:pressed {
+QPushButton:pressed,
+QToolButton:pressed {
     background-color: rgba(255, 68, 68, 1);
     outline: none;
 }
 
-QPushButton:focus {
+QPushButton:focus,
+QToolButton:focus {
     border: 1px solid #2d5a8c;
     outline: none;
 }
@@ -235,12 +239,6 @@ QPushButton#reset_btn:hover {
     background-color: #1a3b5f;
 }
 
-QPushButton#factory_reset_btn:hover {
-    image: url(:/image/FactorySettings.png);
-    color: transparent;
-    background-color: #1a3b5f;
-}
-
 QPushButton#unlock_btn:hover,
 QPushButton#Port_unlock_btn:hover {
     image: url(:/image/unlock.png);
@@ -265,7 +263,7 @@ QPushButton#upgrade_btn:pressed,
 QPushButton#name_modify:pressed,
 QPushButton#self_check_btn:pressed,
 QPushButton#reset_btn:pressed,
-QPushButton#factory_reset_btn:pressed,
+QToolButton#factoryReset_btn:pressed,
 QPushButton#lock_btn:pressed,
 QPushButton#unlock_btn:pressed,
 QPushButton#Port_unlock_btn:pressed,
@@ -591,14 +589,19 @@ QProgressBar::chunk {
    ========================================================================== */
 
 
-QToolBar#toolBar {
+QToolBar#toolBar,
+QToolBar#toolBar_2,
+QToolBar#toolBar_3{
     background-color: #163250;
     border-right: 0.5 solid rgba(43, 96, 155, 0.5);
     padding: 0px;
     margin: 0px;
 }
 
-QToolBar#toolBar::handle {
+QToolBar#toolBar::handle,
+QToolBar#toolBar_2::handle,
+QToolBar#toolBar_3::handle
+{
     image: none;
     width: 0px;
     height: 0px;
@@ -606,7 +609,10 @@ QToolBar#toolBar::handle {
     padding: 0px;
 }
 
-QToolBar#toolBar::separator {
+QToolBar#toolBar::separator,
+QToolBar#toolBar_2::separator,
+QToolBar#toolBar_3::separator
+{
     width: 0px;
     background: transparent;
 }
@@ -632,8 +638,28 @@ QToolBar QToolButton
    background: transparent;
 }
 
-QLabel#logoLabel
+QToolBar#toolBar_3[compact="true"] QToolButton
+{
+   width: 32px;
+   height: 32px;
+   padding: 4px;
+   margin: 2px;
+}
+
+QToolBar#toolBar_3[compact="false"] QToolButton
+{
+   width: 125px;
+   height: 25px;
+   padding: 8px 8px;
+   margin-top: 5px;
+   margin-left: 5px;
+}
+
+
+QLabel#widLabel
 {
    margin-left: 8px;
    margin-right: 8px;
 }
+
+

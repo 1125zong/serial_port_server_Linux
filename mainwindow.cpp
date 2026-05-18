@@ -15,6 +15,9 @@
 #include <QSet>
 #include <QMap>
 #include <QAction>
+#include <QStyle>
+#include <QToolBar>
+#include <QToolButton>
 #include <algorithm>
 
 #if defined(Q_OS_LINUX)
@@ -187,6 +190,14 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->driveFind_btn, &QAction::triggered, this, &MainWindow::handleDriveFindTriggered);
     connect(ui->portMap_btn, &QAction::triggered, this, &MainWindow::handlePortMapTriggered);
     connect(ui->disconnect_btn, &QAction::triggered, this, &MainWindow::handleDisconnectTriggered);
+    connect(ui->basicSetting_btn, &QAction::triggered, this, &MainWindow::handleBasicSettingsTriggered);
+    connect(ui->devOverview_btn, &QAction::triggered, this, &MainWindow::handleOverviewTriggered);
+    connect(ui->portSetting_btn, &QAction::triggered, this, &MainWindow::handlePortSettingsTriggered);
+    connect(ui->portManage_btn, &QAction::triggered, this, &MainWindow::handlePortManageTriggered);
+    connect(ui->devLog_btn, &QAction::triggered, this, &MainWindow::handleDeviceLogTriggered);
+    connect(ui->reboot_btn, &QAction::triggered, this, &MainWindow::handleRestartTriggered);
+    connect(ui->factoryReset_btn, &QAction::triggered, this, &MainWindow::handleFactoryResetTriggered);
+    connect(ui->backUp_btn, &QAction::triggered, this, &MainWindow::handleBackTriggered);
 
 
     // 创建菜单项---2026.01.20新增
@@ -373,6 +384,8 @@ void MainWindow::handleLoginTriggered()
     else
     {
         Logger::instance()->log(Logger::Debug, "MainWindow", "设备已连接，切换到主界面");
+        ui->toolBar->hide();
+        ui->toolBar_2->show();
         ui->stackedWidget->setCurrentIndex(1);
     }
 }
@@ -381,6 +394,10 @@ void MainWindow::onDeviceConnected()
 {
     QMessageBox::information(this, "设备连接", QString("成功与设备：%1建立连接").arg(UdpDiscovery::dev.lan1Ip));
     m_statusLabel->setText(QString("已与设备 %1 建立连接").arg(UdpDiscovery::dev.lan1Ip));
+
+    ui->toolBar->hide();
+    ui->toolBar_2->show();
+
     // 将复选框设置为不可交互状态
     int row = ui->tableWidgetSearch->rowCount();
     for (int i = 0; i < row; i++)
@@ -396,8 +413,9 @@ void MainWindow::onDeviceConnected()
         }
     }
 
-
     ui->login_btn->setText("返回");
+    ui->login_btn->setIconText("  返        回");
+    ui->login_btn->setToolTip("返回");
     TcpClient::TcpSocketState = true;
     ui->stackedWidget->setCurrentIndex(1);
 
@@ -414,6 +432,9 @@ void MainWindow::onDeviceDisconnected()
     ui->stackedWidget->setCurrentIndex(0);
     TcpClient::TcpSocketState = false;
     ui->login_btn->setText("登陆后台");
+
+    ui->toolBar->show();
+    ui->toolBar_2->hide();
 
     int row = m_devCtl->getCheckedRows(ui->tableWidgetSearch, 0);
     QTableWidgetItem *checkItem = row >= 0 ? ui->tableWidgetSearch->item(row, 0) : nullptr;
@@ -440,7 +461,7 @@ void MainWindow::onConnectionError(const QString &err)
 /* ============================================================
 三、读操作
 ============================================================ */
-void MainWindow::on_overview_btn_clicked()
+void MainWindow::handleOverviewTriggered()
 {
     ui->stackedWidget->setCurrentIndex(1);
     ui->stackedWidget_2->setCurrentIndex(0);
@@ -448,7 +469,7 @@ void MainWindow::on_overview_btn_clicked()
     m_devCtl->readOverview();
 }
 
-void MainWindow::on_basic_settings_clicked()
+void MainWindow::handleBasicSettingsTriggered()
 {
     ui->stackedWidget->setCurrentIndex(1);
     ui->stackedWidget_2->setCurrentIndex(1);
@@ -1166,7 +1187,7 @@ void MainWindow::on_watchdog_btn_clicked()
 /* ----------------------------------------------------------
  * 恢复出厂设置
  * ---------------------------------------------------------- */
-void MainWindow::on_factory_reset_btn_clicked()
+void MainWindow::handleFactoryResetTriggered()
 {
     if (QMessageBox::warning(this, "确认", "所有配置将丢失！继续？",
                              QMessageBox::Yes | QMessageBox::No,
@@ -1184,7 +1205,7 @@ void MainWindow::on_factory_reset_btn_clicked()
 /* ----------------------------------------------------------
  * 重启设备
  * ---------------------------------------------------------- */
-void MainWindow::on_restart_btn_clicked()
+void MainWindow::handleRestartTriggered()
 {
     int ret = QMessageBox::question(this, "确认", "设备将立即重启，继续？",
                                     QMessageBox::Yes | QMessageBox::No,
@@ -1281,8 +1302,10 @@ void MainWindow::on_Port_unlock_btn_clicked()
     m_devCtl->unlockPortsWithSync(selected);
 }
 
-void MainWindow::on_pushButton_clicked()
+void MainWindow::handleBackTriggered()
 {
+    ui->toolBar->show();
+    ui->toolBar_2->hide();
     ui->stackedWidget->setCurrentIndex(0);
 };
 
@@ -1621,7 +1644,7 @@ void MainWindow::handlePortMapTriggered()
     m_configDialog->activateWindow();
 };
 
-void MainWindow::on_pushButton_10_clicked()
+void MainWindow::handlePortSettingsTriggered()
 {
     ui->stackedWidget->setCurrentIndex(1);
     ui->stackedWidget_2->setCurrentIndex(4);
@@ -1667,7 +1690,7 @@ void MainWindow::on_name_modify_clicked()
     m_devCtl->writeDeviceName(newName);   // 内部组帧 0x02 0x01
 }
 
-void MainWindow::on_device_manage_btn_clicked()
+void MainWindow::handleDeviceLogTriggered()
 {
     ui->stackedWidget_2->setCurrentIndex(2);
     ui->stackedWidget_4->setCurrentIndex(1);   // 日志子页
@@ -1687,7 +1710,7 @@ void MainWindow::lockorunlock()
 }
 
 
-void MainWindow::on_pushButton_9_clicked()
+void MainWindow::handlePortManageTriggered()
 {
     QMenu *menu = new QMenu(this);
 
@@ -2026,46 +2049,6 @@ void MainWindow::initTables()
         ui->tableWidget_4->setItem(i, 3, new QTableWidgetItem(""));
     }
 
-    // 给主界面按钮添加图表
-    QIcon icon;
-
-
-    /* -------------------------- 给登陆后的界面按钮添加图标 ---------------------------------- */
-    icon.addPixmap(QPixmap(":/image/basicSettings.png"), QIcon::Normal, QIcon::Off);
-    icon.addPixmap(QPixmap(":/image/basicSettingsClick.png"), QIcon::Active, QIcon::Off);
-    ui->basic_settings->setIcon(icon);
-    ui->basic_settings->setIconSize(QSize(25, 25));
-
-    icon.addPixmap(QPixmap(":/image/systemManage.png"), QIcon::Normal, QIcon::Off);
-    icon.addPixmap(QPixmap(":/image/systemManageClick.png"), QIcon::Active, QIcon::Off);
-    ui->device_manage_btn->setIcon(icon);
-    ui->device_manage_btn->setIconSize(QSize(25, 25));
-
-    icon.addPixmap(QPixmap(":/image/reboot.png"), QIcon::Normal, QIcon::Off);
-    icon.addPixmap(QPixmap(":/image/rebootClick.png"), QIcon::Active, QIcon::Off);
-    ui->restart_btn->setIcon(icon);
-    ui->restart_btn->setIconSize(QSize(22, 22));
-
-    icon.addPixmap(QPixmap(":/image/deviceOverview.png"), QIcon::Normal, QIcon::Off);
-    icon.addPixmap(QPixmap(":/image/deviceOverviewClick.png"), QIcon::Active, QIcon::Off);
-    ui->overview_btn->setIcon(icon);
-    ui->overview_btn->setIconSize(QSize(25, 25));
-
-    icon.addPixmap(QPixmap(":/image/settingsPort.png"), QIcon::Normal, QIcon::Off);
-    icon.addPixmap(QPixmap(":/image/settingsPortClick.png"), QIcon::Active, QIcon::Off);
-    ui->pushButton_10->setIcon(icon);
-    ui->pushButton_10->setIconSize(QSize(25, 25));
-
-    icon.addPixmap(QPixmap(":/image/back.png"), QIcon::Normal, QIcon::Off);
-    icon.addPixmap(QPixmap(":/image/backClick.png"), QIcon::Active, QIcon::Off);
-    ui->pushButton->setIcon(icon);
-    ui->pushButton->setIconSize(QSize(25, 25));
-
-    icon.addPixmap(QPixmap(":/image/portManage.png"), QIcon::Normal, QIcon::Off);
-    icon.addPixmap(QPixmap(":/image/portManageClick.png"), QIcon::Active, QIcon::Off);
-    ui->pushButton_9->setIcon(icon);
-    ui->pushButton_9->setIconSize(QSize(25, 25));
-
     /*----------------------- 设置所有QTableWidget单元格居中显示，且表头自适应文字长度 ------------------------*/
     QList<QTableWidget *>tableWidgets = this->findChildren<QTableWidget *>();
     // 创建并设置自定义委托（实现单元格居中对齐）
@@ -2106,22 +2089,29 @@ void MainWindow::initTitleBar()
 
     // 关闭工具栏可移动
     ui->toolBar->setMovable(false);
+    ui->toolBar_2->setMovable(false);
+    ui->toolBar_3->setMovable(false);
 
     // 关闭工具栏浮动
     ui->toolBar->setFloatable(false);
-
-    // 限制工具栏只能在顶部
-    ui->toolBar->setAllowedAreas(Qt::TopToolBarArea);
+    ui->toolBar_2->setFloatable(false);
+    ui->toolBar_3->setFloatable(false);
 
     // 可选：禁止右键弹出工具栏菜单
     ui->toolBar->setContextMenuPolicy(Qt::PreventContextMenu);
+    ui->toolBar_2->setContextMenuPolicy(Qt::PreventContextMenu);
+    ui->toolBar_3->setContextMenuPolicy(Qt::PreventContextMenu);
+    ui->toolBar_2->hide();
 
     // 在工具栏中添加LOGO
-    QLabel *logoLabel = new QLabel(ui->toolBar);
-    logoLabel->setObjectName("logoLabel");
-    logoLabel->setPixmap(QPixmap(":/image/Logo2.png").scaled(150, 60, Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    ui->toolBar->insertWidget(ui->findDev_btn, logoLabel);
-
+    QLabel *widLabel = new QLabel(ui->toolBar_3);
+    widLabel->setObjectName("widLabel");
+    widLabel->setPixmap(QPixmap(":/image/Logo2.png").scaled(170, 68, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+    ui->toolBar_3->insertWidget(ui->driveFind_btn, widLabel);
+    widLabel->installEventFilter(this);
+    initToolButtonObjectNames();
+    initToolBarActionIcons();
+    setToolBar3Compact(false);
 }
 
 void MainWindow::bindDataToUI()
@@ -2580,4 +2570,98 @@ void MainWindow::setTableRowColor(QTableWidget *table, int row, const QColor &co
 
         item->setBackground(QBrush(color));
     }
+}
+
+// 根据compact来控制图标的显示样式为图标+文字或图标。并使用对应的qss
+void MainWindow::setToolBar3Compact(bool compact)
+{
+    ui->toolBar_3->setToolButtonStyle(compact ? Qt::ToolButtonIconOnly : Qt::ToolButtonTextBesideIcon);
+    ui->toolBar_3->setProperty("compact", compact);
+
+    // 让 QSS 重新生效
+    ui->toolBar_3->style()->unpolish(ui->toolBar_3);
+    ui->toolBar_3->style()->polish(ui->toolBar_3);
+
+    const QList<QToolButton *> buttons = ui->toolBar_3->findChildren<QToolButton *>();
+    for (QToolButton *button : buttons)
+    {
+        button->style()->unpolish(button);
+        button->style()->polish(button);
+        button->updateGeometry();
+    }
+
+    ui->toolBar_3->updateGeometry();
+}
+
+void MainWindow::initToolButtonObjectNames()
+{
+    const QList<QToolBar *> toolBars = {ui->toolBar, ui->toolBar_2, ui->toolBar_3};
+    for (QToolBar *toolBar : toolBars)
+    {
+        const QList<QAction *> actions = toolBar->actions();
+        for (QAction *action : actions)
+        {
+            QWidget *widget = toolBar->widgetForAction(action);
+            if (widget && !action->objectName().isEmpty())
+            {
+                widget->setObjectName(action->objectName());
+            }
+        }
+    }
+}
+
+void MainWindow::initToolBarActionIcons()
+{
+    auto setIcon = [this](QAction *action, const QString &normalPath, const QString &activePath, const QSize &size)
+    {
+        QIcon icon;
+        icon.addPixmap(QPixmap(normalPath), QIcon::Normal, QIcon::Off);
+        icon.addPixmap(QPixmap(activePath), QIcon::Active, QIcon::Off);
+        action->setIcon(icon);
+
+        const QList<QToolBar *> toolBars = {ui->toolBar, ui->toolBar_2, ui->toolBar_3};
+        for (QToolBar *toolBar : toolBars)
+        {
+            if (QWidget *widget = toolBar->widgetForAction(action))
+            {
+                if (QToolButton *button = qobject_cast<QToolButton *>(widget))
+                {
+                    button->setIconSize(size);
+                }
+            }
+        }
+    };
+
+    setIcon(ui->findDev_btn,      ":/image/deviceSearch(2).png", ":/image/deviceSearch(1).png", QSize(25, 25));
+    setIcon(ui->closeList_btn,    ":/image/delete.png",          ":/image/deleteClick.png",     QSize(25, 25));
+    setIcon(ui->login_btn,        ":/image/login.png",           ":/image/loginClick.png",      QSize(25, 25));
+    setIcon(ui->driveFind_btn,    ":/image/driveDetection.png",  ":/image/driveDetectionClick.png", QSize(25, 25));
+    setIcon(ui->portMap_btn,      ":/image/mapping.png",         ":/image/mappingClick.png",    QSize(20, 20));
+    setIcon(ui->disconnect_btn,   ":/image/disconnect.png",      ":/image/disconnectClick.png", QSize(25, 25));
+    setIcon(ui->basicSetting_btn, ":/image/basicSettings.png",   ":/image/basicSettingsClick.png", QSize(25, 25));
+    setIcon(ui->devLog_btn,       ":/image/systemManage.png",    ":/image/systemManageClick.png", QSize(25, 25));
+    setIcon(ui->reboot_btn,       ":/image/reboot.png",          ":/image/rebootClick.png",     QSize(22, 22));
+    setIcon(ui->devOverview_btn,  ":/image/deviceOverview.png",  ":/image/deviceOverviewClick.png", QSize(25, 25));
+    setIcon(ui->portSetting_btn,  ":/image/settingsPort.png",    ":/image/settingsPortClick.png", QSize(25, 25));
+    setIcon(ui->backUp_btn,       ":/image/back.png",            ":/image/backClick.png",       QSize(25, 25));
+    setIcon(ui->portManage_btn,   ":/image/portManage.png",      ":/image/portManageClick.png", QSize(25, 25));
+    setIcon(ui->factoryReset_btn, ":/image/FactorySettings.png", ":/image/FactorySettings.png", QSize(25, 25));
+}
+
+// 事件过滤器: 点击 LOGO 切换工具栏图标/文字模式
+bool MainWindow::eventFilter(QObject *watched, QEvent *event)
+{
+    if (watched->objectName() == "widLabel")
+        {
+            if (event->type() == QEvent::MouseButtonPress)
+            {
+                m_toolBar3FilterEnabled = !m_toolBar3FilterEnabled;
+                setToolBar3Compact(!m_toolBar3FilterEnabled);
+
+                return true;
+            }
+        }
+
+
+    return QMainWindow::eventFilter(watched, event);
 }

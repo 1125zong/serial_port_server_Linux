@@ -11,11 +11,13 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     a.setStyle(QStyleFactory::create("Windows"));
+    MainWindow w;
+
     QFile file(":/qss/Style_1.qss");
     if (file.open(QFile::ReadOnly | QFile::Text)) {
         QTextStream filetext(&file);
         QString styleSheet = filetext.readAll();
-        a.setStyleSheet(styleSheet);
+        w.setStyleSheet(styleSheet);
         file.close();
     } else {
         qDebug() << "open qss failed:" << file.errorString();
@@ -26,7 +28,6 @@ int main(int argc, char *argv[])
     Logger::instance()->enableConsoleOutput(true);       // 启用控制台输出
     QNetworkProxy::setApplicationProxy(QNetworkProxy::NoProxy);
 
-    MainWindow w;
     w.show();
     return a.exec();
 }
