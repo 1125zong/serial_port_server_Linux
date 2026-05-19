@@ -35,6 +35,9 @@ MainWindow::MainWindow(QWidget *parent)
     ui->devLogTextEdit->setReadOnly(true);
     ui->lan1_mask->setReadOnly(true);
     ui->lan1_gateway->setReadOnly(true);
+    ui->deviceLogDock->setFloating(true);
+    ui->deviceLogDock->resize(900, 260);
+    ui->deviceLogDock->hide();
 
     m_statusLabel = new QLabel("欢迎使用", this);
     m_statusLabel->setStyleSheet(
@@ -1613,7 +1616,28 @@ void MainWindow::handleDriveFindTriggered()
                     .arg(status)
                     .arg(errorItems.size())
                     .arg(warnItems.size()));
-    QMessageBox::information(this, "驱动检测", report);
+    appendDeviceLog(report);
+
+    QStringList summaryItems;
+    for (const QString &item : errorItems.mid(0, 3)) {
+        summaryItems << item;
+    }
+    for (const QString &item : warnItems.mid(0, 3 - summaryItems.size())) {
+        summaryItems << item;
+    }
+
+    QString summary = QString("%1\n\n错误：%2 个，警告：%3 个，正常：%4 个。")
+            .arg(status)
+            .arg(errorItems.size())
+            .arg(warnItems.size())
+            .arg(okItems.size());
+//    if (!summaryItems.isEmpty()) {
+//        summary += "\n\n主要问题：\n" + summaryItems.join('\n');
+//    }
+    summary += "\n\n具体检测信息请查看设备日志。";
+
+    QMessageBox::information(this, "驱动检测", summary);
+
 #else
     QMessageBox::information(this, "驱动检测", "当前平台暂不支持驱动检测。");
 #endif
@@ -1692,8 +1716,28 @@ void MainWindow::on_name_modify_clicked()
 
 void MainWindow::handleDeviceLogTriggered()
 {
-    ui->stackedWidget_2->setCurrentIndex(2);
-    ui->stackedWidget_4->setCurrentIndex(1);   // 日志子页
+    if (ui->deviceLogDock->isVisible()) {
+        ui->deviceLogDock->hide();
+        return;
+    }
+
+    ui->deviceLogDock->setFloating(true);
+
+    int dockWidth = width() * 3 / 5;
+    if (dockWidth < 720) {
+        dockWidth = 720;
+    }
+    int dockHeight = height() / 3;
+    if (dockHeight < 240) {
+        dockHeight = 240;
+    }
+
+    const QRect mainRect = frameGeometry();
+    ui->deviceLogDock->resize(dockWidth, dockHeight);
+    ui->deviceLogDock->move(mainRect.left() + 40, mainRect.bottom() - dockHeight - 40);
+    ui->deviceLogDock->show();
+    ui->deviceLogDock->raise();
+    ui->deviceLogDock->activateWindow();
 }
 
 void MainWindow::lockorunlock()
