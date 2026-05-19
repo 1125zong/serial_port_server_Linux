@@ -176,7 +176,7 @@ void CustomTitleBar::initWidgets()
     m_layout->addWidget(m_minBtn);           // 最小化按钮
     m_layout->addWidget(m_maxBtn);           // 最大化按钮
     m_layout->addWidget(m_closeBtn);         // 关闭按钮
-    m_layout->setContentsMargins(8, 0, 0, 0); // 左内边距8px，匹配系统标题栏
+    m_layout->setContentsMargins(8, 15, 10, 0); // 左内边距8px，匹配系统标题栏
     m_layout->setSpacing(5);                 // 按钮间距0
     // 设置布局到标题栏
     setLayout(m_layout);
