@@ -5,25 +5,19 @@
 #include "src/model/SerialPortConfig.h"
 #include <QFileDialog>
 #include <QStyleFactory>
+#include <QGuiApplication>
+#include <QDockWidget>
 #include "src/config/views/ConfigDialog.h"  //2026.01.20新增
 #include "src/utils/Logger.h"  // 日志系统
-#include <QMetaObject>
-#include <QTime>
-#include <QDir>
-#include <QProcess>
-#include <QTextStream>
-#include <QSet>
-#include <QMap>
-#include <QAction>
-#include <QStyle>
-#include <QToolBar>
-#include <QToolButton>
-#include <algorithm>
 
-#if defined(Q_OS_LINUX)
-#include <sys/stat.h>
-#include <sys/sysmacros.h>
-#endif
+namespace
+{
+constexpr int kDeviceLogDockHeight = 140;
+constexpr int kDeviceLogDockMinHeight = 110;
+constexpr int kDeviceLogFloatingMinWidth = 720;
+constexpr int kDeviceLogFloatingMinHeight = 240;
+constexpr int kDeviceLogFloatingMargin = 40;
+}
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -31,13 +25,13 @@ MainWindow::MainWindow(QWidget *parent)
     , m_configDialog(nullptr)
 {
     ui->setupUi(this);
+    m_mainWindowBaseMinimumHeight = minimumHeight();
 
     ui->devLogTextEdit->setReadOnly(true);
     ui->lan1_mask->setReadOnly(true);
     ui->lan1_gateway->setReadOnly(true);
-    ui->deviceLogDock->setFloating(true);
-    ui->deviceLogDock->resize(900, 260);
-    ui->deviceLogDock->hide();
+
+    initDeviceLogDock();
 
     m_statusLabel = new QLabel("欢迎使用", this);
     m_statusLabel->setStyleSheet(
@@ -58,6 +52,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     initTables();               // 一键初始化所有表格
     initTitleBar();             //该函数完成了主窗口的「界面样式定制 + 布局搭建」
+    initStatusBar();
+    setConnectionStatus(false);
+    reserveBottomDockSpace();
     ui->stackedWidget->setCurrentIndex(0);
 
     //使用单例模式获取UdpDiscovery实例
@@ -289,7 +286,7 @@ void MainWindow::handleFindDeviceTriggered()
     appendDeviceLog("开始搜索设备");
     this->m_buttonCoolDownTimer = new QTimer(this);
     m_buttonCoolDownTimer->setSingleShot(true); // 单次定时器
-    m_buttonCoolDownTimer->start(5000);
+    m_buttonCoolDownTimer->start(3000);
 
     // 将焦点设置到表格上，防止禁用按钮后焦点转移到清空列表按钮
     ui->tableWidgetSearch->setFocus();
@@ -396,7 +393,10 @@ void MainWindow::handleLoginTriggered()
 void MainWindow::onDeviceConnected()
 {
     QMessageBox::information(this, "设备连接", QString("成功与设备：%1建立连接").arg(UdpDiscovery::dev.lan1Ip));
-    m_statusLabel->setText(QString("已与设备 %1 建立连接").arg(UdpDiscovery::dev.lan1Ip));
+    m_statusLabel->clear();
+
+    TcpClient::TcpSocketState = true;
+    setConnectionStatus(TcpClient::TcpSocketState, UdpDiscovery::dev.lan1Ip, UdpDiscovery::dev.deviceName);
 
     ui->toolBar->hide();
     ui->toolBar_2->show();
@@ -419,9 +419,9 @@ void MainWindow::onDeviceConnected()
     ui->login_btn->setText("返回");
     ui->login_btn->setIconText("  返        回");
     ui->login_btn->setToolTip("返回");
-    TcpClient::TcpSocketState = true;
-    ui->stackedWidget->setCurrentIndex(1);
 
+    ui->stackedWidget->setCurrentIndex(1);
+    ui->stackedWidget_4->setCurrentIndex(0);   // 空页面
     Logger::instance()->log(Logger::Info, "MainWindow", "设备连接成功");
     appendDeviceLog(QString("连接成功：%1").arg(currentCheckedDeviceText()));
 }
@@ -434,6 +434,7 @@ void MainWindow::onDeviceDisconnected()
     // 回到主页面（索引 0）
     ui->stackedWidget->setCurrentIndex(0);
     TcpClient::TcpSocketState = false;
+    setConnectionStatus(TcpClient::TcpSocketState);
     ui->login_btn->setText("登陆后台");
 
     ui->toolBar->show();
@@ -639,69 +640,66 @@ void MainWindow::onOperationSuccess(const QString &op)
     }
     if (op == "Read Serial Config")
     {
-        if (ui->chooseAllPortCheckBox->checkState() != Qt::Checked)
-        {
-            m_serialPort = m_devCtl->currentDevice()->serialPorts().first();
-            ui->allPortShowTableWidget->setRowCount(1);     // 创建1行
-        }
-        else
-        {
-            m_serialPort = m_devCtl->currentDevice()->serialPorts().at(ui->comboBox_6->currentIndex());
-            ui->allPortShowTableWidget->setRowCount(m_devCtl->currentDevice()->serialPorts().size());
-        }
-
         // 从设备模型中获取最新的串口配置（使用第一个端口的配置作为示例）
         if (!m_devCtl->currentDevice()->serialPorts().isEmpty())
         {
             const QList<SerialPortConfig> configs = m_devCtl->currentDevice()->serialPorts();
-            const bool showAllPorts = ui->chooseAllPortCheckBox->checkState() == Qt::Checked;
-            const int displayRows = showAllPorts ? configs.size() : 1;
-            for (int row = 0; row < displayRows; row++)
+            const bool showAllPorts = ui->chooseAllPortCheckBox->isChecked();
+            if (!showAllPorts)
             {
-                const int configIndex = showAllPorts ? row : ui->comboBox_6->currentIndex();
-                if (configIndex < 0 || configIndex >= configs.size())
-                {
-                    continue;
-                }
-                m_serialPort = configs.at(configIndex);
-                ui->allPortShowTableWidget->setItem(row, 0, new QTableWidgetItem(QString::number(m_serialPort.index)));
-                ui->allPortShowTableWidget->setItem(row, 1, new QTableWidgetItem(m_serialPort.alias));
-                ui->allPortShowTableWidget->setItem(row, 2, new QTableWidgetItem(QString::number(m_serialPort.baudRate)));
-                ui->allPortShowTableWidget->setItem(row, 3, new QTableWidgetItem(QStringList{"", "", "", "", "", "5", "6", "7", "8"}.value(m_serialPort.dataBits)));
-                ui->allPortShowTableWidget->setItem(row, 4, new QTableWidgetItem(QStringList{"", "1", "2"}.value(m_serialPort.stopBits)));
-                ui->allPortShowTableWidget->setItem(row, 5, new QTableWidgetItem(QStringList{"None", "Odd", "Even", "Mark", "Space"}.value(m_serialPort.parity)));
-                ui->allPortShowTableWidget->setItem(row, 6, new QTableWidgetItem(QStringList{"RS-232", "RS-422", "RS-485-2", "RS-485-4"}.value(m_serialPort.interface, "?")));
-                ui->allPortShowTableWidget->setItem(row, 7, new QTableWidgetItem(QStringList{"None", "RTS/CTS", "XON/XOFF", "DTR/DSR"}.value(m_serialPort.flowControl)));
+                ui->allPortShowTableWidget->setRowCount(1);
+                m_serialPort = configs.first();
+                ui->allPortShowTableWidget->setItem(0, 0, new QTableWidgetItem(QString::number(m_serialPort.index)));
+                ui->allPortShowTableWidget->setItem(0, 1, new QTableWidgetItem(m_serialPort.alias));
+                ui->allPortShowTableWidget->setItem(0, 2, new QTableWidgetItem(QString::number(m_serialPort.baudRate)));
+                ui->allPortShowTableWidget->setItem(0, 3, new QTableWidgetItem(QStringList{"", "", "", "", "", "5", "6", "7", "8"}.value(m_serialPort.dataBits)));
+                ui->allPortShowTableWidget->setItem(0, 4, new QTableWidgetItem(QStringList{"", "1", "2"}.value(m_serialPort.stopBits)));
+                ui->allPortShowTableWidget->setItem(0, 5, new QTableWidgetItem(QStringList{"None", "Odd", "Even", "Mark", "Space"}.value(m_serialPort.parity)));
+                ui->allPortShowTableWidget->setItem(0, 6, new QTableWidgetItem(QStringList{"None", "RTS/CTS", "XON/XOFF", "DTR/DSR"}.value(m_serialPort.flowControl)));
+                ui->allPortShowTableWidget->setItem(0, 7, new QTableWidgetItem(QStringList{"RS-232", "RS-422", "RS-485-2", "RS-485-4"}.value(m_serialPort.interface, "?")));
             }
-            const int selectedIndex = ui->comboBox_6->currentIndex();
-            if (selectedIndex >= 0 && selectedIndex < configs.size())
+            else
             {
+                ui->allPortShowTableWidget->setRowCount(configs.size());
+                const int selectedIndex = ui->comboBox_6->currentIndex();
                 m_serialPort = configs.at(selectedIndex);
+                for (int row = 0; row < configs.size(); ++row)
+                {
+                    m_serialPort = configs.at(row);
+                    ui->allPortShowTableWidget->setItem(row, 0, new QTableWidgetItem(QString::number(m_serialPort.index)));
+                    ui->allPortShowTableWidget->setItem(row, 1, new QTableWidgetItem(m_serialPort.alias));
+                    ui->allPortShowTableWidget->setItem(row, 2, new QTableWidgetItem(QString::number(m_serialPort.baudRate)));
+                    ui->allPortShowTableWidget->setItem(row, 3, new QTableWidgetItem(QStringList{"", "", "", "", "", "5", "6", "7", "8"}.value(m_serialPort.dataBits)));
+                    ui->allPortShowTableWidget->setItem(row, 4, new QTableWidgetItem(QStringList{"", "1", "2"}.value(m_serialPort.stopBits)));
+                    ui->allPortShowTableWidget->setItem(row, 5, new QTableWidgetItem(QStringList{"None", "Odd", "Even", "Mark", "Space"}.value(m_serialPort.parity)));
+                    ui->allPortShowTableWidget->setItem(row, 6, new QTableWidgetItem(QStringList{"None", "RTS/CTS", "XON/XOFF", "DTR/DSR"}.value(m_serialPort.flowControl)));
+                    ui->allPortShowTableWidget->setItem(row, 7, new QTableWidgetItem(QStringList{"RS-232", "RS-422", "RS-485-2", "RS-485-4"}.value(m_serialPort.interface, "?")));
+                }
             }
-            m_PortOldName = m_serialPort.alias;
-            ui->alias_lineEdit->setText(m_serialPort.alias);
-            // 校验位：0=None, 1=Odd, 2=Even, 3=Mark, 4=Space
-            QString parityText = QStringList{"None", "Odd", "Even", "Mark", "Space"}.value(m_serialPort.parity, "None");
-            ui->check_bit_comboBox->setCurrentText(parityText);
-            // 数据位：5-8
-            QString dataBitsText = QString::number(m_serialPort.dataBits);
-            ui->data_bit_comboBox->setCurrentText(dataBitsText);
-            // 停止位：1-2
-            QString stopBitsText = QString::number(m_serialPort.stopBits);
-            ui->stop_bit_comboBox->setCurrentText(stopBitsText);
-            // 波特率
-            QString baudRateText = QString::number(m_serialPort.baudRate);
-            ui->baud_rate_comboBox->setCurrentText(baudRateText);
-            QString flowControlText = QStringList{"None", "RTS/CTS", "XON/XOFF", "DTR/DSR"}.value(m_serialPort.flowControl, "None");
-            ui->flow_control_comboBox->setCurrentText(flowControlText);   // 流控
-            // 接口类型：0=RS-232, 1=RS-422, 2=RS-485-2, 3=RS-485-4
-            QString interfaceText = QStringList{"RS-232", "RS-422", "RS-485-2", "RS-485-4"}.value(m_serialPort.interface, "RS-232");
-            ui->interface_mode_comboBox->setCurrentText(interfaceText);
-
-            m_lastSerialPortConfig = m_serialPort;
-            m_hasLastSerialPortConfig = true;
-            appendDeviceLog(QString("读取配置成功：串口%1配置").arg(m_serialPort.index));
         }
+        m_PortOldName = m_serialPort.alias;
+        ui->alias_lineEdit->setText(m_serialPort.alias);
+        // 校验位：0=None, 1=Odd, 2=Even, 3=Mark, 4=Space
+        QString parityText = QStringList{"None", "Odd", "Even", "Mark", "Space"}.value(m_serialPort.parity, "None");
+        ui->check_bit_comboBox->setCurrentText(parityText);
+        // 数据位：5-8
+        QString dataBitsText = QString::number(m_serialPort.dataBits);
+        ui->data_bit_comboBox->setCurrentText(dataBitsText);
+        // 停止位：1-2
+        QString stopBitsText = QString::number(m_serialPort.stopBits);
+        ui->stop_bit_comboBox->setCurrentText(stopBitsText);
+        // 波特率
+        QString baudRateText = QString::number(m_serialPort.baudRate);
+        ui->baud_rate_comboBox->setCurrentText(baudRateText);
+        QString flowControlText = QStringList{"None", "RTS/CTS", "XON/XOFF", "DTR/DSR"}.value(m_serialPort.flowControl, "None");
+        ui->flow_control_comboBox->setCurrentText(flowControlText);   // 流控
+        // 接口类型：0=RS-232, 1=RS-422, 2=RS-485-2, 3=RS-485-4
+        QString interfaceText = QStringList{"RS-232", "RS-422", "RS-485-2", "RS-485-4"}.value(m_serialPort.interface, "RS-232");
+        ui->interface_mode_comboBox->setCurrentText(interfaceText);
+
+        m_lastSerialPortConfig = m_serialPort;
+        m_hasLastSerialPortConfig = true;
+        appendDeviceLog(QString("读取配置成功：串口%1配置").arg(m_serialPort.index));
     }
     if (op == "Write Serial Config")
     {
@@ -1587,7 +1585,7 @@ void MainWindow::handleDriveFindTriggered()
             });
             for (int i = 1; i < ports.size(); ++i) {
                 if (ports.at(i).dataPort != ports.at(i - 1).dataPort + 1 ||
-                    ports.at(i).cmdPort != ports.at(i - 1).cmdPort + 1) {
+                        ports.at(i).cmdPort != ports.at(i - 1).cmdPort + 1) {
                     addWarn(QString("设备 %1 的 data/cmd 端口不是连续范围").arg(it.key()));
                     break;
                 }
@@ -1631,9 +1629,9 @@ void MainWindow::handleDriveFindTriggered()
             .arg(errorItems.size())
             .arg(warnItems.size())
             .arg(okItems.size());
-//    if (!summaryItems.isEmpty()) {
-//        summary += "\n\n主要问题：\n" + summaryItems.join('\n');
-//    }
+    //    if (!summaryItems.isEmpty()) {
+    //        summary += "\n\n主要问题：\n" + summaryItems.join('\n');
+    //    }
     summary += "\n\n具体检测信息请查看设备日志。";
 
     QMessageBox::information(this, "驱动检测", summary);
@@ -1657,8 +1655,8 @@ void MainWindow::handlePortMapTriggered()
         connect(m_configDialog, &QDialog::finished, [this]()
         {
             // 可以选择保留对话框实例或删除
-             m_configDialog->deleteLater();
-             m_configDialog = nullptr;
+            m_configDialog->deleteLater();
+            m_configDialog = nullptr;
         });
     }
 
@@ -1721,23 +1719,77 @@ void MainWindow::handleDeviceLogTriggered()
         return;
     }
 
+    showFloatingDeviceLogDock();
+}
+
+void MainWindow::initDeviceLogDock()
+{
+    ui->deviceLogDock->setAllowedAreas(Qt::BottomDockWidgetArea | Qt::RightDockWidgetArea);
+    ui->deviceLogDock->setMinimumHeight(kDeviceLogDockMinHeight);
+    ui->devLogTextEdit->setMinimumHeight(80);
+
+    addDockWidget(Qt::BottomDockWidgetArea, ui->deviceLogDock);
+    resizeDocks(QList<QDockWidget *>() << ui->deviceLogDock,
+                QList<int>() << kDeviceLogDockHeight,
+                Qt::Vertical);
+
+    ui->deviceLogDock->setFloating(true);
+    ui->deviceLogDock->resize(900, kDeviceLogFloatingMinHeight);
+    ui->deviceLogDock->hide();
+}
+
+void MainWindow::showFloatingDeviceLogDock()
+{
+    reserveBottomDockSpace();
+
     ui->deviceLogDock->setFloating(true);
 
-    int dockWidth = width() * 3 / 5;
-    if (dockWidth < 720) {
-        dockWidth = 720;
-    }
-    int dockHeight = height() / 3;
-    if (dockHeight < 240) {
-        dockHeight = 240;
-    }
+    int dockWidth = qMax(width() * 3 / 5, kDeviceLogFloatingMinWidth);
+    int dockHeight = qMax(height() / 3, kDeviceLogFloatingMinHeight);
 
     const QRect mainRect = frameGeometry();
+    QRect availableRect;
+    QScreen *currentScreen = QGuiApplication::screenAt(mainRect.center());
+    if (!currentScreen) {
+        currentScreen = QGuiApplication::primaryScreen();
+    }
+
+    if (currentScreen) {
+        availableRect = currentScreen->availableGeometry();
+        dockWidth = qMin(dockWidth, qMax(320, availableRect.width() - kDeviceLogFloatingMargin * 2));
+        dockHeight = qMin(dockHeight, qMax(180, availableRect.height() - kDeviceLogFloatingMargin * 2));
+    }
+
+    int dockX = mainRect.left() + kDeviceLogFloatingMargin;
+    int dockY = mainRect.bottom() - dockHeight - kDeviceLogFloatingMargin;
+
+    if (!availableRect.isNull()) {
+        const int minX = availableRect.left() + kDeviceLogFloatingMargin;
+        const int minY = availableRect.top() + kDeviceLogFloatingMargin;
+        const int maxX = qMax(minX, availableRect.right() - dockWidth - kDeviceLogFloatingMargin);
+        const int maxY = qMax(minY, availableRect.bottom() - dockHeight - kDeviceLogFloatingMargin);
+        dockX = qBound(minX, dockX, maxX);
+        dockY = qBound(minY, dockY, maxY);
+    }
+
     ui->deviceLogDock->resize(dockWidth, dockHeight);
-    ui->deviceLogDock->move(mainRect.left() + 40, mainRect.bottom() - dockHeight - 40);
+    ui->deviceLogDock->move(dockX, dockY);
     ui->deviceLogDock->show();
     ui->deviceLogDock->raise();
     ui->deviceLogDock->activateWindow();
+}
+
+void MainWindow::reserveBottomDockSpace()
+{
+    const int requiredMinimumHeight = m_mainWindowBaseMinimumHeight + kDeviceLogDockHeight;
+
+    if (minimumHeight() < requiredMinimumHeight) {
+        setMinimumHeight(requiredMinimumHeight);
+    }
+
+    if (height() < requiredMinimumHeight) {
+        resize(width(), requiredMinimumHeight);
+    }
 }
 
 void MainWindow::lockorunlock()
@@ -1750,7 +1802,6 @@ void MainWindow::lockorunlock()
     }
     ui->lineEdit->setEnabled(false);
     ui->stackedWidget_2->setCurrentIndex(2);   // 设备管理页
-    ui->stackedWidget_4->setCurrentIndex(0);   // 锁定子页
 }
 
 
@@ -1760,8 +1811,8 @@ void MainWindow::handlePortManageTriggered()
 
     menu->addAction("端口自检/重置/镜像", this, &MainWindow::Self_Check);
     menu->addAction("端口锁定", this, &MainWindow::portLockout);
+    menu->addAction("端口信息", this, &MainWindow::Status_information);
     menu->addAction("端口连接信息", this, &MainWindow::link_info);
-    menu->addAction("端口状态信息", this, &MainWindow::Status_information);
     menu->addAction("端口错误信息", this, &MainWindow::Error_Message);
 
     menu->exec(QCursor::pos());
@@ -2051,7 +2102,7 @@ void MainWindow::initTables()
                                                      });
 
     ui->allPortShowTableWidget->setColumnCount(8);  // 创建8列
-    ui->allPortShowTableWidget->setHorizontalHeaderLabels({"串口号", "串口别名", "波特率", "数据位", "停止位", "校验位", "接口类型", "流控"});
+    ui->allPortShowTableWidget->setHorizontalHeaderLabels({"串口号", "串口别名", "波特率", "数据位", "停止位", "校验位", "流控", "接口类型"});
 
     ui->tableWidget_7->setColumnCount(5);
     ui->tableWidget_7->setHorizontalHeaderLabels({"串口号", "串口别名", "工作模式", "TCP存活检测时间", "最大连接数"});
@@ -2067,7 +2118,7 @@ void MainWindow::initTables()
     /* 4. 端口错误计数 ui->tableWidget_5 */
     ui->tableWidget_5->setColumnCount(6);
     ui->tableWidget_5->setHorizontalHeaderLabels(
-    {"串口", "帧错误", "奇偶校验错误", "缓冲区溢出", "Break事件", "总计"});
+                {"串口", "帧错误", "奇偶校验错误", "缓冲区溢出", "Break事件", "总计"});
 
     /* 5. 端口锁定表 ui->tableWidget_4 */
     /* tableWidget_4：端口锁定表，加复选框 */
@@ -2150,7 +2201,7 @@ void MainWindow::initTitleBar()
     // 在工具栏中添加LOGO
     QLabel *widLabel = new QLabel(ui->toolBar_3);
     widLabel->setObjectName("widLabel");
-    widLabel->setPixmap(QPixmap(":/image/Logo2.png").scaled(170, 68, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+    widLabel->setPixmap(QPixmap(":/image/Logo2.png").scaled(180, 72, Qt::KeepAspectRatio, Qt::SmoothTransformation));
     ui->toolBar_3->insertWidget(ui->driveFind_btn, widLabel);
     widLabel->installEventFilter(this);
     initToolButtonObjectNames();
@@ -2696,16 +2747,78 @@ void MainWindow::initToolBarActionIcons()
 bool MainWindow::eventFilter(QObject *watched, QEvent *event)
 {
     if (watched->objectName() == "widLabel")
+    {
+        if (event->type() == QEvent::MouseButtonPress)
         {
-            if (event->type() == QEvent::MouseButtonPress)
-            {
-                m_toolBar3FilterEnabled = !m_toolBar3FilterEnabled;
-                setToolBar3Compact(!m_toolBar3FilterEnabled);
+            m_toolBar3FilterEnabled = !m_toolBar3FilterEnabled;
+            setToolBar3Compact(!m_toolBar3FilterEnabled);
 
-                return true;
-            }
+            return true;
         }
+    }
 
 
     return QMainWindow::eventFilter(watched, event);
+}
+
+void MainWindow::initStatusBar()
+{
+    m_connDotLabel = new QLabel(this);
+    m_connDotLabel->setFixedSize(10, 10);
+
+    m_connStatusLabel = new QLabel(this);
+    m_connStatusLabel->setMinimumWidth(180);
+
+    m_deviceNameStatusLabel = new QLabel("设备名称：--", this);
+    m_deviceNameStatusLabel->setMinimumWidth(220);
+
+    m_runtimeStatusLabel = new QLabel("运行时间：00:00:00", this);
+    m_runtimeStatusLabel->setMinimumWidth(180);
+
+    QWidget *leftSpacer = new QWidget(this);
+    leftSpacer->setFixedWidth(16);
+
+    QWidget *dotTextSpacer = new QWidget(this);
+    dotTextSpacer->setFixedWidth(100);
+
+    ui->statusbar->addWidget(leftSpacer);
+    ui->statusbar->addWidget(m_connDotLabel);
+    ui->statusbar->addWidget(m_connStatusLabel);
+    ui->statusbar->addWidget(dotTextSpacer);
+    ui->statusbar->addWidget(m_deviceNameStatusLabel);
+    ui->statusbar->addWidget(m_runtimeStatusLabel);
+
+    m_runtimeElapsed.start();
+
+    m_runtimeTimer = new QTimer(this);
+    connect(m_runtimeTimer, &QTimer::timeout, this, &MainWindow::updateRuntimeStatus);
+    m_runtimeTimer->start(1000);
+}
+
+void MainWindow::updateRuntimeStatus()
+{
+    const qint64 seconds = m_runtimeElapsed.elapsed() / 1000;
+    const int h = seconds / 3600;
+    const int m = seconds % 3600 / 60;
+    const int s = seconds % 60;
+    m_runtimeStatusLabel->setText(QString("运行时间：%1:%2:%3").arg(h, 2, 10, QChar('0')).arg(m, 2, 10, QChar('0')).arg(s, 2, 10, QChar('0')));
+}
+
+// 控制状态栏显示
+void MainWindow::setConnectionStatus(bool connected, const QString &ip, const QString &deviceName)
+{
+    const QString color = connected ? "#32d66b" : "#ff4d4f";
+
+    m_connDotLabel->setStyleSheet(QString("background-color: %1; border-radius: 5px;").arg(color));
+
+    if (connected)
+    {
+        m_connStatusLabel->setText(QString("已连接 %1").arg(ip));
+        m_deviceNameStatusLabel->setText(QString("设备名称：%1").arg(deviceName.isEmpty() ? "--" : deviceName));
+    }
+    else
+    {
+        m_connStatusLabel->setText("未连接");
+        m_deviceNameStatusLabel->setText("设备名称：--");
+    }
 }

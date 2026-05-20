@@ -590,10 +590,17 @@ QProgressBar::chunk {
 
 
 QToolBar#toolBar,
-QToolBar#toolBar_2,
-QToolBar#toolBar_3{
+QToolBar#toolBar_2{
     background-color: #163250;
     border-right: 0.5 solid rgba(43, 96, 155, 0.5);
+    padding: 0px;
+    margin: 0px;
+}
+
+QToolBar#toolBar_3
+{
+    background-color: #163250;
+    border-top: 0.5 solid rgba(43, 96, 155, 0.5);
     padding: 0px;
     margin: 0px;
 }

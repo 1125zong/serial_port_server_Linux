@@ -370,7 +370,7 @@ bool ProtocolParser::parseSerialConfigResponse(const QByteArray &payload, QList<
         // 解析流控
         config.flowControl = static_cast<quint8>(payload[offset + FLOW_CTRL]);
         // 解析接口类型
-//        config.interface = static_cast<quint8>(payload[offset + INTERFACE]);
+        config.interface = static_cast<quint8>(payload[offset + INTERFACE]);
         // 移动到下一个配置块
         offset = offset + BLOCK_SIZE;
         configs.append(config);

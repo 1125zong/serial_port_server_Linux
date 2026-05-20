@@ -1,0 +1,819 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QCheckBox Layout Mockup</title>
+  <style>
+    :root {
+      --bg: #132f4d;
+      --panel: #17395c;
+      --panel-2: #0f2b49;
+      --panel-3: #1b4169;
+      --line: #2e5d90;
+      --line-soft: rgba(90, 150, 205, .45);
+      --text: #d3e9ff;
+      --muted: #88add0;
+      --accent: #18aaf7;
+      --accent-2: #45d37a;
+      --warn: #ff4a3d;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: #081c31;
+      font-family: "Microsoft YaHei", "Segoe UI", sans-serif;
+      color: var(--text);
+    }
+
+    .window {
+      width: 1350px;
+      height: 768px;
+      overflow: hidden;
+      background: var(--bg);
+      border: 1px solid var(--line);
+      position: relative;
+    }
+
+    .titlebar {
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px 0 6px;
+      border-bottom: 1px solid rgba(73, 129, 176, .35);
+      background: #143250;
+      font-size: 15px;
+    }
+
+    .window-actions {
+      display: flex;
+      gap: 17px;
+      color: var(--accent);
+      font-size: 30px;
+      line-height: 1;
+      align-items: center;
+    }
+
+    .shell {
+      height: calc(100% - 70px);
+      display: grid;
+      grid-template-columns: 148px 1fr;
+      overflow: hidden;
+    }
+
+    .sidebar {
+      background: #143553;
+      border-right: 1px solid rgba(75, 132, 185, .35);
+      padding-top: 10px;
+    }
+
+    .brand {
+      height: 44px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0 10px;
+      font-size: 22px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: 0;
+      white-space: nowrap;
+    }
+
+    .brand-mark {
+      flex: 0 0 28px;
+      width: 28px;
+      height: 28px;
+      border: 2px solid #d5eeff;
+      position: relative;
+      opacity: .95;
+    }
+
+    .brand-mark::before,
+    .brand-mark::after {
+      content: "";
+      position: absolute;
+      inset: 8px;
+      border: 2px solid #d5eeff;
+    }
+
+    .nav {
+      margin-top: 14px;
+    }
+
+    .nav-item {
+      height: 49px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding-left: 16px;
+      color: #c5ddf7;
+      font-weight: 700;
+    }
+
+    .nav-item .icon {
+      width: 20px;
+      color: var(--accent);
+      text-align: center;
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .nav-item.active {
+      background: rgba(16, 42, 71, .62);
+      border-left: 3px solid var(--accent);
+      padding-left: 13px;
+      color: #fff;
+    }
+
+    .content {
+      min-width: 0;
+      display: grid;
+      grid-template-rows: 55px 1fr;
+    }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 45px;
+      padding-left: 58px;
+      border-bottom: 1px solid rgba(73, 129, 176, .25);
+      background: #153654;
+    }
+
+    .toolbar button {
+      border: 0;
+      background: transparent;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font: 700 16px "Microsoft YaHei", sans-serif;
+    }
+
+    .toolbar .tool-icon {
+      color: var(--accent);
+      font-size: 21px;
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-rows: 38px 1fr;
+      padding: 0 8px 10px 8px;
+      min-height: 0;
+    }
+
+    .tabs {
+      display: flex;
+      align-items: end;
+      gap: 2px;
+      padding-left: 0;
+    }
+
+    .tab {
+      height: 36px;
+      min-width: 88px;
+      padding: 0 14px;
+      border: 1px solid #1a3b5f;
+      border-bottom: none;
+      background: #102a47;
+      color: #c8ddf3;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 3px 3px 0 0;
+    }
+
+    .tab.active {
+      color: #fff;
+      background: #1a3b5f;
+      box-shadow: inset 0 2px 0 rgba(33, 179, 255, .45);
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 426px 1fr;
+      gap: 12px;
+      min-height: 0;
+    }
+
+    .panel {
+      border: 1px solid rgba(201, 201, 201, .55);
+      border-radius: 5px;
+      background: #17395c;
+      min-height: 0;
+      position: relative;
+    }
+
+    .panel-title {
+      position: absolute;
+      left: 13px;
+      top: -12px;
+      padding: 0 6px;
+      background: #17395c;
+      color: #d3e9ff;
+      font-weight: 800;
+      font-size: 16px;
+    }
+
+    .left-stack {
+      display: grid;
+      grid-template-rows: 292px 1fr;
+      gap: 13px;
+      min-height: 0;
+    }
+
+    .panel-inner {
+      padding: 22px 16px 14px 16px;
+      height: 100%;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .select-summary {
+      color: #9fc3e6;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .mini-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .mini-btn,
+    .primary-btn,
+    .ghost-btn,
+    .select-box,
+    .segment button,
+    .port-tile {
+      border: 1px solid var(--line);
+      background: #102e4e;
+      color: var(--text);
+      border-radius: 3px;
+      font-weight: 800;
+      font-family: "Microsoft YaHei", sans-serif;
+      letter-spacing: 0;
+    }
+
+    .mini-btn {
+      height: 28px;
+      padding: 0 10px;
+      color: #b9d9f7;
+    }
+
+    .mini-btn.active {
+      border-color: rgba(24, 170, 247, .9);
+      background: #165a8d;
+      color: #fff;
+    }
+
+    .port-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .port-tile {
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 11px;
+      color: #c6def8;
+      position: relative;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
+    }
+
+    .port-tile .num {
+      font-size: 16px;
+      color: #e0f2ff;
+      white-space: nowrap;
+    }
+
+    .port-tile .state {
+      width: 8px;
+      height: 8px;
+      border-radius: 99px;
+      background: #47759f;
+    }
+
+    .port-tile.selected {
+      background: #126295;
+      border-color: #1ab5ff;
+      color: #fff;
+    }
+
+    .port-tile.selected::before {
+      content: "✓";
+      width: 15px;
+      height: 15px;
+      border-radius: 3px;
+      border: 1px solid rgba(255,255,255,.55);
+      position: absolute;
+      right: 6px;
+      top: 5px;
+      background: #18aaf7;
+      font-size: 11px;
+      line-height: 14px;
+      text-align: center;
+    }
+
+    .port-tile.selected .state {
+      background: var(--accent-2);
+      box-shadow: 0 0 8px rgba(69, 211, 122, .65);
+    }
+
+    .hint-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 13px;
+    }
+
+    .hint-card {
+      border: 1px solid rgba(46, 93, 144, .65);
+      background: rgba(16, 42, 71, .55);
+      border-radius: 4px;
+      padding: 7px 10px;
+      min-height: 44px;
+    }
+
+    .hint-card .value {
+      color: #fff;
+      font-size: 18px;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .hint-card .label {
+      color: var(--muted);
+      margin-top: 6px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .config-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px 14px;
+      margin-top: 3px;
+    }
+
+    .field {
+      min-width: 0;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+      display: none;
+    }
+
+    .label {
+      color: #cfe8ff;
+      font-weight: 800;
+      margin-bottom: 7px;
+      font-size: 15px;
+    }
+
+    .select-box,
+    .text-input {
+      height: 36px;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 10px;
+      font-size: 16px;
+      background: #0f2d4c;
+      border: 1px solid var(--line);
+      border-radius: 3px;
+      color: #e3f2ff;
+      font-weight: 800;
+    }
+
+    .text-input {
+      color: #79a3c8;
+      font-size: 13px;
+      justify-content: start;
+      font-weight: 700;
+    }
+
+    .switch-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border: 1px solid rgba(46, 93, 144, .65);
+      background: rgba(15, 45, 76, .8);
+      padding: 9px 10px;
+      border-radius: 4px;
+      margin-top: 13px;
+    }
+
+    .switch-row {
+      display: none;
+    }
+
+    .switch {
+      width: 50px;
+      height: 24px;
+      border-radius: 99px;
+      background: #125b88;
+      border: 1px solid #1ab5ff;
+      position: relative;
+    }
+
+    .switch::after {
+      content: "";
+      width: 18px;
+      height: 18px;
+      border-radius: 99px;
+      background: #e7f5ff;
+      position: absolute;
+      right: 2px;
+      top: 2px;
+    }
+
+    .button-row {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 13px;
+    }
+
+    .primary-btn,
+    .ghost-btn {
+      height: 36px;
+      padding: 0 16px;
+      font-size: 15px;
+    }
+
+    .primary-btn {
+      background: #165a8d;
+      border-color: #258ed4;
+      color: #fff;
+    }
+
+    .ghost-btn {
+      background: #102e4e;
+      color: #b8d7f3;
+    }
+
+    .right-panel .panel-inner {
+      display: grid;
+      grid-template-rows: auto auto;
+      gap: 12px;
+      align-content: start;
+    }
+
+    .table-tools {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .segment {
+      display: flex;
+      gap: 0;
+    }
+
+    .segment button {
+      height: 32px;
+      border-radius: 0;
+      border-right: 0;
+      padding: 0 7px;
+      color: #b9d8f5;
+      font-size: 13px;
+    }
+
+    .segment button:first-child {
+      border-radius: 3px 0 0 3px;
+    }
+
+    .segment button:last-child {
+      border-right: 1px solid var(--line);
+      border-radius: 0 3px 3px 0;
+    }
+
+    .segment button.active {
+      background: #165a8d;
+      color: #fff;
+      border-color: #24a6ef;
+    }
+
+    .search {
+      width: 156px;
+      height: 32px;
+      border: 1px solid var(--line);
+      background: #0f2d4c;
+      border-radius: 3px;
+      color: #7fa8cf;
+      display: flex;
+      align-items: center;
+      padding-left: 11px;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    table {
+      width: 100%;
+      display: block;
+      align-self: start;
+      background: #102c49;
+      border: 1px solid var(--line);
+    }
+
+    thead,
+    tbody {
+      display: block;
+    }
+
+    tr {
+      display: grid;
+      grid-template-columns: 48px 68px 116px 96px 78px 78px 108px 150px;
+    }
+
+    tr > :nth-child(9) {
+      display: none;
+    }
+
+    th {
+      height: 40px;
+      background: #1b4169;
+      color: #d5ebff;
+      border: 1px solid var(--line);
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    th[style] {
+      width: auto !important;
+    }
+
+    td {
+      height: 38px;
+      border: 1px solid rgba(46, 93, 144, .48);
+      color: #c9e3fc;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    tr.selected td {
+      background: rgba(24, 170, 247, .14);
+      color: #fff;
+    }
+
+    .row-mark {
+      display: inline-flex;
+      width: 18px;
+      height: 18px;
+      border-radius: 3px;
+      border: 1px solid #4275a7;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      background: transparent;
+    }
+
+    tr.selected .row-mark {
+      background: #18aaf7;
+      border-color: #18aaf7;
+    }
+
+    .mode-pill {
+      display: inline-flex;
+      align-items: center;
+      height: 24px;
+      padding: 0 9px;
+      border-radius: 3px;
+      background: rgba(69, 211, 122, .12);
+      color: #8eebb1;
+      border: 1px solid rgba(69, 211, 122, .35);
+      font-size: 13px;
+    }
+
+    .footer {
+      height: 26px;
+      background: #0b253d;
+      border-top: 1px solid var(--line);
+      display: grid;
+      grid-template-columns: 280px 1fr 1fr;
+      align-items: center;
+      padding: 0 52px;
+      font-weight: 700;
+      color: #d0e7ff;
+    }
+
+    .dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      background: var(--accent-2);
+      border-radius: 99px;
+      margin-right: 7px;
+    }
+  </style>
+</head>
+<body>
+  <div class="window">
+    <div class="titlebar">
+      <div>设备查找</div>
+      <div class="window-actions"><span>−</span><span>▢</span><span>×</span></div>
+    </div>
+
+    <div class="shell">
+      <aside class="sidebar">
+        <div class="brand"><span class="brand-mark"></span><span>威嵌神州</span></div>
+        <div class="nav">
+          <div class="nav-item"><span class="icon">⚙</span><span>基本设置</span></div>
+          <div class="nav-item active"><span class="icon">▦</span><span>端口设置</span></div>
+          <div class="nav-item"><span class="icon">▥</span><span>设备总览</span></div>
+          <div class="nav-item"><span class="icon">⌘</span><span>端口管理</span></div>
+          <div class="nav-item"><span class="icon" style="color: var(--warn)">↺</span><span>重置设置</span></div>
+          <div class="nav-item"><span class="icon">←</span><span>返回</span></div>
+        </div>
+      </aside>
+
+      <main class="content">
+        <div class="toolbar">
+          <button><span class="tool-icon">⌕</span><span>驱动检测</span></button>
+          <button><span class="tool-icon">↗</span><span>端口映射</span></button>
+          <button><span class="tool-icon">🔗</span><span>断开连接</span></button>
+          <button><span class="tool-icon">▣</span><span>设备日志</span></button>
+        </div>
+
+        <div class="workspace">
+          <div class="tabs">
+            <div class="tab active">参数设置</div>
+            <div class="tab">模式设置</div>
+            <div class="tab">自检/重置</div>
+            <div class="tab">端口锁定</div>
+          </div>
+
+          <div class="layout">
+            <section class="left-stack">
+              <div class="panel">
+                <div class="panel-title">端口选择器</div>
+                <div class="panel-inner">
+                  <div class="section-head">
+                    <div class="select-summary">已选择 4 个端口，可批量同步配置</div>
+                    <div class="mini-actions">
+                      <button class="mini-btn active">全部</button>
+                      <button class="mini-btn">反选</button>
+                      <button class="mini-btn">清空</button>
+                    </div>
+                  </div>
+
+                  <div class="port-grid">
+                    <div class="port-tile selected"><span class="num">端口1</span><span class="state"></span></div>
+                    <div class="port-tile selected"><span class="num">端口2</span><span class="state"></span></div>
+                    <div class="port-tile"><span class="num">端口3</span><span class="state"></span></div>
+                    <div class="port-tile"><span class="num">端口4</span><span class="state"></span></div>
+                    <div class="port-tile selected"><span class="num">端口5</span><span class="state"></span></div>
+                    <div class="port-tile"><span class="num">端口6</span><span class="state"></span></div>
+                    <div class="port-tile"><span class="num">端口7</span><span class="state"></span></div>
+                    <div class="port-tile"><span class="num">端口8</span><span class="state"></span></div>
+                    <div class="port-tile"><span class="num">端口9</span><span class="state"></span></div>
+                    <div class="port-tile selected"><span class="num">端口10</span><span class="state"></span></div>
+                    <div class="port-tile"><span class="num">端口11</span><span class="state"></span></div>
+                    <div class="port-tile"><span class="num">端口12</span><span class="state"></span></div>
+                    <div class="port-tile"><span class="num">端口13</span><span class="state"></span></div>
+                    <div class="port-tile"><span class="num">端口14</span><span class="state"></span></div>
+                    <div class="port-tile"><span class="num">端口15</span><span class="state"></span></div>
+                    <div class="port-tile"><span class="num">端口16</span><span class="state"></span></div>
+                  </div>
+
+                  <div class="hint-row">
+                    <div class="hint-card"><div class="value">4</div><div class="label">选中端口</div></div>
+                    <div class="hint-card"><div class="value">16</div><div class="label">可配置端口</div></div>
+                    <div class="hint-card"><div class="value">同步</div><div class="label">当前操作模式</div></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="panel">
+                <div class="panel-title">当前端口配置</div>
+                <div class="panel-inner">
+                  <div class="config-grid">
+                    <div class="field">
+                      <div class="label">波特率</div>
+                      <div class="select-box"><span>9600</span><span>▾</span></div>
+                    </div>
+                    <div class="field">
+                      <div class="label">工作模式</div>
+                      <div class="select-box"><span>Real COM</span><span>▾</span></div>
+                    </div>
+                    <div class="field">
+                      <div class="label">数据位</div>
+                      <div class="select-box"><span>8</span><span>▾</span></div>
+                    </div>
+                    <div class="field">
+                      <div class="label">停止位</div>
+                      <div class="select-box"><span>1</span><span>▾</span></div>
+                    </div>
+                    <div class="field">
+                      <div class="label">校验位</div>
+                      <div class="select-box"><span>None</span><span>▾</span></div>
+                    </div>
+                    <div class="field">
+                      <div class="label">流控</div>
+                      <div class="select-box"><span>None</span><span>▾</span></div>
+                    </div>
+                    <div class="field full">
+                      <div class="label">端口别名</div>
+                      <div class="text-input">只能输入字母和数字，且不超过19字符</div>
+                    </div>
+                  </div>
+
+                  <div class="switch-row">
+                    <div>
+                      <div class="label" style="margin: 0;">启用配置同步</div>
+                      <div style="font-size: 12px; color: var(--muted); margin-top: 4px; font-weight: 700;">使用开关替代单个启用类复选框</div>
+                    </div>
+                    <div class="switch"></div>
+                  </div>
+
+                  <div class="button-row">
+                    <button class="ghost-btn">读取当前</button>
+                    <button class="primary-btn">应用到选中端口</button>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section class="panel right-panel">
+              <div class="panel-title">端口配置读取</div>
+              <div class="panel-inner">
+                <div class="table-tools">
+                  <div class="segment">
+                    <button class="active">全部</button>
+                    <button>已选端口</button>
+                    <button>Real COM</button>
+                    <button>TCP Server</button>
+                    <button>Redundant</button>
+                  </div>
+                  <div class="search">搜索端口 / 别名</div>
+                </div>
+
+                <table>
+                  <thead>
+                    <tr>
+                      <th style="width: 54px;">选择</th>
+                      <th style="width: 76px;">串口号</th>
+                      <th style="width: 112px;">串口别名</th>
+                      <th style="width: 104px;">波特率</th>
+                      <th style="width: 86px;">数据位</th>
+                      <th style="width: 86px;">停止位</th>
+                      <th style="width: 96px;">接口类型</th>
+                      <th style="width: 130px;">工作模式</th>
+                      <th>锁定的 MAC 地址</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="selected"><td><span class="row-mark">✓</span></td><td>1</td><td>COM-A</td><td>9600</td><td>8</td><td>1</td><td>RS-232</td><td><span class="mode-pill">Real COM</span></td><td>00:00:00:00:00:00</td></tr>
+                    <tr class="selected"><td><span class="row-mark">✓</span></td><td>2</td><td>COM-B</td><td>9600</td><td>8</td><td>1</td><td>RS-232</td><td><span class="mode-pill">Real COM</span></td><td>00:00:00:00:00:00</td></tr>
+                    <tr><td><span class="row-mark"></span></td><td>3</td><td>-</td><td>115200</td><td>8</td><td>1</td><td>RS-485</td><td>TCP Server</td><td>00:00:00:00:00:00</td></tr>
+                    <tr><td><span class="row-mark"></span></td><td>4</td><td>-</td><td>115200</td><td>8</td><td>1</td><td>RS-485</td><td>TCP Server</td><td>00:00:00:00:00:00</td></tr>
+                    <tr class="selected"><td><span class="row-mark">✓</span></td><td>5</td><td>DBG</td><td>9600</td><td>8</td><td>1</td><td>RS-232</td><td><span class="mode-pill">Real COM</span></td><td>00:00:00:00:00:00</td></tr>
+                    <tr><td><span class="row-mark"></span></td><td>6</td><td>-</td><td>9600</td><td>8</td><td>1</td><td>RS-232</td><td>Redundant</td><td>00:00:00:00:00:00</td></tr>
+                    <tr><td><span class="row-mark"></span></td><td>7</td><td>-</td><td>9600</td><td>8</td><td>1</td><td>RS-232</td><td>Redundant</td><td>00:00:00:00:00:00</td></tr>
+                    <tr><td><span class="row-mark"></span></td><td>8</td><td>-</td><td>9600</td><td>8</td><td>1</td><td>RS-232</td><td>TCP Server</td><td>00:00:00:00:00:00</td></tr>
+                    <tr><td><span class="row-mark"></span></td><td>9</td><td>-</td><td>9600</td><td>8</td><td>1</td><td>RS-232</td><td>TCP Server</td><td>00:00:00:00:00:00</td></tr>
+                    <tr class="selected"><td><span class="row-mark">✓</span></td><td>10</td><td>RS485</td><td>9600</td><td>8</td><td>1</td><td>RS-485</td><td><span class="mode-pill">Real COM</span></td><td>00:00:00:00:00:00</td></tr>
+                    <tr><td><span class="row-mark"></span></td><td>11</td><td>-</td><td>9600</td><td>8</td><td>1</td><td>RS-232</td><td>TCP Server</td><td>00:00:00:00:00:00</td></tr>
+                    <tr><td><span class="row-mark"></span></td><td>12</td><td>-</td><td>9600</td><td>8</td><td>1</td><td>RS-232</td><td>TCP Server</td><td>00:00:00:00:00:00</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <footer class="footer">
+      <div><span class="dot"></span>已连接 192.168.5.123</div>
+      <div>设备名称： Qport1255</div>
+      <div>运行时间： 00:02:16</div>
+    </footer>
+  </div>
+</body>
+</html>

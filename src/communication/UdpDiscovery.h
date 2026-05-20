@@ -87,7 +87,7 @@ private:
     bool m_isSearching;
 
     static constexpr quint16 UDP_PORT = 48899;
-    static constexpr int SEARCH_TIMEOUT = 5000;  // 搜索超时(ms)
+    static constexpr int SEARCH_TIMEOUT = 3000;  // 搜索超时(ms)
 };
 
 #endif // UDPDISCOVERY_H

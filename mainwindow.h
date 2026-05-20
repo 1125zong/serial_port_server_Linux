@@ -26,6 +26,24 @@
 #include <QMenu>
 #include <QLabel>
 #include <QStringList>
+#include <QMetaObject>
+#include <QTime>
+#include <QElapsedTimer>
+#include <QDir>
+#include <QProcess>
+#include <QTextStream>
+#include <QSet>
+#include <QMap>
+#include <QAction>
+#include <QStyle>
+#include <QToolBar>
+#include <QToolButton>
+#include <algorithm>
+
+#if defined(Q_OS_LINUX)
+#include <sys/stat.h>
+#include <sys/sysmacros.h>
+#endif
 
 // 委托类
 #include "src/hosting/checkboxcenterdelegate.h"
@@ -81,7 +99,6 @@ private slots:
     void handlePortMapTriggered();
     void handlePortSettingsTriggered();
     void on_name_modify_clicked();
-
     /* ======= DeviceController 回调 ======= */
     void onDeviceDiscovered(const DeviceInfo &device);
     void onSearchCompleted(int count);
@@ -90,10 +107,8 @@ private slots:
     void onConnectionError(const QString &err);
     void onOperationSuccess(const QString &op);
     void onOperationFailed(const QString &op, const QString &err);
-
     void handleDeviceLogTriggered();
     void lockorunlock();
-
     void handlePortManageTriggered();
     void Self_Check();
     void portLockout();
@@ -106,27 +121,16 @@ private slots:
     void showUpgradeMask(int totalPkts);
     void onItemChanged(QTableWidgetItem *item);
     void handleDisconnectTriggered();
-
-    //2026.01.20新增
-    //    void onOpenConfigDialog();
-
     void on_tabWidget_currentChanged(int index);
-
     void on_work_mode_comboBox_activated(const QString &arg1);
-
     void on_alias_lineEdit_textChanged(const QString &arg1);
-
     void on_comboBox_7_activated(int index);
-
     void on_comboBox_6_activated(int index);
-
     void on_new_name_cursorPositionChanged(int arg1, int arg2);
-
     void on_alias_lineEdit_cursorPositionChanged(int arg1, int arg2);
-    
     void on_chooseAllPortCheckBox_stateChanged(int arg1);
-
     void on_PortNewNameCBox_stateChanged(int arg1);
+    void updateRuntimeStatus();
 
 private:
     void initTables();
@@ -145,9 +149,11 @@ private:
     void setToolBar3Compact(bool compact);
     void initToolButtonObjectNames();
     void initToolBarActionIcons();
-
-protected:
-    bool eventFilter(QObject *watched, QEvent *event) override;
+    void initStatusBar();
+    void setConnectionStatus(bool connected, const QString &ip = QString(), const QString &deviceName = QString());
+    void initDeviceLogDock();
+    void showFloatingDeviceLogDock();
+    void reserveBottomDockSpace();
 
 private:
     Ui::MainWindow *ui;
@@ -173,10 +179,17 @@ private:
     QString m_PortOldName;
     ConfigDialog* m_configDialog;
     QLabel* m_statusLabel;
-    //    struct LockPortsResult {
-    //        QByteArray ports;    // 实际使用的端口数据
-    //        QByteArray usedCount;       // 实际使用的端口个数
-    //    };
+    int m_mainWindowBaseMinimumHeight = 0;
+    QLabel *m_connDotLabel = nullptr;
+    QLabel *m_connStatusLabel = nullptr;
+    QLabel *m_deviceNameStatusLabel = nullptr;
+    QLabel *m_runtimeStatusLabel = nullptr;
+    QTimer *m_runtimeTimer = nullptr;
+    QElapsedTimer m_runtimeElapsed;
+
+protected:
+    bool eventFilter(QObject *watched, QEvent *event) override;
 
 };
+
 #endif // MAINWINDOW_H

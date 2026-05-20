@@ -1,0 +1,1170 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Port UI Mockups</title>
+  <style>
+    :root {
+      --bg: #132f4d;
+      --sidebar: #143553;
+      --bar: #153654;
+      --panel: #17395c;
+      --field: #0f2d4c;
+      --table: #102c49;
+      --header: #1b4169;
+      --line: #2d5a8c;
+      --line-soft: rgba(78, 137, 190, .45);
+      --text: #d5ebff;
+      --muted: #8eb3d5;
+      --accent: #18aaf7;
+      --green: #45d37a;
+      --yellow: #e6b94f;
+      --red: #ff5a4e;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: #06192b;
+      color: var(--text);
+      font-family: "Microsoft YaHei", "Segoe UI", sans-serif;
+      font-weight: 700;
+    }
+
+    .mockup {
+      width: 1350px;
+      height: 768px;
+      overflow: hidden;
+      background: var(--bg);
+      border: 1px solid var(--line);
+      display: none;
+      position: relative;
+    }
+
+    .mockup.active {
+      display: block;
+    }
+
+    .titlebar {
+      height: 44px;
+      padding: 0 16px 0 6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(73, 129, 176, .35);
+      background: #143250;
+      font-size: 15px;
+    }
+
+    .window-actions {
+      display: flex;
+      gap: 17px;
+      align-items: center;
+      color: var(--accent);
+      font-size: 30px;
+      line-height: 1;
+    }
+
+    .shell {
+      height: calc(100% - 70px);
+      display: grid;
+      grid-template-columns: 148px 1fr;
+      overflow: hidden;
+    }
+
+    .sidebar {
+      background: var(--sidebar);
+      border-right: 1px solid rgba(75, 132, 185, .35);
+      padding-top: 10px;
+    }
+
+    .brand {
+      height: 44px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0 10px;
+      color: #fff;
+      font-size: 22px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .brand-mark {
+      flex: 0 0 28px;
+      width: 28px;
+      height: 28px;
+      border: 2px solid #d5eeff;
+      position: relative;
+    }
+
+    .brand-mark::after {
+      content: "";
+      position: absolute;
+      inset: 7px;
+      border: 2px solid #d5eeff;
+    }
+
+    .nav {
+      margin-top: 14px;
+    }
+
+    .nav-item {
+      height: 49px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding-left: 16px;
+      color: #c5ddf7;
+      font-weight: 800;
+    }
+
+    .nav-item.active {
+      background: rgba(16, 42, 71, .62);
+      border-left: 3px solid var(--accent);
+      padding-left: 13px;
+      color: #fff;
+    }
+
+    .nav-item .icon {
+      width: 20px;
+      color: var(--accent);
+      text-align: center;
+      font-size: 20px;
+    }
+
+    .content {
+      display: grid;
+      grid-template-rows: 55px 1fr;
+      min-width: 0;
+    }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 46px;
+      padding-left: 58px;
+      background: var(--bar);
+      border-bottom: 1px solid rgba(73, 129, 176, .25);
+    }
+
+    .toolbar button {
+      border: 0;
+      background: transparent;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font: 800 16px "Microsoft YaHei", sans-serif;
+    }
+
+    .tool-icon {
+      color: var(--accent);
+      font-size: 21px;
+    }
+
+    .workspace {
+      min-height: 0;
+      padding: 0 8px 10px 8px;
+      display: grid;
+      grid-template-rows: 38px 1fr;
+    }
+
+    .tabs {
+      display: flex;
+      align-items: end;
+      gap: 2px;
+    }
+
+    .tab {
+      height: 36px;
+      min-width: 88px;
+      padding: 0 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #c8ddf3;
+      background: #102a47;
+      border: 1px solid #1a3b5f;
+      border-bottom: 0;
+      border-radius: 3px 3px 0 0;
+      font-weight: 900;
+    }
+
+    .tab.active {
+      color: #fff;
+      background: #1a3b5f;
+      box-shadow: inset 0 2px 0 rgba(33, 179, 255, .45);
+    }
+
+    .page-grid {
+      min-height: 0;
+      display: grid;
+      gap: 12px;
+    }
+
+    .grid-setting {
+      grid-template-columns: 424px 1fr;
+    }
+
+    .grid-self {
+      grid-template-columns: 426px 1fr;
+    }
+
+    .grid-lock {
+      grid-template-columns: 1fr 300px;
+    }
+
+    .stack {
+      min-height: 0;
+      display: grid;
+      gap: 12px;
+    }
+
+    .setting-stack {
+      grid-template-rows: 252px 1fr;
+    }
+
+    .self-stack {
+      grid-template-rows: 252px 1fr;
+    }
+
+    .panel {
+      min-height: 0;
+      position: relative;
+      background: var(--panel);
+      border: 1px solid rgba(201, 201, 201, .55);
+      border-radius: 5px;
+    }
+
+    .panel-title {
+      position: absolute;
+      top: -12px;
+      left: 13px;
+      padding: 0 6px;
+      background: var(--panel);
+      color: var(--text);
+      font-size: 16px;
+      font-weight: 900;
+    }
+
+    .panel-inner {
+      height: 100%;
+      padding: 22px 16px 12px;
+      min-height: 0;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .summary {
+      color: #a5c9ea;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .port-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .port-tile {
+      height: 36px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 10px;
+      border: 1px solid var(--line);
+      border-radius: 3px;
+      background: #102e4e;
+      color: #d5ebff;
+      font-size: 16px;
+      white-space: nowrap;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
+    }
+
+    .port-tile .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 99px;
+      background: #4f7da5;
+    }
+
+    .port-tile.selected {
+      background: #126295;
+      border-color: #1ab5ff;
+      color: #fff;
+    }
+
+    .port-tile.selected::after {
+      content: "✓";
+      width: 15px;
+      height: 15px;
+      position: absolute;
+      right: 6px;
+      top: 5px;
+      border-radius: 3px;
+      background: #18aaf7;
+      border: 1px solid rgba(255,255,255,.55);
+      font-size: 11px;
+      line-height: 14px;
+      text-align: center;
+    }
+
+    .port-tile.selected .dot {
+      background: var(--green);
+      box-shadow: 0 0 8px rgba(69, 211, 122, .65);
+    }
+
+    .mini-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .mini-btn,
+    .primary-btn,
+    .ghost-btn,
+    .danger-btn,
+    .select-box,
+    .text-input,
+    .segment button,
+    .mode-card {
+      border: 1px solid var(--line);
+      background: #102e4e;
+      color: var(--text);
+      border-radius: 3px;
+      font-family: "Microsoft YaHei", sans-serif;
+      font-weight: 900;
+    }
+
+    .mini-btn {
+      height: 28px;
+      padding: 0 10px;
+      color: #b9d9f7;
+    }
+
+    .mini-btn.active,
+    .segment button.active {
+      border-color: rgba(24, 170, 247, .9);
+      background: #165a8d;
+      color: #fff;
+    }
+
+    .metric-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .metric {
+      min-height: 42px;
+      padding: 6px 10px;
+      border: 1px solid rgba(46, 93, 144, .65);
+      border-radius: 4px;
+      background: rgba(16, 42, 71, .55);
+    }
+
+    .metric .value {
+      color: #fff;
+      font-size: 18px;
+      line-height: 1;
+    }
+
+    .metric .label {
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 11px 14px;
+    }
+
+    .label {
+      margin-bottom: 6px;
+      color: #cfe8ff;
+      font-size: 15px;
+    }
+
+    .select-box,
+    .text-input {
+      width: 100%;
+      height: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 10px;
+      background: var(--field);
+      color: #e3f2ff;
+      font-size: 15px;
+    }
+
+    .text-input {
+      color: #86add1;
+      justify-content: flex-start;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .mode-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .mode-card {
+      height: 54px;
+      padding: 8px 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      color: #bad8f4;
+    }
+
+    .mode-card.active {
+      background: #126295;
+      border-color: #1ab5ff;
+      color: #fff;
+    }
+
+    .mode-card .small {
+      margin-top: 4px;
+      color: #91c4eb;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .button-row {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .primary-btn,
+    .ghost-btn,
+    .danger-btn {
+      height: 36px;
+      padding: 0 16px;
+      font-size: 15px;
+    }
+
+    .primary-btn {
+      background: #165a8d;
+      border-color: #258ed4;
+      color: #fff;
+    }
+
+    .danger-btn {
+      color: #fff;
+      background: rgba(255, 90, 78, .16);
+      border-color: rgba(255, 90, 78, .85);
+    }
+
+    .table-panel .panel-inner {
+      display: grid;
+      grid-template-rows: auto auto;
+      gap: 12px;
+      align-content: start;
+    }
+
+    .table-tools {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .segment {
+      display: flex;
+      gap: 0;
+    }
+
+    .segment button {
+      height: 32px;
+      padding: 0 8px;
+      border-radius: 0;
+      border-right: 0;
+      color: #b9d8f5;
+      font-size: 13px;
+    }
+
+    .segment button:first-child {
+      border-radius: 3px 0 0 3px;
+    }
+
+    .segment button:last-child {
+      border-right: 1px solid var(--line);
+      border-radius: 0 3px 3px 0;
+    }
+
+    .search {
+      width: 154px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      padding-left: 11px;
+      border: 1px solid var(--line);
+      border-radius: 3px;
+      background: var(--field);
+      color: #8fb2d4;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .data-table {
+      border: 1px solid var(--line);
+      background: var(--table);
+      overflow: hidden;
+    }
+
+    .row {
+      display: grid;
+      min-height: 38px;
+    }
+
+    .row.header {
+      min-height: 40px;
+      background: var(--header);
+      color: #d5ebff;
+    }
+
+    .cell {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-right: 1px solid rgba(46, 93, 144, .65);
+      border-bottom: 1px solid rgba(46, 93, 144, .55);
+      padding: 0 6px;
+      color: #d7ecff;
+      font-weight: 900;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .row .cell:last-child {
+      border-right: 0;
+    }
+
+    .row.selected .cell {
+      background: rgba(24, 170, 247, .14);
+      color: #fff;
+    }
+
+    .check {
+      width: 18px;
+      height: 18px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #4275a7;
+      border-radius: 3px;
+      color: #fff;
+      font-size: 12px;
+    }
+
+    .selected .check,
+    .check.on {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .pill {
+      height: 24px;
+      display: inline-flex;
+      align-items: center;
+      padding: 0 9px;
+      border-radius: 3px;
+      font-size: 13px;
+      border: 1px solid rgba(69, 211, 122, .35);
+      background: rgba(69, 211, 122, .12);
+      color: #8eebb1;
+    }
+
+    .pill.warn {
+      border-color: rgba(230, 185, 79, .45);
+      background: rgba(230, 185, 79, .12);
+      color: #f2d486;
+    }
+
+    .pill.red {
+      border-color: rgba(255, 90, 78, .55);
+      background: rgba(255, 90, 78, .12);
+      color: #ffaba4;
+    }
+
+    .pill.blue {
+      border-color: rgba(24, 170, 247, .45);
+      background: rgba(24, 170, 247, .12);
+      color: #92d8ff;
+    }
+
+    .setting-table .row {
+      grid-template-columns: 48px 68px 116px 96px 78px 78px 108px 150px;
+    }
+
+    .grid-setting .metric-row,
+    .grid-self .metric-row {
+      display: none;
+    }
+
+    .setting-stack .form-grid > div:nth-child(7),
+    .setting-stack .form-grid > div:nth-child(8) {
+      display: none;
+    }
+
+    .mode-param-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px 14px;
+      margin-top: 12px;
+    }
+
+    .command-note {
+      margin-top: 10px;
+      padding: 8px 12px;
+      border: 1px solid rgba(24, 170, 247, .35);
+      border-radius: 4px;
+      background: rgba(24, 170, 247, .08);
+      color: #a9d7f7;
+      font-size: 13px;
+      line-height: 1.42;
+      font-weight: 700;
+    }
+
+    .setting-stack .command-note {
+      font-size: 12px;
+    }
+
+    .mode-table .row {
+      grid-template-columns: 60px 108px 144px 146px 108px 126px;
+    }
+
+    .result-table .row {
+      grid-template-columns: 70px 120px 118px 1fr 142px;
+    }
+
+    .lock-table .row {
+      grid-template-columns: 80px 138px 1fr 132px;
+      min-height: 32px;
+    }
+
+    .lock-table .row:nth-child(n+14) {
+      display: none;
+    }
+
+    .summary-panel .panel-inner > button {
+      display: none;
+    }
+
+    .operation-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .operation-card {
+      min-height: 132px;
+      padding: 14px;
+      border: 1px solid var(--line-soft);
+      border-radius: 5px;
+      background: rgba(16, 42, 71, .42);
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 8px;
+    }
+
+    .operation-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 18px;
+      color: #fff;
+    }
+
+    .operation-desc {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+      font-weight: 700;
+    }
+
+    .mirror-box {
+      margin-top: 12px;
+      padding: 12px;
+      border: 1px solid var(--line-soft);
+      border-radius: 5px;
+      background: rgba(16, 42, 71, .42);
+    }
+
+    .mirror-grid {
+      margin-top: 9px;
+      display: grid;
+      grid-template-columns: 1fr 1fr 80px;
+      gap: 10px;
+      align-items: end;
+    }
+
+    .switch {
+      width: 50px;
+      height: 24px;
+      border-radius: 99px;
+      background: #125b88;
+      border: 1px solid #1ab5ff;
+      position: relative;
+    }
+
+    .switch::after {
+      content: "";
+      width: 18px;
+      height: 18px;
+      position: absolute;
+      right: 2px;
+      top: 2px;
+      border-radius: 99px;
+      background: #e7f5ff;
+    }
+
+    .lock-tools {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .lock-main .panel-inner {
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 0;
+    }
+
+    .lock-actions {
+      height: 54px;
+      margin-top: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid var(--line-soft);
+    }
+
+    .summary-panel .panel-inner {
+      display: grid;
+      grid-template-rows: auto auto 1fr auto;
+      gap: 12px;
+    }
+
+    .big-number {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .big-number .metric {
+      min-height: 78px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .big-number .value {
+      font-size: 30px;
+    }
+
+    .selected-list {
+      border: 1px solid var(--line-soft);
+      border-radius: 5px;
+      background: rgba(16, 42, 71, .42);
+      padding: 10px;
+    }
+
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .tag {
+      height: 28px;
+      display: inline-flex;
+      align-items: center;
+      padding: 0 10px;
+      border-radius: 3px;
+      border: 1px solid var(--line);
+      background: #102e4e;
+      color: #d7ecff;
+      font-size: 13px;
+    }
+
+    .footer {
+      height: 26px;
+      padding: 0 52px;
+      display: grid;
+      grid-template-columns: 280px 1fr 1fr;
+      align-items: center;
+      background: #0b253d;
+      border-top: 1px solid var(--line);
+      color: #d0e7ff;
+      font-weight: 800;
+    }
+
+    .status-dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      margin-right: 7px;
+      border-radius: 99px;
+      background: var(--green);
+    }
+  </style>
+</head>
+<body>
+  <section class="mockup active" data-page="setting">
+    <div class="titlebar"><span>设备查找</span><div class="window-actions"><span>−</span><span>▢</span><span>×</span></div></div>
+    <div class="shell">
+      <aside class="sidebar">
+        <div class="brand"><span class="brand-mark"></span><span>威嵌神州</span></div>
+        <div class="nav">
+          <div class="nav-item"><span class="icon">⚙</span><span>基本设置</span></div>
+          <div class="nav-item active"><span class="icon">▦</span><span>端口设置</span></div>
+          <div class="nav-item"><span class="icon">▥</span><span>设备总览</span></div>
+          <div class="nav-item"><span class="icon">⌘</span><span>端口管理</span></div>
+          <div class="nav-item"><span class="icon" style="color: var(--red)">↺</span><span>重置设置</span></div>
+          <div class="nav-item"><span class="icon">←</span><span>返回</span></div>
+        </div>
+      </aside>
+      <main class="content">
+        <div class="toolbar">
+          <button><span class="tool-icon">⌕</span><span>驱动检测</span></button>
+          <button><span class="tool-icon">↗</span><span>端口映射</span></button>
+          <button><span class="tool-icon">🔗</span><span>断开连接</span></button>
+          <button><span class="tool-icon">▣</span><span>设备日志</span></button>
+        </div>
+        <div class="workspace">
+          <div class="tabs"><div class="tab active">参数设置</div><div class="tab">模式设置</div><div class="tab">自检/重置</div><div class="tab">端口锁定</div><div class="tab">端口信息</div></div>
+          <div class="page-grid grid-setting">
+            <div class="stack setting-stack">
+              <div class="panel">
+                <div class="panel-title">同步端口选择</div>
+                <div class="panel-inner">
+                  <div class="section-head">
+                    <div class="summary">当前端口：端口1，已选择 4 个同步端口</div>
+                    <div class="mini-actions"><button class="mini-btn active">全选</button><button class="mini-btn">反选</button><button class="mini-btn">清空</button></div>
+                  </div>
+                  <div class="port-grid">
+                    <div class="port-tile selected">端口1<span class="dot"></span></div><div class="port-tile selected">端口2<span class="dot"></span></div><div class="port-tile">端口3<span class="dot"></span></div><div class="port-tile">端口4<span class="dot"></span></div>
+                    <div class="port-tile selected">端口5<span class="dot"></span></div><div class="port-tile">端口6<span class="dot"></span></div><div class="port-tile">端口7<span class="dot"></span></div><div class="port-tile">端口8<span class="dot"></span></div>
+                    <div class="port-tile">端口9<span class="dot"></span></div><div class="port-tile selected">端口10<span class="dot"></span></div><div class="port-tile">端口11<span class="dot"></span></div><div class="port-tile">端口12<span class="dot"></span></div>
+                    <div class="port-tile">端口13<span class="dot"></span></div><div class="port-tile">端口14<span class="dot"></span></div><div class="port-tile">端口15<span class="dot"></span></div><div class="port-tile">端口16<span class="dot"></span></div>
+                  </div>
+                  <div class="metric-row"><div class="metric"><div class="value">4</div><div class="label">选中端口</div></div><div class="metric"><div class="value">16</div><div class="label">可配置端口</div></div><div class="metric"><div class="value">同步</div><div class="label">写入范围</div></div></div>
+                </div>
+              </div>
+              <div class="panel">
+                <div class="panel-title">端口配置</div>
+                <div class="panel-inner">
+                  <div class="form-grid">
+                    <div><div class="label">波特率</div><div class="select-box"><span>9600</span><span>▾</span></div></div>
+                    <div><div class="label">接口类型</div><div class="select-box"><span>RS-232</span><span>▾</span></div></div>
+                    <div><div class="label">数据位</div><div class="select-box"><span>8</span><span>▾</span></div></div>
+                    <div><div class="label">停止位</div><div class="select-box"><span>1</span><span>▾</span></div></div>
+                    <div><div class="label">校验位</div><div class="select-box"><span>None</span><span>▾</span></div></div>
+                    <div><div class="label">流控</div><div class="select-box"><span>None</span><span>▾</span></div></div>
+                    <div><div class="label">端口别名</div><div class="text-input">COM-A</div></div>
+                    <div><div class="label">TCP存活检测</div><div class="select-box"><span>0 /min</span><span>▾</span></div></div>
+                  </div>
+                  <div class="command-note">此页只发送串口参数配置命令：波特率、数据位、停止位、校验位、流控、接口类型、端口别名。不会修改端口工作模式。</div>
+                  <div class="button-row"><button class="ghost-btn">读取串口参数</button><button class="primary-btn">应用串口参数</button></div>
+                </div>
+              </div>
+            </div>
+            <section class="panel table-panel">
+              <div class="panel-title">串口参数读取</div>
+              <div class="panel-inner">
+                <div class="table-tools">
+                  <div class="segment"><button class="active">全部</button><button>已选端口</button><button>RS-232</button><button>RS-485</button></div>
+                  <div class="search">搜索端口 / 别名</div>
+                </div>
+                <div class="data-table setting-table">
+                  <div class="row header"><div class="cell">选择</div><div class="cell">串口号</div><div class="cell">串口别名</div><div class="cell">波特率</div><div class="cell">数据位</div><div class="cell">停止位</div><div class="cell">接口类型</div><div class="cell">流控</div></div>
+                  <div class="row selected"><div class="cell"><span class="check">✓</span></div><div class="cell">1</div><div class="cell">COM-A</div><div class="cell">9600</div><div class="cell">8</div><div class="cell">1</div><div class="cell">RS-232</div><div class="cell">None</div></div>
+                  <div class="row selected"><div class="cell"><span class="check">✓</span></div><div class="cell">2</div><div class="cell">COM-B</div><div class="cell">9600</div><div class="cell">8</div><div class="cell">1</div><div class="cell">RS-232</div><div class="cell">None</div></div>
+                  <div class="row"><div class="cell"><span class="check"></span></div><div class="cell">3</div><div class="cell">-</div><div class="cell">115200</div><div class="cell">8</div><div class="cell">1</div><div class="cell">RS-485</div><div class="cell">None</div></div>
+                  <div class="row"><div class="cell"><span class="check"></span></div><div class="cell">4</div><div class="cell">-</div><div class="cell">115200</div><div class="cell">8</div><div class="cell">1</div><div class="cell">RS-485</div><div class="cell">None</div></div>
+                  <div class="row selected"><div class="cell"><span class="check">✓</span></div><div class="cell">5</div><div class="cell">DBG</div><div class="cell">9600</div><div class="cell">8</div><div class="cell">1</div><div class="cell">RS-232</div><div class="cell">None</div></div>
+                  <div class="row"><div class="cell"><span class="check"></span></div><div class="cell">6</div><div class="cell">-</div><div class="cell">9600</div><div class="cell">8</div><div class="cell">1</div><div class="cell">RS-232</div><div class="cell">None</div></div>
+                  <div class="row"><div class="cell"><span class="check"></span></div><div class="cell">7</div><div class="cell">-</div><div class="cell">9600</div><div class="cell">8</div><div class="cell">1</div><div class="cell">RS-232</div><div class="cell">None</div></div>
+                  <div class="row"><div class="cell"><span class="check"></span></div><div class="cell">8</div><div class="cell">-</div><div class="cell">9600</div><div class="cell">8</div><div class="cell">1</div><div class="cell">RS-232</div><div class="cell">None</div></div>
+                  <div class="row"><div class="cell"><span class="check"></span></div><div class="cell">9</div><div class="cell">-</div><div class="cell">9600</div><div class="cell">8</div><div class="cell">1</div><div class="cell">RS-232</div><div class="cell">None</div></div>
+                  <div class="row selected"><div class="cell"><span class="check">✓</span></div><div class="cell">10</div><div class="cell">RS485</div><div class="cell">9600</div><div class="cell">8</div><div class="cell">1</div><div class="cell">RS-485</div><div class="cell">None</div></div>
+                  <div class="row"><div class="cell"><span class="check"></span></div><div class="cell">11</div><div class="cell">-</div><div class="cell">9600</div><div class="cell">8</div><div class="cell">1</div><div class="cell">RS-232</div><div class="cell">None</div></div>
+                  <div class="row"><div class="cell"><span class="check"></span></div><div class="cell">12</div><div class="cell">-</div><div class="cell">9600</div><div class="cell">8</div><div class="cell">1</div><div class="cell">RS-232</div><div class="cell">None</div></div>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+      </main>
+    </div>
+    <footer class="footer"><div><span class="status-dot"></span>已连接 192.168.5.123</div><div>设备名称： Qport1255</div><div>运行时间： 00:02:16</div></footer>
+  </section>
+
+  <section class="mockup" data-page="mode">
+    <div class="titlebar"><span>设备查找</span><div class="window-actions"><span>−</span><span>▢</span><span>×</span></div></div>
+    <div class="shell">
+      <aside class="sidebar">
+        <div class="brand"><span class="brand-mark"></span><span>威嵌神州</span></div>
+        <div class="nav">
+          <div class="nav-item"><span class="icon">⚙</span><span>基本设置</span></div>
+          <div class="nav-item active"><span class="icon">▦</span><span>端口设置</span></div>
+          <div class="nav-item"><span class="icon">▥</span><span>设备总览</span></div>
+          <div class="nav-item"><span class="icon">⌘</span><span>端口管理</span></div>
+          <div class="nav-item"><span class="icon" style="color: var(--red)">↺</span><span>重置设置</span></div>
+          <div class="nav-item"><span class="icon">←</span><span>返回</span></div>
+        </div>
+      </aside>
+      <main class="content">
+        <div class="toolbar">
+          <button><span class="tool-icon">⌕</span><span>驱动检测</span></button>
+          <button><span class="tool-icon">↗</span><span>端口映射</span></button>
+          <button><span class="tool-icon">🔗</span><span>断开连接</span></button>
+          <button><span class="tool-icon">▣</span><span>设备日志</span></button>
+        </div>
+        <div class="workspace">
+          <div class="tabs"><div class="tab">参数设置</div><div class="tab active">模式设置</div><div class="tab">自检/重置</div><div class="tab">端口锁定</div><div class="tab">端口信息</div></div>
+          <div class="page-grid grid-setting">
+            <div class="stack setting-stack">
+              <div class="panel">
+                <div class="panel-title">同步端口选择</div>
+                <div class="panel-inner">
+                  <div class="section-head">
+                    <div class="summary">当前端口：端口1，模式同步到 3 个端口</div>
+                    <div class="mini-actions"><button class="mini-btn active">全选</button><button class="mini-btn">反选</button><button class="mini-btn">清空</button></div>
+                  </div>
+                  <div class="port-grid">
+                    <div class="port-tile selected">端口1<span class="dot"></span></div><div class="port-tile selected">端口2<span class="dot"></span></div><div class="port-tile">端口3<span class="dot"></span></div><div class="port-tile">端口4<span class="dot"></span></div>
+                    <div class="port-tile">端口5<span class="dot"></span></div><div class="port-tile">端口6<span class="dot"></span></div><div class="port-tile">端口7<span class="dot"></span></div><div class="port-tile">端口8<span class="dot"></span></div>
+                    <div class="port-tile">端口9<span class="dot"></span></div><div class="port-tile selected">端口10<span class="dot"></span></div><div class="port-tile">端口11<span class="dot"></span></div><div class="port-tile">端口12<span class="dot"></span></div>
+                    <div class="port-tile">端口13<span class="dot"></span></div><div class="port-tile">端口14<span class="dot"></span></div><div class="port-tile">端口15<span class="dot"></span></div><div class="port-tile">端口16<span class="dot"></span></div>
+                  </div>
+                </div>
+              </div>
+              <div class="panel">
+                <div class="panel-title">工作模式配置</div>
+                <div class="panel-inner">
+                  <div class="mode-row">
+                    <div class="mode-card active">Real COM<div class="small">虚拟串口模式</div></div>
+                    <div class="mode-card">TCP Server<div class="small">网络服务模式</div></div>
+                    <div class="mode-card">Redundant<div class="small">冗余连接模式</div></div>
+                  </div>
+                  <div class="mode-param-grid">
+                    <div><div class="label">TCP存活检测时间</div><div class="select-box"><span>0 /min</span><span>▾</span></div></div>
+                    <div><div class="label">最大连接数</div><div class="select-box"><span>4</span><span>▾</span></div></div>
+                    <div><div class="label">Redundant组号</div><div class="select-box"><span>0</span><span>▾</span></div></div>
+                    <div><div class="label">当前模式端口</div><div class="select-box"><span>端口1</span><span>▾</span></div></div>
+                  </div>
+                  <div class="command-note">此页只发送端口工作模式配置命令：Real COM、TCP Server、Redundant 及其模式参数。不会修改波特率、数据位、接口类型等串口参数。</div>
+                  <div class="button-row"><button class="ghost-btn">读取工作模式</button><button class="primary-btn">应用工作模式</button></div>
+                </div>
+              </div>
+            </div>
+            <section class="panel table-panel">
+              <div class="panel-title">模式设置读取</div>
+              <div class="panel-inner">
+                <div class="table-tools">
+                  <div class="segment"><button class="active">全部</button><button>已选端口</button><button>Real COM</button><button>TCP Server</button><button>Redundant</button></div>
+                  <div class="search">搜索端口 / 别名</div>
+                </div>
+                <div class="data-table mode-table">
+                  <div class="row header"><div class="cell">串口号</div><div class="cell">串口别名</div><div class="cell">工作模式</div><div class="cell">TCP存活检测时间</div><div class="cell">最大连接数</div><div class="cell">同步范围</div></div>
+                  <div class="row selected"><div class="cell">1</div><div class="cell">COM-A</div><div class="cell"><span class="pill">Real COM</span></div><div class="cell">0 /min</div><div class="cell">4</div><div class="cell">端口2、端口10</div></div>
+                  <div class="row selected"><div class="cell">2</div><div class="cell">COM-B</div><div class="cell"><span class="pill">Real COM</span></div><div class="cell">0 /min</div><div class="cell">4</div><div class="cell">-</div></div>
+                  <div class="row"><div class="cell">3</div><div class="cell">-</div><div class="cell">TCP Server</div><div class="cell">30 /min</div><div class="cell">2</div><div class="cell">-</div></div>
+                  <div class="row"><div class="cell">4</div><div class="cell">-</div><div class="cell">TCP Server</div><div class="cell">30 /min</div><div class="cell">2</div><div class="cell">-</div></div>
+                  <div class="row"><div class="cell">5</div><div class="cell">DBG</div><div class="cell"><span class="pill">Real COM</span></div><div class="cell">0 /min</div><div class="cell">4</div><div class="cell">-</div></div>
+                  <div class="row"><div class="cell">6</div><div class="cell">-</div><div class="cell">Redundant</div><div class="cell">0 /min</div><div class="cell">1</div><div class="cell">组0</div></div>
+                  <div class="row"><div class="cell">7</div><div class="cell">-</div><div class="cell">Redundant</div><div class="cell">0 /min</div><div class="cell">1</div><div class="cell">组0</div></div>
+                  <div class="row"><div class="cell">8</div><div class="cell">-</div><div class="cell">TCP Server</div><div class="cell">30 /min</div><div class="cell">2</div><div class="cell">-</div></div>
+                  <div class="row"><div class="cell">9</div><div class="cell">-</div><div class="cell">TCP Server</div><div class="cell">30 /min</div><div class="cell">2</div><div class="cell">-</div></div>
+                  <div class="row selected"><div class="cell">10</div><div class="cell">RS485</div><div class="cell"><span class="pill">Real COM</span></div><div class="cell">0 /min</div><div class="cell">4</div><div class="cell">-</div></div>
+                  <div class="row"><div class="cell">11</div><div class="cell">-</div><div class="cell">TCP Server</div><div class="cell">30 /min</div><div class="cell">2</div><div class="cell">-</div></div>
+                  <div class="row"><div class="cell">12</div><div class="cell">-</div><div class="cell">TCP Server</div><div class="cell">30 /min</div><div class="cell">2</div><div class="cell">-</div></div>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+      </main>
+    </div>
+    <footer class="footer"><div><span class="status-dot"></span>已连接 192.168.5.123</div><div>设备名称： Qport1255</div><div>运行时间： 00:02:16</div></footer>
+  </section>
+
+  <section class="mockup" data-page="self">
+    <div class="titlebar"><span>设备查找</span><div class="window-actions"><span>−</span><span>▢</span><span>×</span></div></div>
+    <div class="shell">
+      <aside class="sidebar">
+        <div class="brand"><span class="brand-mark"></span><span>威嵌神州</span></div>
+        <div class="nav">
+          <div class="nav-item"><span class="icon">⚙</span><span>基本设置</span></div><div class="nav-item active"><span class="icon">▦</span><span>端口设置</span></div><div class="nav-item"><span class="icon">▥</span><span>设备总览</span></div><div class="nav-item"><span class="icon">⌘</span><span>端口管理</span></div><div class="nav-item"><span class="icon" style="color: var(--red)">↺</span><span>重置设置</span></div><div class="nav-item"><span class="icon">←</span><span>返回</span></div>
+        </div>
+      </aside>
+      <main class="content">
+        <div class="toolbar"><button><span class="tool-icon">⌕</span><span>驱动检测</span></button><button><span class="tool-icon">↗</span><span>端口映射</span></button><button><span class="tool-icon">🔗</span><span>断开连接</span></button><button><span class="tool-icon">▣</span><span>设备日志</span></button></div>
+        <div class="workspace">
+          <div class="tabs"><div class="tab">端口设置</div><div class="tab active">自检/重置</div><div class="tab">端口锁定</div><div class="tab">端口信息</div></div>
+          <div class="page-grid grid-self">
+            <div class="stack self-stack">
+              <div class="panel">
+                <div class="panel-title">操作端口选择</div>
+                <div class="panel-inner">
+                  <div class="section-head"><div class="summary">已选择 6 个端口，自检和重置都以此为范围</div><div class="mini-actions"><button class="mini-btn active">全部</button><button class="mini-btn">反选</button><button class="mini-btn">清空</button></div></div>
+                  <div class="port-grid">
+                    <div class="port-tile selected">端口1<span class="dot"></span></div><div class="port-tile selected">端口2<span class="dot"></span></div><div class="port-tile selected">端口3<span class="dot"></span></div><div class="port-tile selected">端口4<span class="dot"></span></div>
+                    <div class="port-tile">端口5<span class="dot"></span></div><div class="port-tile">端口6<span class="dot"></span></div><div class="port-tile">端口7<span class="dot"></span></div><div class="port-tile">端口8<span class="dot"></span></div>
+                    <div class="port-tile selected">端口9<span class="dot"></span></div><div class="port-tile selected">端口10<span class="dot"></span></div><div class="port-tile">端口11<span class="dot"></span></div><div class="port-tile">端口12<span class="dot"></span></div>
+                    <div class="port-tile">端口13<span class="dot"></span></div><div class="port-tile">端口14<span class="dot"></span></div><div class="port-tile">端口15<span class="dot"></span></div><div class="port-tile">端口16<span class="dot"></span></div>
+                  </div>
+                  <div class="metric-row"><div class="metric"><div class="value">6</div><div class="label">选中端口</div></div><div class="metric"><div class="value">10</div><div class="label">未选择</div></div><div class="metric"><div class="value">待执行</div><div class="label">当前状态</div></div></div>
+                </div>
+              </div>
+              <div class="panel">
+                <div class="panel-title">端口操作</div>
+                <div class="panel-inner">
+                  <div class="operation-grid">
+                    <div class="operation-card">
+                      <div class="operation-title"><span>端口自检</span><span class="pill blue">常规</span></div>
+                      <div class="operation-desc">检查选中端口通信状态、计数器和异常项，结果写入右侧列表。</div>
+                      <button class="primary-btn">开始自检</button>
+                    </div>
+                    <div class="operation-card">
+                      <div class="operation-title"><span>端口重置</span><span class="pill red">高风险</span></div>
+                      <div class="operation-desc">重置选中端口运行状态。执行前弹出确认框，并显示端口清单。</div>
+                      <button class="danger-btn">重置选中端口</button>
+                    </div>
+                  </div>
+                  <div class="mirror-box">
+                    <div class="section-head" style="margin-bottom:0"><div class="summary" style="font-size:16px;color:#fff">端口镜像</div><div class="switch"></div></div>
+                    <div class="mirror-grid">
+                      <div><div class="label">目标端口</div><div class="select-box"><span>端口1</span><span>▾</span></div></div>
+                      <div><div class="label">镜像端口</div><div class="select-box"><span>端口8</span><span>▾</span></div></div>
+                      <button class="ghost-btn">应用</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <section class="panel table-panel">
+              <div class="panel-title">自检/重置结果</div>
+              <div class="panel-inner">
+                <div class="table-tools"><div class="segment"><button class="active">全部</button><button>成功</button><button>失败</button><button>执行中</button></div><div class="search">搜索端口 / 状态</div></div>
+                <div class="data-table result-table">
+                  <div class="row header"><div class="cell">端口</div><div class="cell">操作</div><div class="cell">状态</div><div class="cell">结果</div><div class="cell">时间</div></div>
+                  <div class="row selected"><div class="cell">端口1</div><div class="cell">自检</div><div class="cell"><span class="pill">通过</span></div><div class="cell">通信正常，Tx/Rx 计数正常</div><div class="cell">00:02:12</div></div>
+                  <div class="row selected"><div class="cell">端口2</div><div class="cell">自检</div><div class="cell"><span class="pill">通过</span></div><div class="cell">通信正常，未发现错误计数</div><div class="cell">00:02:12</div></div>
+                  <div class="row"><div class="cell">端口3</div><div class="cell">自检</div><div class="cell"><span class="pill warn">警告</span></div><div class="cell">存在 1 次缓冲区溢出，建议复查负载</div><div class="cell">00:02:12</div></div>
+                  <div class="row"><div class="cell">端口4</div><div class="cell">自检</div><div class="cell"><span class="pill">通过</span></div><div class="cell">通信正常</div><div class="cell">00:02:13</div></div>
+                  <div class="row selected"><div class="cell">端口9</div><div class="cell">重置</div><div class="cell"><span class="pill blue">执行中</span></div><div class="cell">已发送重置命令，等待设备返回</div><div class="cell">00:02:15</div></div>
+                  <div class="row selected"><div class="cell">端口10</div><div class="cell">重置</div><div class="cell"><span class="pill blue">执行中</span></div><div class="cell">已发送重置命令，等待设备返回</div><div class="cell">00:02:15</div></div>
+                  <div class="row"><div class="cell">端口11</div><div class="cell">自检</div><div class="cell"><span class="pill red">失败</span></div><div class="cell">串口故障，建议检查接线或端口状态</div><div class="cell">00:01:48</div></div>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+      </main>
+    </div>
+    <footer class="footer"><div><span class="status-dot"></span>已连接 192.168.5.123</div><div>设备名称： Qport1255</div><div>运行时间： 00:02:16</div></footer>
+  </section>
+
+  <section class="mockup" data-page="lock">
+    <div class="titlebar"><span>设备查找</span><div class="window-actions"><span>−</span><span>▢</span><span>×</span></div></div>
+    <div class="shell">
+      <aside class="sidebar">
+        <div class="brand"><span class="brand-mark"></span><span>威嵌神州</span></div>
+        <div class="nav">
+          <div class="nav-item"><span class="icon">⚙</span><span>基本设置</span></div><div class="nav-item active"><span class="icon">▦</span><span>端口设置</span></div><div class="nav-item"><span class="icon">▥</span><span>设备总览</span></div><div class="nav-item"><span class="icon">⌘</span><span>端口管理</span></div><div class="nav-item"><span class="icon" style="color: var(--red)">↺</span><span>重置设置</span></div><div class="nav-item"><span class="icon">←</span><span>返回</span></div>
+        </div>
+      </aside>
+      <main class="content">
+        <div class="toolbar"><button><span class="tool-icon">⌕</span><span>驱动检测</span></button><button><span class="tool-icon">↗</span><span>端口映射</span></button><button><span class="tool-icon">🔗</span><span>断开连接</span></button><button><span class="tool-icon">▣</span><span>设备日志</span></button></div>
+        <div class="workspace">
+          <div class="tabs"><div class="tab">端口设置</div><div class="tab">自检/重置</div><div class="tab active">端口锁定</div><div class="tab">端口信息</div></div>
+          <div class="page-grid grid-lock">
+            <section class="panel lock-main">
+              <div class="panel-title">端口锁定列表</div>
+              <div class="panel-inner">
+                <div class="lock-tools">
+                  <div class="segment"><button class="active">全部端口</button><button>已锁定</button><button>未锁定</button><button>仅选中</button></div>
+                  <div class="mini-actions"><button class="mini-btn">刷新状态</button><button class="mini-btn active">整行多选</button></div>
+                </div>
+                <div class="data-table lock-table">
+                  <div class="row header"><div class="cell">端口</div><div class="cell">锁定状态</div><div class="cell">锁定的 MAC 地址</div><div class="cell">最近操作</div></div>
+                  <div class="row selected"><div class="cell">端口1</div><div class="cell"><span class="pill warn">未锁定</span></div><div class="cell">00:00:00:00:00:00</div><div class="cell">待锁定</div></div>
+                  <div class="row selected"><div class="cell">端口2</div><div class="cell"><span class="pill warn">未锁定</span></div><div class="cell">00:00:00:00:00:00</div><div class="cell">待锁定</div></div>
+                  <div class="row"><div class="cell">端口3</div><div class="cell"><span class="pill">已锁定</span></div><div class="cell">A4:C1:38:2F:19:80</div><div class="cell">已同步</div></div>
+                  <div class="row"><div class="cell">端口4</div><div class="cell"><span class="pill">已锁定</span></div><div class="cell">A4:C1:38:2F:19:81</div><div class="cell">已同步</div></div>
+                  <div class="row selected"><div class="cell">端口5</div><div class="cell"><span class="pill warn">未锁定</span></div><div class="cell">00:00:00:00:00:00</div><div class="cell">待锁定</div></div>
+                  <div class="row"><div class="cell">端口6</div><div class="cell"><span class="pill warn">未锁定</span></div><div class="cell">00:00:00:00:00:00</div><div class="cell">-</div></div>
+                  <div class="row"><div class="cell">端口7</div><div class="cell"><span class="pill warn">未锁定</span></div><div class="cell">00:00:00:00:00:00</div><div class="cell">-</div></div>
+                  <div class="row"><div class="cell">端口8</div><div class="cell"><span class="pill warn">未锁定</span></div><div class="cell">00:00:00:00:00:00</div><div class="cell">-</div></div>
+                  <div class="row"><div class="cell">端口9</div><div class="cell"><span class="pill">已锁定</span></div><div class="cell">A4:C1:38:2F:19:82</div><div class="cell">已同步</div></div>
+                  <div class="row"><div class="cell">端口10</div><div class="cell"><span class="pill warn">未锁定</span></div><div class="cell">00:00:00:00:00:00</div><div class="cell">-</div></div>
+                  <div class="row"><div class="cell">端口11</div><div class="cell"><span class="pill warn">未锁定</span></div><div class="cell">00:00:00:00:00:00</div><div class="cell">-</div></div>
+                  <div class="row"><div class="cell">端口12</div><div class="cell"><span class="pill warn">未锁定</span></div><div class="cell">00:00:00:00:00:00</div><div class="cell">-</div></div>
+                  <div class="row"><div class="cell">端口13</div><div class="cell"><span class="pill warn">未锁定</span></div><div class="cell">00:00:00:00:00:00</div><div class="cell">-</div></div>
+                  <div class="row"><div class="cell">端口14</div><div class="cell"><span class="pill warn">未锁定</span></div><div class="cell">00:00:00:00:00:00</div><div class="cell">-</div></div>
+                </div>
+                <div class="lock-actions"><div class="summary">已选择 3 个端口：端口1、端口2、端口5</div><div class="mini-actions"><button class="primary-btn">锁定选中端口</button><button class="ghost-btn">解锁选中端口</button></div></div>
+              </div>
+            </section>
+            <section class="panel summary-panel">
+              <div class="panel-title">锁定概览</div>
+              <div class="panel-inner">
+                <div class="big-number">
+                  <div class="metric"><div class="value">3</div><div class="label">已锁定</div></div>
+                  <div class="metric"><div class="value">13</div><div class="label">未锁定</div></div>
+                </div>
+                <div class="selected-list">
+                  <div style="color:#fff;font-size:16px">当前选中端口</div>
+                  <div class="tag-list"><span class="tag">端口1</span><span class="tag">端口2</span><span class="tag">端口5</span></div>
+                </div>
+                <div class="selected-list">
+                  <div style="color:#fff;font-size:16px">操作提示</div>
+                  <div style="margin-top:8px;color:var(--muted);font-size:13px;line-height:1.7;font-weight:700">点击表格整行即可选择端口。锁定操作只作用于未锁定端口，解锁操作只作用于已锁定端口。</div>
+                </div>
+                <button class="ghost-btn">清空选择</button>
+              </div>
+            </section>
+          </div>
+        </div>
+      </main>
+    </div>
+    <footer class="footer"><div><span class="status-dot"></span>已连接 192.168.5.123</div><div>设备名称： Qport1255</div><div>运行时间： 00:02:16</div></footer>
+  </section>
+
+  <script>
+    const page = new URLSearchParams(location.search).get("page") || "setting";
+    document.querySelectorAll(".mockup").forEach(el => {
+      el.classList.toggle("active", el.dataset.page === page);
+    });
+  </script>
+</body>
+</html>
