@@ -891,20 +891,20 @@
                     <div><div class="label">端口别名</div><div class="text-input">COM-A</div></div>
                     <div><div class="label">TCP存活检测</div><div class="select-box"><span>0 /min</span><span>▾</span></div></div>
                   </div>
-                  <div class="command-note">此页只发送串口参数配置命令：波特率、数据位、停止位、校验位、流控、接口类型、端口别名。不会修改端口工作模式。</div>
-                  <div class="button-row"><button class="ghost-btn">读取串口参数</button><button class="primary-btn">应用串口参数</button></div>
+                  <div class="command-note">此页只发送端口参数配置命令：波特率、数据位、停止位、校验位、流控、接口类型、端口别名。不会修改端口工作模式。</div>
+                  <div class="button-row"><button class="ghost-btn">读取端口参数</button><button class="primary-btn">应用端口参数</button></div>
                 </div>
               </div>
             </div>
             <section class="panel table-panel">
-              <div class="panel-title">串口参数读取</div>
+              <div class="panel-title">端口参数读取</div>
               <div class="panel-inner">
                 <div class="table-tools">
                   <div class="segment"><button class="active">全部</button><button>已选端口</button><button>RS-232</button><button>RS-485</button></div>
                   <div class="search">搜索端口 / 别名</div>
                 </div>
                 <div class="data-table setting-table">
-                  <div class="row header"><div class="cell">选择</div><div class="cell">串口号</div><div class="cell">串口别名</div><div class="cell">波特率</div><div class="cell">数据位</div><div class="cell">停止位</div><div class="cell">接口类型</div><div class="cell">流控</div></div>
+                  <div class="row header"><div class="cell">选择</div><div class="cell">端口号</div><div class="cell">端口别名</div><div class="cell">波特率</div><div class="cell">数据位</div><div class="cell">停止位</div><div class="cell">接口类型</div><div class="cell">流控</div></div>
                   <div class="row selected"><div class="cell"><span class="check">✓</span></div><div class="cell">1</div><div class="cell">COM-A</div><div class="cell">9600</div><div class="cell">8</div><div class="cell">1</div><div class="cell">RS-232</div><div class="cell">None</div></div>
                   <div class="row selected"><div class="cell"><span class="check">✓</span></div><div class="cell">2</div><div class="cell">COM-B</div><div class="cell">9600</div><div class="cell">8</div><div class="cell">1</div><div class="cell">RS-232</div><div class="cell">None</div></div>
                   <div class="row"><div class="cell"><span class="check"></span></div><div class="cell">3</div><div class="cell">-</div><div class="cell">115200</div><div class="cell">8</div><div class="cell">1</div><div class="cell">RS-485</div><div class="cell">None</div></div>
@@ -971,7 +971,7 @@
                 <div class="panel-title">工作模式配置</div>
                 <div class="panel-inner">
                   <div class="mode-row">
-                    <div class="mode-card active">Real COM<div class="small">虚拟串口模式</div></div>
+                    <div class="mode-card active">Real COM<div class="small">虚拟端口模式</div></div>
                     <div class="mode-card">TCP Server<div class="small">网络服务模式</div></div>
                     <div class="mode-card">Redundant<div class="small">冗余连接模式</div></div>
                   </div>
@@ -981,7 +981,7 @@
                     <div><div class="label">Redundant组号</div><div class="select-box"><span>0</span><span>▾</span></div></div>
                     <div><div class="label">当前模式端口</div><div class="select-box"><span>端口1</span><span>▾</span></div></div>
                   </div>
-                  <div class="command-note">此页只发送端口工作模式配置命令：Real COM、TCP Server、Redundant 及其模式参数。不会修改波特率、数据位、接口类型等串口参数。</div>
+                  <div class="command-note">此页只发送端口工作模式配置命令：Real COM、TCP Server、Redundant 及其模式参数。不会修改波特率、数据位、接口类型等端口参数。</div>
                   <div class="button-row"><button class="ghost-btn">读取工作模式</button><button class="primary-btn">应用工作模式</button></div>
                 </div>
               </div>
@@ -994,7 +994,7 @@
                   <div class="search">搜索端口 / 别名</div>
                 </div>
                 <div class="data-table mode-table">
-                  <div class="row header"><div class="cell">串口号</div><div class="cell">串口别名</div><div class="cell">工作模式</div><div class="cell">TCP存活检测时间</div><div class="cell">最大连接数</div><div class="cell">同步范围</div></div>
+                  <div class="row header"><div class="cell">端口号</div><div class="cell">端口别名</div><div class="cell">工作模式</div><div class="cell">TCP存活检测时间</div><div class="cell">最大连接数</div><div class="cell">同步范围</div></div>
                   <div class="row selected"><div class="cell">1</div><div class="cell">COM-A</div><div class="cell"><span class="pill">Real COM</span></div><div class="cell">0 /min</div><div class="cell">4</div><div class="cell">端口2、端口10</div></div>
                   <div class="row selected"><div class="cell">2</div><div class="cell">COM-B</div><div class="cell"><span class="pill">Real COM</span></div><div class="cell">0 /min</div><div class="cell">4</div><div class="cell">-</div></div>
                   <div class="row"><div class="cell">3</div><div class="cell">-</div><div class="cell">TCP Server</div><div class="cell">30 /min</div><div class="cell">2</div><div class="cell">-</div></div>
@@ -1083,7 +1083,7 @@
                   <div class="row"><div class="cell">端口4</div><div class="cell">自检</div><div class="cell"><span class="pill">通过</span></div><div class="cell">通信正常</div><div class="cell">00:02:13</div></div>
                   <div class="row selected"><div class="cell">端口9</div><div class="cell">重置</div><div class="cell"><span class="pill blue">执行中</span></div><div class="cell">已发送重置命令，等待设备返回</div><div class="cell">00:02:15</div></div>
                   <div class="row selected"><div class="cell">端口10</div><div class="cell">重置</div><div class="cell"><span class="pill blue">执行中</span></div><div class="cell">已发送重置命令，等待设备返回</div><div class="cell">00:02:15</div></div>
-                  <div class="row"><div class="cell">端口11</div><div class="cell">自检</div><div class="cell"><span class="pill red">失败</span></div><div class="cell">串口故障，建议检查接线或端口状态</div><div class="cell">00:01:48</div></div>
+                  <div class="row"><div class="cell">端口11</div><div class="cell">自检</div><div class="cell"><span class="pill red">失败</span></div><div class="cell">端口故障，建议检查接线或端口状态</div><div class="cell">00:01:48</div></div>
                 </div>
               </div>
             </section>

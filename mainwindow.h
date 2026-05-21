@@ -80,8 +80,6 @@ private slots:
     void on_Basic_Config_Btn_clicked();
     void on_reset_btn_clicked();
     void on_self_check_btn_clicked();
-    void on_duan_can_btn_clicked();
-    void on_work_mode_btn_clicked();
     void on_use_monitoring_btn_4_clicked();
     void on_lock_btn_clicked();
     void on_unlock_btn_clicked();
@@ -121,15 +119,8 @@ private slots:
     void showUpgradeMask(int totalPkts);
     void onItemChanged(QTableWidgetItem *item);
     void handleDisconnectTriggered();
-    void on_tabWidget_currentChanged(int index);
-    void on_work_mode_comboBox_activated(const QString &arg1);
-    void on_alias_lineEdit_textChanged(const QString &arg1);
-    void on_comboBox_7_activated(int index);
-    void on_comboBox_6_activated(int index);
     void on_new_name_cursorPositionChanged(int arg1, int arg2);
-    void on_alias_lineEdit_cursorPositionChanged(int arg1, int arg2);
     void on_chooseAllPortCheckBox_stateChanged(int arg1);
-    void on_PortNewNameCBox_stateChanged(int arg1);
     void updateRuntimeStatus();
 
 private:
@@ -154,6 +145,23 @@ private:
     void initDeviceLogDock();
     void showFloatingDeviceLogDock();
     void reserveBottomDockSpace();
+    void initPortButtons();
+    void initFramePortOperationButtons();
+    QList<int> selectedPortButtonPorts() const;
+    QByteArray portListPayload(const QList<int> &ports) const;
+    QByteArray singlePortPayload(int port) const;
+    void openPortParamSettings(int port);
+    void openPortParamSettings(const QList<int> &ports);
+    void openPortModeSettings(int port);
+    void openPortModeSettings(const QList<int> &ports);
+    void lockPortFromButton(int port);
+    void lockPortsFromButtons(const QList<int> &ports);
+    void unlockPortFromButton(int port);
+    void unlockPortsFromButtons(const QList<int> &ports);
+    void resetPortFromButton(int port);
+    void resetPortsFromButtons(const QList<int> &ports);
+    void selfCheckPortFromButton(int port);
+    void selfCheckPortsFromButtons(const QList<int> &ports);
 
 private:
     Ui::MainWindow *ui;
@@ -173,6 +181,8 @@ private:
     bool m_hasLastNetworkConfig = false;
     SerialPortConfig m_lastSerialPortConfig;
     bool m_hasLastSerialPortConfig = false;
+    int m_pendingParamPort = 0;
+    int m_pendingModePort = 0;
     QStringList m_pendingLockPortNames;
     QStringList m_pendingUnlockPortNames;
     QString m_pendingDeviceName;

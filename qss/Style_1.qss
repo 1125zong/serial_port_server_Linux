@@ -199,10 +199,42 @@ QToolButton:focus {
     outline: none;
 }
 
+QWidget#frame_2 QToolButton {
+    min-width: 86px;
+    min-height: 34px;
+    color: #b9d2ec;
+    background-color: #102a47;
+    border: 1px solid #2d5a8c;
+    border-radius: 4px;
+    padding: 4px 18px 4px 8px;
+    text-align: left;
+}
+
+QWidget#frame_2 QToolButton:hover {
+    color: #e5f3ff;
+    background-color: #183f68;
+    border: 1px solid #4b86bd;
+}
+
+QWidget#frame_2 QToolButton:checked {
+    color: #ffffff;
+    background-color: #1f6f5a;
+    border: 1px solid #48c78e;
+    font-weight: bold;
+}
+
+QWidget#frame_2 QToolButton:checked:hover {
+    background-color: #268668;
+    border: 1px solid #68e0a8;
+}
+
+QWidget#frame_2 QToolButton::menu-button {
+    width: 16px;
+    border-left: 1px solid rgba(185, 210, 236, 0.35);
+}
+
 QPushButton#Basic_Config_Btn:hover,
 QPushButton#use_monitoring_btn_4:hover,
-QPushButton#work_mode_btn:hover,
-QPushButton#duan_can_btn:hover,
 QPushButton#watchdog_btn:hover {
     image: url(:/image/AppConfig.png);
     color: transparent;
@@ -255,8 +287,6 @@ QPushButton#Port_lockout_btn:hover {
 
 QPushButton#Basic_Config_Btn:pressed,
 QPushButton#use_monitoring_btn_4:pressed,
-QPushButton#work_mode_btn:pressed,
-QPushButton#duan_can_btn:pressed,
 QPushButton#watchdog_btn:pressed,
 QPushButton#browse_btn:pressed,
 QPushButton#upgrade_btn:pressed,
@@ -294,8 +324,7 @@ QLineEdit:focus {
     border-bottom: 2px solid #558bc8;
 }
 
-QLineEdit#new_name,
-QLineEdit#alias_lineEdit {
+QLineEdit#new_name {
     color: rgba(168, 200, 236, 0.3);
     font-size: 12px;
 }

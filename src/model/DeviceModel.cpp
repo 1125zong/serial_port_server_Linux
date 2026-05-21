@@ -56,14 +56,14 @@ QPORT_DeviceLockState DeviceModel::lockState() const {
     return m_deviceInfo.devLockState;
 }
 
-// 串口配置访问器
+// 端口配置访问器
 QList<SerialPortConfig> DeviceModel::serialPorts() const {
     return m_serialPorts;
 }
 
 SerialPortConfig DeviceModel::serialPort(int index) const
 {
-    // 查找指定索引的串口配置
+    // 查找指定索引的端口配置
     for (const SerialPortConfig &config : m_serialPorts)
     {
         if (config.index == index)
@@ -197,7 +197,7 @@ void DeviceModel::setSerialPorts(const QList<SerialPortConfig> &serialPorts)
 {
     m_serialPorts = serialPorts;
     
-    Logger::instance()->log(Logger::Info, "DeviceModel", QString("串口配置更新 (%1 个端口)").arg(serialPorts.size()));
+    Logger::instance()->log(Logger::Info, "DeviceModel", QString("端口配置更新 (%1 个端口)").arg(serialPorts.size()));
 }
 
 void DeviceModel::setSerialPortMode(const SerialPortMode &serialPortModes)

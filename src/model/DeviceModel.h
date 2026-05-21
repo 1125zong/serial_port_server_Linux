@@ -11,7 +11,7 @@
 /**
  * @brief 设备数据模型
  * 
- * 存储设备的所有信息,包括基本信息、网络配置和串口配置
+ * 存储设备的所有信息,包括基本信息、网络配置和端口配置
  * 当数据变化时发出相应的信号通知观察者
  */
 class DeviceModel : public QObject {
@@ -37,7 +37,7 @@ public:
     QPORT_DeviceState deviceState() const;
     QPORT_DeviceLockState lockState() const;
     
-    // 串口配置访问器
+    // 端口配置访问器
     QList<SerialPortConfig> serialPorts() const;
     SerialPortConfig serialPort(int index) const;
     SerialPortMode seriaPortModes() const;

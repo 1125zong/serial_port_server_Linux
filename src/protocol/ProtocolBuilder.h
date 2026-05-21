@@ -31,7 +31,7 @@ public:
     static QByteArray buildNetworkConfigQuery();
     static QByteArray buildNetworkConfigWrite(const NetworkConfig &config);
     
-    // 构建串口配置命令
+    // 构建端口配置命令
     static QByteArray buildSerialConfigQuery(int portIndex = 0xFFFF);
     static QByteArray buildSerialConfigWrite(const SerialPortConfig &config);
     static QByteArray buildSerialConfigWrite1(const SerialPortConfig &config);

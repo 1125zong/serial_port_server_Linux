@@ -140,8 +140,7 @@ void DeviceController::writeNetworkConfig(const NetworkConfig &config)
 
 void DeviceController::writeSerialConfig(const SerialPortConfig &config, int i)
 {
-    m_logger->log(Logger::Info, "DeviceController",
-                  QString("Writing serial config for port %1").arg(config.index));
+    m_logger->log(Logger::Info, "DeviceController", QString("Writing serial config for port %1").arg(config.index));
     m_pendingOperation = PendingOperation::WriteSerialConfig;
     m_pendingOperationName = "Write Serial Config";
     if (i == 0)     //设置多个端口
@@ -331,7 +330,7 @@ void DeviceController::startFirmwareUpgrade(const QString &filePath)
     emit upgradeHandshakeRequested(filePath);
 }
 
-/* 0x07 0x01 读取串口网络连接信息（link_info） */
+/* 0x07 0x01 读取端口网络连接信息（link_info） */
 void DeviceController::readPortConnInfo()
 {
     m_pendingOperation = PendingOperation::ReadPortConnInfo;

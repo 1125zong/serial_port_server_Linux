@@ -85,7 +85,7 @@ QByteArray ProtocolBuilder::buildNetworkConfigWrite(const NetworkConfig &config)
     return buildFrame(0x03, 0x02, payload);
 }
 
-// 构建串口配置查询命令
+// 构建端口配置查询命令
 QByteArray ProtocolBuilder::buildSerialConfigQuery(int portIndex)
 {
     QByteArray payload;
@@ -100,11 +100,11 @@ QByteArray ProtocolBuilder::buildSerialConfigQuery(int portIndex)
     }
     payload.append(indexBytes);
     
-    // 功能ID: 0x04 (串口设置), 子功能ID: 0x01 (读取串口配置)
+    // 功能ID: 0x04 (端口设置), 子功能ID: 0x01 (读取端口配置)
     return buildFrame(0x04, 0x01, payload);
 }
 
-// 构建单个串口配置写入命令
+// 构建单个端口配置写入命令
 QByteArray ProtocolBuilder::buildSerialConfigWrite(const SerialPortConfig &config) {
     QByteArray payload;
     
@@ -154,7 +154,7 @@ QByteArray ProtocolBuilder::buildSerialConfigWrite(const SerialPortConfig &confi
         .arg(config.flowControl)
         .arg(config.interface));
     
-    // 功能ID: 0x04 (串口设置), 子功能ID: 0x02 (写入单个串口)
+    // 功能ID: 0x04 (端口设置), 子功能ID: 0x02 (写入单个端口)
     return buildFrame(0x04, 0x02, payload);
 }
 
@@ -193,18 +193,18 @@ QByteArray ProtocolBuilder::buildSerialConfigWrite1(const SerialPortConfig &conf
         .arg(config.flowControl)
         .arg(config.interface));
 
-    // 功能ID: 0x04 (串口设置), 子功能ID: 0x03 (写入多个串口)
+    // 功能ID: 0x04 (端口设置), 子功能ID: 0x03 (写入多个端口)
     return buildFrame(0x04, 0x03, payload);
 }
 
-// 构建多串口配置写入命令
+// 构建多端口配置写入命令
 QByteArray ProtocolBuilder::buildMultiSerialConfigWrite(const QList<SerialPortConfig> &configs) {
     QByteArray payload;
     
-    // 串口数量
+    // 端口数量
     payload.append(static_cast<char>(configs.size()));
     
-    // 添加每个串口配置
+    // 添加每个端口配置
     for (const SerialPortConfig &config : configs) {
         // 端口索引
         payload.append(static_cast<char>(config.index));
@@ -232,7 +232,7 @@ QByteArray ProtocolBuilder::buildMultiSerialConfigWrite(const QList<SerialPortCo
     
     Logger::instance()->log(Logger::Debug, "ProtocolBuilder", QString("buildMultiSerialConfigWrite: Port count=%1").arg(configs.size()));
     
-    // 功能ID: 0x04 (串口设置), 子功能ID: 0x03 (写入多个串口)
+    // 功能ID: 0x04 (端口设置), 子功能ID: 0x03 (写入多个端口)
     return buildFrame(0x04, 0x03, payload);
 }
 
@@ -270,7 +270,7 @@ QByteArray ProtocolBuilder::buildModeConfigWrite(int portIndex, quint8 mode, con
     }
     payload.append(TcpConNumAndTime);
 
-    // 功能ID: 0x05 (串口模式设置), 子功能ID: 0x01 (写入模式配置)
+    // 功能ID: 0x05 (端口模式设置), 子功能ID: 0x01 (写入模式配置)
     return buildFrame(0x05, mode, payload);
 }
 

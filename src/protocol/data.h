@@ -38,7 +38,7 @@ enum class QPORT_DeviceState : uint8_t {
     FactoryMode = 0x01,  // 出厂模式
     WorkingMode = 0x02,  // 工作模式
     NetworkError = 0x03, // 网络故障
-    SerialError = 0x04,  // 串口故障
+    SerialError = 0x04,  // 端口故障
     SystemError = 0x05   // 系统故障
 };
 
@@ -77,7 +77,7 @@ enum class QPORT_DeviceLockState : uint8_t
 
 enum class PortWorkMode : uint8_t {
     TcpServer = 0x02,  // TCP服务器模式
-    RealCom = 0x01     // 虚拟串口模式
+    RealCom = 0x01     // 虚拟端口模式
 };
 
 // 端口工作状态
@@ -94,12 +94,12 @@ enum class PortLockStatus : uint8_t {
 
 //端口接口类型大类（对应协议4.2节字段10、11，1Byte）
 enum class PortInterfaceTypeCategory : uint8_t {
-    UART = 0x01,  // 串口
+    UART = 0x01,  // 端口
     CAN = 0x02   // CAN接口
     
 };
 
-// 串口接口类型（对应协议中接口类型细分）
+// 端口接口类型（对应协议中接口类型细分）
 enum class SerialPortInterfaceType : uint8_t {
     RS232 = 0x00,
     RS422 = 0x01,
@@ -107,7 +107,7 @@ enum class SerialPortInterfaceType : uint8_t {
     CAN = 0x03
 };
 
-// 端口校验位（对应串口参数）
+// 端口校验位（对应端口参数）
 enum class PortParity : uint8_t {
     None = 0x00,  // 'n' 无校验
     Odd = 0x10,   // 'o' 奇校验
@@ -118,9 +118,9 @@ enum class ProtocolFuncID : uint8_t {
     Func_Overview = 0x01,        // 概述（4.1节）：读取设备基础信息
     Func_BasicSetting = 0x02,    // 基础设置（4.2节）：配置设备名称等
     Func_NetworkSetting = 0x03,  // 网络设置（4.3节）：读写IP/子网掩码等
-    Func_SerialSetting = 0x04,   // 串口设置（4.4节）：读写串口参数（波特率等）
-    Func_SerialMode = 0x05,      // 串口模式设置（4.5节）：配置Real COM/TCP Server等模式
-    Func_ReadSerialMode = 0x06,  // 读取串口模式参数（4.6节）：读取当前/指定模式参数
+    Func_SerialSetting = 0x04,   // 端口设置（4.4节）：读写端口参数（波特率等）
+    Func_SerialMode = 0x05,      // 端口模式设置（4.5节）：配置Real COM/TCP Server等模式
+    Func_ReadSerialMode = 0x06,  // 读取端口模式参数（4.6节）：读取当前/指定模式参数
     Func_StatusMonitor = 0x07,   // 状态监控（4.7节）：读取连接状态/数据统计/错误信息
     Func_DeviceManage = 0x08,     // 设备管理（4.8节）：端口重置/锁定/看门狗/恢复出厂等
     Func_FirmwareUpgrade = 0xFF   //固件升级
@@ -141,12 +141,12 @@ enum class NetworkSubFuncID : uint8_t {
 };
 
 /**
- * @brief 串口设置模块子功能ID（对应协议4.4节，1Byte）
+ * @brief 端口设置模块子功能ID（对应协议4.4节，1Byte）
  */
 enum class SerialSubFuncID : uint8_t {
-    ReadSerialConfig = 0x01,   // 4.4.1：读取串口设置（单个/所有串口）
-    WriteSingleSerial = 0x02,  // 4.4.2：写入指定串口设置
-    WriteMultiSerial = 0x03    // 4.4.3：配置多串口
+    ReadSerialConfig = 0x01,   // 4.4.1：读取端口设置（单个/所有端口）
+    WriteSingleSerial = 0x02,  // 4.4.2：写入指定端口设置
+    WriteMultiSerial = 0x03    // 4.4.3：配置多端口
 };
 
 /**
@@ -160,7 +160,7 @@ enum class DeviceManageSubFuncID : uint8_t {
     ConfigPortMirror = 0x05,   // 4.8.5：配置端口镜像
     LockDevice = 0x06,         // 4.8.6：锁定设备
     UnlockDevice = 0x07,       // 4.8.7：解锁设备
-    SerialSelfTest = 0x08,     // 4.8.8：执行串口自检
+    SerialSelfTest = 0x08,     // 4.8.8：执行端口自检
     ConfigWatchdog = 0x09,     // 4.8.9：配置看门狗
     RestoreFactory = 0x0C,     // 4.8.10：恢复出厂设置
     SaveAndReboot = 0x0C       // 4.8.11：保存并重启（协议标注子功能ID同恢复出厂，需结合场景区分）
@@ -261,7 +261,7 @@ struct PortStatus {
     uint8_t dataBits;              // 数据位（5/6/7/8）
     PortParity parity;             // 校验位（n/o/e）
     uint8_t stopBits;              // 停止位（1/1.5/2）
-    PortWorkMode workMode;         // 工作模式（TCP服务器/虚拟串口）
+    PortWorkMode workMode;         // 工作模式（TCP服务器/虚拟端口）
     PortWorkStatus workStatus;     // 连接状态（已连接/未连接）
     PortLockStatus lockStatus;     // 锁定状态（已锁定/未锁定）
     SerialPortInterfaceType ifType;      // 接口类型（RS232/RS485等）

@@ -341,8 +341,8 @@ bool ProtocolParser::parseSerialConfigResponse(const QByteArray &payload, QList<
     if (payload.size() != BLOCK_SIZE)
     {
         Logger::instance()->log(Logger::Error, "ProtocolParser",
-                                QString("串口配置响应长度不足: %1 != %2").arg(payload.size()).arg(BLOCK_SIZE));
-        emit parseError("串口配置响应长度不足");
+                                QString("端口配置响应长度不足: %1 != %2").arg(payload.size()).arg(BLOCK_SIZE));
+        emit parseError("端口配置响应长度不足");
         return false;
     }
     // 计算配置块数量
@@ -377,7 +377,7 @@ bool ProtocolParser::parseSerialConfigResponse(const QByteArray &payload, QList<
     }
 
     Logger::instance()->log(Logger::Info, "ProtocolParser",
-                            QString("成功解析串口配置: %1个端口").arg(configs.size()));
+                            QString("成功解析端口配置: %1个端口").arg(configs.size()));
     return true;
 }
 

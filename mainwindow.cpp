@@ -1,4 +1,4 @@
-#include "mainwindow.h"
+﻿#include "mainwindow.h"
 #include "build-chuankou/ui_mainwindow.h"
 #include "src/model/NetworkConfig.h"
 #include "src/communication/TcpClient.h"
@@ -7,6 +7,9 @@
 #include <QStyleFactory>
 #include <QGuiApplication>
 #include <QDockWidget>
+#include <QAction>
+#include <QPushButton>
+#include <QToolButton>
 #include "src/config/views/ConfigDialog.h"  //2026.01.20新增
 #include "src/utils/Logger.h"  // 日志系统
 
@@ -25,6 +28,8 @@ MainWindow::MainWindow(QWidget *parent)
     , m_configDialog(nullptr)
 {
     ui->setupUi(this);
+    initPortButtons();
+    initFramePortOperationButtons();
     m_mainWindowBaseMinimumHeight = minimumHeight();
 
     ui->devLogTextEdit->setReadOnly(true);
@@ -171,16 +176,9 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->tableWidgetSearch, &QTableWidget::itemChanged, this, &MainWindow::onItemChanged);
     //connect(m_devCtl, &DeviceController::upgradeHandshakeRequested,
     //        this,   &MainWindow::startUpgradeFlow);
-    ui->tabWidget->setTabText(0, "参数设置");
-    ui->tabWidget->setTabText(1, "模式设置");
-    ui->tabWidget->setTabText(2, "端口模式查询");
-
     ui->new_name->setValidator(validator);
     ui->new_name->setPlaceholderText("只能输入字母和数字，且不超过20字符");
-    ui->alias_lineEdit->setValidator(validator);
-    ui->alias_lineEdit->setPlaceholderText("只能输入字母和数字，且不超过19字符");
     ui->new_name->setMaxLength(20);
-    ui->alias_lineEdit->setMaxLength(19);
     
     bindDataToUI();
 
@@ -661,8 +659,7 @@ void MainWindow::onOperationSuccess(const QString &op)
             else
             {
                 ui->allPortShowTableWidget->setRowCount(configs.size());
-                const int selectedIndex = ui->comboBox_6->currentIndex();
-                m_serialPort = configs.at(selectedIndex);
+                m_serialPort = configs.first();
                 for (int row = 0; row < configs.size(); ++row)
                 {
                     m_serialPort = configs.at(row);
@@ -677,25 +674,6 @@ void MainWindow::onOperationSuccess(const QString &op)
                 }
             }
         }
-        m_PortOldName = m_serialPort.alias;
-        ui->alias_lineEdit->setText(m_serialPort.alias);
-        // 校验位：0=None, 1=Odd, 2=Even, 3=Mark, 4=Space
-        QString parityText = QStringList{"None", "Odd", "Even", "Mark", "Space"}.value(m_serialPort.parity, "None");
-        ui->check_bit_comboBox->setCurrentText(parityText);
-        // 数据位：5-8
-        QString dataBitsText = QString::number(m_serialPort.dataBits);
-        ui->data_bit_comboBox->setCurrentText(dataBitsText);
-        // 停止位：1-2
-        QString stopBitsText = QString::number(m_serialPort.stopBits);
-        ui->stop_bit_comboBox->setCurrentText(stopBitsText);
-        // 波特率
-        QString baudRateText = QString::number(m_serialPort.baudRate);
-        ui->baud_rate_comboBox->setCurrentText(baudRateText);
-        QString flowControlText = QStringList{"None", "RTS/CTS", "XON/XOFF", "DTR/DSR"}.value(m_serialPort.flowControl, "None");
-        ui->flow_control_comboBox->setCurrentText(flowControlText);   // 流控
-        // 接口类型：0=RS-232, 1=RS-422, 2=RS-485-2, 3=RS-485-4
-        QString interfaceText = QStringList{"RS-232", "RS-422", "RS-485-2", "RS-485-4"}.value(m_serialPort.interface, "RS-232");
-        ui->interface_mode_comboBox->setCurrentText(interfaceText);
 
         m_lastSerialPortConfig = m_serialPort;
         m_hasLastSerialPortConfig = true;
@@ -704,7 +682,6 @@ void MainWindow::onOperationSuccess(const QString &op)
     if (op == "Write Serial Config")
     {
         appendDeviceLog("写入配置成功：串口配置");
-        m_devCtl->readSerialConfig(ui->comboBox_6->currentIndex() + 1);
     }
     if (op == "Write Mode")
     {
@@ -722,16 +699,16 @@ void MainWindow::onOperationSuccess(const QString &op)
     {
         appendDeviceLog("设置看门狗成功");
     }
-    if (op == "Read Port Mode")
-    {
-        ui->tableWidget_7->setRowCount(1);     // 创建1行
-        SerialPortMode portMode = m_devCtl->currentDevice()->seriaPortModes();
-        portMode.alias = m_serialPort.alias;
-        ui->tableWidget_7->setItem(0, 0, new QTableWidgetItem(QString::number(portMode.index)));
-        ui->tableWidget_7->setItem(0, 1, new QTableWidgetItem(portMode.alias));
-        ui->tableWidget_7->setItem(0, 2, new QTableWidgetItem(QStringList{"", "Real COM Mode", "TCP Server Mode", "Redundant Mode"}.value(portMode.workMode)));
+//    if (op == "Read Port Mode")
+//    {
+//        ui->tableWidget_7->setRowCount(1);     // 创建1行
+//        SerialPortMode portMode = m_devCtl->currentDevice()->seriaPortModes();
+//        portMode.alias = m_serialPort.alias;
+//        ui->tableWidget_7->setItem(0, 0, new QTableWidgetItem(QString::number(portMode.index)));
+//        ui->tableWidget_7->setItem(0, 1, new QTableWidgetItem(portMode.alias));
+//        ui->tableWidget_7->setItem(0, 2, new QTableWidgetItem(QStringList{"", "Real COM Mode", "TCP Server Mode", "Redundant Mode"}.value(portMode.workMode)));
 
-    }
+//    }
 }
 
 /* ============================================================
@@ -854,256 +831,6 @@ void MainWindow::on_self_check_btn_clicked()
 
     /* 5. 把 32 字节位图追加到同一个命令帧（协议可选段） *********/
     m_devCtl->appendSyncBitmap(checkNumPort);   // 你已经在 DeviceController 里实现好的接口
-}
-
-void MainWindow::on_duan_can_btn_clicked()
-{
-    /* 1. 取出当前要设置的端口编号 */
-    QString portText = ui->comboBox_6->currentText();   // 例如 "端口6"
-    if (portText.isEmpty())
-    {
-        QMessageBox::warning(this, "提示", "请选择要设置的串口");
-        return;
-    }
-    int port = portText.mid(2).toInt();               // "端口1" → 1
-    if (port < 1 || port > 16)
-    {
-        QMessageBox::warning(this, "提示", "端口号必须在 1~16 之间");
-        return;
-    }
-    if (ui->alias_lineEdit->text().length() > 19)
-    {
-        QMessageBox::warning(this, "提示", "端口别名不能大于19字符");
-        return;
-    }
-    if (ui->alias_lineEdit->text() != m_PortOldName && ui->PortNewNameCBox->checkState() != Qt::Checked)
-    {
-        QMessageBox::information(this, "提示", "请勾选复选框修改别名");
-        return;
-    }
-    /* 2. 从 UI 读取所有参数 */
-    SerialPortConfig cfg;
-    cfg.index       = port;     //1
-    if (ui->PortNewNameCBox->checkState() != Qt::Checked || ui->alias_lineEdit->text().isEmpty())
-    {
-        cfg.alias = m_PortOldName;
-    }
-    else
-    {
-        cfg.alias = ui->alias_lineEdit->text();
-    }
-    cfg.baudRate = ui->baud_rate_comboBox->currentText().toUInt();
-    cfg.dataBits = ui->data_bit_comboBox->currentText().toUInt();
-    cfg.stopBits = ui->stop_bit_comboBox->currentText().toUInt();
-
-    /* 校验位 combo 文本 → 0/1/2 */
-    QString parText = ui->check_bit_comboBox->currentText();
-    cfg.parity = (parText == "None") ? 0 : (parText == "Odd") ? 1 : (parText == "Even") ? 2 : (parText == "Mark") ? 3 : 4 ;
-
-    /* 流控 combo 文本 → 0/1/2/3 */
-    QString flowText= ui->flow_control_comboBox->currentText();
-    cfg.flowControl = (flowText == "None") ? 0 : (flowText == "RTS/CTS") ? 1 : (flowText == "XON/XOFF") ? 2 : 3;
-    cfg.fifo = 0;   // 0 表示开启 FIFO（界面未提供则默认）
-
-    /* 接口类型 combo 文本 → 0/1/2/3 */
-    QString ifText  = ui->interface_mode_comboBox->currentText();
-    cfg.interface = (ifText == "RS-232") ? 0 : (ifText == "RS-422") ? 1 : (ifText == "RS-485-2") ? 2 : 3;
-
-    appendDeviceLog(QString("写入配置：串口%1配置，%2").arg(port).arg(currentCheckedDeviceText()));
-    if (m_hasLastSerialPortConfig && m_lastSerialPortConfig.index == cfg.index)
-    {
-        const QStringList changes = serialConfigChanges(m_lastSerialPortConfig, cfg);
-        if (changes.isEmpty())
-        {
-            appendDeviceLog(QString("配置修改：串口%1配置未发生变化").arg(port));
-        }
-        else
-        {
-            for (const QString &change : changes)
-            {
-                appendDeviceLog(QString("配置修改：串口%1 %2").arg(port).arg(change));
-            }
-        }
-    }
-    else
-    {
-        appendDeviceLog(QString("配置修改：未读取到串口%1旧配置，无法比较修改项").arg(port));
-    }
-
-    Logger::instance()->log(Logger::Info, "MainWindow", QString("正在设置串口 %1：波特率=%2, 数据位=%3, 停止位=%4, 校验位=%5, 流控=%6, 接口类型=%7, 别名=%8").arg(port).arg(cfg.baudRate).arg(cfg.dataBits).arg(cfg.stopBits).arg(parText).arg(flowText).arg(ifText).arg(cfg.alias));
-
-    /* 11. 同步位图（可选） *************************************/
-    if (ui->checkBox_33->isChecked())
-    {
-        // 关键1：初始化时直接创建32字节全0的数组，而非reserve后补0
-        QByteArray sync(32, 0); // 直接分配32字节，全部初始化为0（彻底避免垃圾值）
-        int writeIndex = 0;     // 记录写入位置，确保按顺序写
-        int writeIndex_2 = 0;
-        // 规则：checkBox_17~32 → 端口1~16
-        const int CB_NUM_START = 17;
-        const int CB_NUM_END = 32;
-        const int PORT_OFFSET = 16;
-
-        for (int cbNum = CB_NUM_START; cbNum <= CB_NUM_END; ++cbNum)
-        {
-            QCheckBox *cb = findChild<QCheckBox*>(QString("checkBox_%1").arg(cbNum));
-
-            // 只处理选中的端口，且写入位置不超过31（0~31共32字节）
-            if (cb && cb->isChecked() && writeIndex < 32)
-            {
-                int port = cbNum - PORT_OFFSET;
-                QByteArray portBytes = QByteArray::fromHex((QString("%1").arg(port, 2, 16, QChar('0'))).toUtf8());
-                if (!portBytes.isEmpty()) {
-                    sync[writeIndex++] = portBytes.at(0);
-                }
-            }
-        }
-
-        writeIndex_2 = writeIndex;
-        QByteArray hexString = QByteArray::fromHex((QString("%1").arg(writeIndex_2, 2, 16, QChar('0'))).toUtf8());      //返回设置的个数
-        if (!hexString.isEmpty()) {
-            QByteArray result = sync.left(writeIndex_2);    //返回实际被选择的端口号
-            hexString.append(result);
-        }
-
-        // 验证：打印最终32字节数据，确保只有前writeIndex个字节是端口号，其余全0
-        Logger::instance()->log(Logger::Debug, "MainWindow", QString("最终32字节同步数据：%1").arg(QString(sync.toHex(' ').toUpper())));
-
-        // 追加到cmd前，确保cmd是干净的（可选：如果cmd有残留，先清空）
-        // cmd.clear(); // 若cmd之前有数据，建议先清空
-        cfg.syncBitmap = hexString;
-        const QStringList syncPortNames = lockPortNamesFromPayload(cfg.syncBitmap);
-        appendDeviceLog(QString("启用同步：将串口%1配置同步到%2")
-                        .arg(port)
-                        .arg(syncPortNames.isEmpty() ? "未选择端口" : syncPortNames.join("，")));
-        /* 3. 调用新架构写串口配置 */
-        Logger::instance()->log(Logger::Debug, "MainWindow", "带同步位图的串口配置写入命令已发送");
-        m_devCtl->writeSerialConfig(cfg,0);   // 内部会组帧 0x04 0x03 并等待结果
-    }
-    else
-    {
-        appendDeviceLog(QString("未启用同步：仅写入串口%1配置").arg(port));
-        /* 3. 调用新架构写串口配置 */
-        Logger::instance()->log(Logger::Debug, "MainWindow", "普通串口配置写入命令已发送");
-        m_devCtl->writeSerialConfig(cfg,1);   // 内部会组帧 0x04 0x02 并等待结果
-    }
-}
-
-/* ----------------------------------------------------------
- * 工作模式设置
- * ---------------------------------------------------------- */
-void MainWindow::on_work_mode_btn_clicked()
-{
-    QString portText = ui->comboBox_7->currentText();          // 下拉框，选择某一个端口1～16
-    if (portText.isEmpty())
-    {
-        QMessageBox::warning(this, "提示", "请选择要设置的串口");
-        return;
-    }
-    int port = portText.mid(2).toInt();
-    if (port < 1 || port > 16)
-    {
-        return;
-    }
-
-    /* 读取界面工作模式 */
-    QString modeText = ui->work_mode_comboBox->currentText();
-
-    quint8 mode = 0x01;   // 默认为Real COM Mode模式
-    if (modeText == "TCP Server Mode")
-    {
-        mode = 0x03;
-    }
-    else if (modeText == "Redundant Mode")
-    {
-        mode = 0x07;
-    }
-
-    /* 构造模式参数 */
-    QVariantMap params;
-    if (mode == 0x01)
-    {
-        params["RealComModeTCPaliveCheckTime"] = ui->spinBox_3->value();     // TCP活动检测时间
-        params["RealComModeTCPmaxConnectNum"] = ui->spinBox_2->value();    // TCP最大连接数
-    }
-
-    if (mode == 0x03)
-    {
-        params["TCPServerModeTCPaliveCheckTime"] = ui->spinBox->value();      // TCP活动检测时间
-        params["TCPServerTCPmaxConnectNum"]    = ui->spinBox_7->value();      // TCP最大连接数
-    }
-    if (mode == 0x05) params["group"] = ui->spinBox_4->value();            // Redundant 组号
-
-    Logger::instance()->log(Logger::Info, "MainWindow", QString("正在设置端口 %1 的工作模式：%2").arg(port).arg(modeText));
-    appendDeviceLog(QString("写入配置：端口%1工作模式，模式=%2").arg(port).arg(modeText));
-    if (params.isEmpty())
-    {
-        appendDeviceLog(QString("配置修改：端口%1工作模式 -> %2").arg(port).arg(modeText));
-    }
-    else
-    {
-        QStringList detailList;
-        for (auto it = params.constBegin(); it != params.constEnd(); ++it)
-        {
-            detailList << QString("%1=%2").arg(it.key(), it.value().toString());
-        }
-        appendDeviceLog(QString("配置修改：端口%1工作模式 -> %2，参数：%3").arg(port).arg(modeText).arg(detailList.join("，")));
-    }
-
-    /* 4. 同步端口列表（可选，固定 32 字节） */
-    SerialPortConfig cfg;
-    if (ui->checkBox_34->isChecked())
-    {
-        if(mode == 0x01)
-        {
-            mode = 0x02;
-        }
-        else if(mode == 0x03)
-        {
-            mode = 0x04;
-        }
-
-        // 关键1：初始化时直接创建32字节全0的数组，而非reserve后补0
-        QByteArray sync(32, 0); // 直接分配32字节，全部初始化为0（彻底避免垃圾值）
-        int writeIndex = 0;     // 记录写入位置，确保按顺序写
-        int writeIndex_2 = 0;
-
-        const int CB_NUM_START = 35;    //从第35个端口号开始------即端口1
-        const int CB_NUM_END = 50;      //到第50个端口结束 ------即16个端口
-
-        for (int cbNum = CB_NUM_START; cbNum <= CB_NUM_END; ++cbNum)
-        {
-            QCheckBox *cb = findChild<QCheckBox*>(QString("checkBox_%1").arg(cbNum));
-            if(cb && cb->isChecked() && writeIndex < 32)
-            {
-                int i = cbNum - 34;
-                sync[writeIndex++] = QByteArray::fromHex((QString("%1").arg(i, 2, 16, QChar('0'))).toUtf8()).at(0);
-            }
-        }
-        writeIndex_2 = writeIndex;
-
-        QByteArray hexString = QByteArray::fromHex((QString("%1").arg(writeIndex_2, 2, 16, QChar('0'))).toUtf8());      //返回实际选择的个数
-        QByteArray result = sync.left(writeIndex);      //只返回实际使用的端口号
-
-        hexString.append(result);
-
-        // 追加到cmd前，确保cmd是干净的（可选：如果cmd有残留，先清空）
-        // cmd.clear(); // 若cmd之前有数据，建议先清空
-        cfg.syncBitmap = hexString;     //hexString 包含 1 + n ： 个数 + 端口号
-        const QStringList syncPortNames = lockPortNamesFromPayload(cfg.syncBitmap);
-        appendDeviceLog(QString("启用同步：将端口%1工作模式同步到%2")
-                        .arg(port)
-                        .arg(syncPortNames.isEmpty() ? "未选择端口" : syncPortNames.join("，")));
-        Logger::instance()->log(Logger::Debug, "MainWindow", "带同步端口列表的工作模式设置命令已发送");
-        m_devCtl->writeModeConfig(port, mode, params, cfg, 0);
-    }
-    else
-    {
-        appendDeviceLog(QString("未启用同步：仅写入端口%1工作模式").arg(port));
-        Logger::instance()->log(Logger::Debug, "MainWindow", "checkBox_34未选中，跳过同步端口列表");
-        m_devCtl->writeModeConfig(port, mode, params, cfg, 1);   // Controller 内部组帧 0x05 0x01
-    }
-
 }
 
 /* ----------------------------------------------------------
@@ -1668,11 +1395,9 @@ void MainWindow::handlePortMapTriggered()
 
 void MainWindow::handlePortSettingsTriggered()
 {
+    initPortButtons();
     ui->stackedWidget->setCurrentIndex(1);
     ui->stackedWidget_2->setCurrentIndex(4);
-    ui->tabWidget->setCurrentIndex(0);
-    on_tabWidget_currentChanged(0);
-    ui->checkBox_35->setChecked(true);
 };
 
 // 修改设备名称
@@ -2104,8 +1829,8 @@ void MainWindow::initTables()
     ui->allPortShowTableWidget->setColumnCount(8);  // 创建8列
     ui->allPortShowTableWidget->setHorizontalHeaderLabels({"串口号", "串口别名", "波特率", "数据位", "停止位", "校验位", "流控", "接口类型"});
 
-    ui->tableWidget_7->setColumnCount(5);
-    ui->tableWidget_7->setHorizontalHeaderLabels({"串口号", "串口别名", "工作模式", "TCP存活检测时间", "最大连接数"});
+//    ui->tableWidget_7->setColumnCount(5);
+//    ui->tableWidget_7->setHorizontalHeaderLabels({"串口号", "串口别名", "工作模式", "TCP存活检测时间", "最大连接数"});
 
     /* 2. 端口连接信息 ui->tableWidget_2 */
     ui->tableWidget_2->setColumnCount(4);
@@ -2427,122 +2152,6 @@ void MainWindow::handleDisconnectTriggered()
 }
 
 
-void MainWindow::on_tabWidget_currentChanged(int index)
-{
-    switch (index)
-    {
-    case 0:
-        ui->comboBox_6->setCurrentIndex(0);
-        ui->work_mode_comboBox->setCurrentIndex(0);
-        ui->stackedWidget_3->setCurrentIndex(1);
-        ui->alias_lineEdit->setEnabled(true);
-        ui->PortNewNameCBox->setChecked(false);
-    {
-        QList<QCheckBox*> checkBoxes = this->findChildren<QCheckBox*>(QRegularExpression("checkBox_(1[7-9]|2[0-9]|3[0-2])"));
-        for(QCheckBox *checkBox : checkBoxes)
-        {
-            checkBox->setChecked(false);
-        }
-    }
-        ui->checkBox_17->setChecked(true);
-
-        m_devCtl->readSerialConfig(ui->comboBox_6->currentIndex() + 1);
-        break;
-
-    case 1:
-        ui->comboBox_7->setCurrentIndex(0);
-        ui->work_mode_comboBox->setCurrentIndex(0);
-        ui->stackedWidget_3->setCurrentIndex(1);
-    {
-        QList<QCheckBox*> checkBoxes = ui->tab_2->findChildren<QCheckBox*>();
-        for(QCheckBox *checkBox : checkBoxes)
-        {
-            checkBox->setChecked(false);
-        }
-    }
-        ui->checkBox_35->setChecked(true);
-
-        m_devCtl->queryPortMode(ui->comboBox_7->currentIndex() + 1);
-        break;
-    }
-}
-
-void MainWindow::on_work_mode_comboBox_activated(const QString &arg1)
-{
-    Logger::instance()->log(Logger::Debug, "MainWindow", QString("arg1: %1").arg(arg1));
-    if(arg1 == "Real COM Mode ")
-    {
-        ui->stackedWidget_3->setCurrentIndex(1);
-    }
-    else if(arg1 == "TCP Server Mode")
-    {
-        ui->stackedWidget_3->setCurrentIndex(0);
-    }
-    else if(arg1 == "Redundant Mode")
-    {
-        ui->stackedWidget_3->setCurrentIndex(2);
-    }
-}
-
-void MainWindow::on_alias_lineEdit_textChanged(const QString &arg1)
-{
-    if(arg1.length() > 19)
-    {
-        QMessageBox::StandardButton reply = QMessageBox::warning(this, "警告", "别名最大长度为19字符", QMessageBox::Yes);
-        if(reply == QMessageBox::Yes)
-        {
-            ui->alias_lineEdit->clear();
-        }
-    }
-}
-
-void MainWindow::on_comboBox_7_activated(int index)
-{
-
-    QList<QCheckBox*> checkBoxes = this->findChildren<QCheckBox*>(QRegularExpression("checkBox_(3[5-9]|4[0-9]|5[0])"));
-
-    for(QCheckBox *checkBox : checkBoxes)
-    {
-        checkBox->setChecked(false);
-    }
-
-    QString targetName = QString("checkBox_%1").arg(index + 35);
-    QCheckBox *targetCheckBox = ui->tab_2->findChild<QCheckBox *>(targetName);
-    if(targetCheckBox != nullptr)
-    {
-        targetCheckBox->setChecked(true);
-    }
-    else
-    {
-        Logger::instance()->log(Logger::Debug, "MainWindow", "没有此控件!!");
-    }
-    m_devCtl->queryPortMode(index + 1);
-
-    return;
-}
-
-void MainWindow::on_comboBox_6_activated(int index)
-{
-    QList<QCheckBox*> checkBoxes = this->findChildren<QCheckBox*>(QRegularExpression("checkBox_(1[7-9]|2[0-9]|3[0-2])"));
-
-    for(QCheckBox *checkBox : checkBoxes)
-    {
-        checkBox->setChecked(false);
-    }
-    QString targetName = QString("checkBox_%1").arg(index + 17);
-    QCheckBox *targetCheckBox = this->findChild<QCheckBox *>(targetName);
-    if(targetCheckBox != nullptr)
-    {
-        targetCheckBox->setChecked(true);
-    }
-    else
-    {
-        Logger::instance()->log(Logger::Debug, "MainWindow", "没有此控件!!");
-    }
-    m_devCtl->readSerialConfig(index + 1);
-    return ;
-}
-
 void MainWindow::on_new_name_cursorPositionChanged(int arg1, int arg2)
 {
     if(arg2 == 0)
@@ -2563,43 +2172,12 @@ void MainWindow::on_new_name_cursorPositionChanged(int arg1, int arg2)
 
 }
 
-void MainWindow::on_alias_lineEdit_cursorPositionChanged(int arg1, int arg2)
-{
-    if(arg2 == 0 && ui->alias_lineEdit->text().isEmpty())
-    {
-        // 设置文本颜色和字体大小
-        ui->alias_lineEdit->setStyleSheet("QLineEdit#alias_lineEdit{"
-                                          " color: rgba(168,200,236, 0.3); "
-                                          "font-family: 'Microsoft YaHei'; "
-                                          "font-size: 12px; "
-                                          "}");
-    }
-    if((arg1 > 0 && arg2 != 0) || (arg1 == 0 && arg2 == 1) || arg2 > 0)
-    {
-        ui->alias_lineEdit->setStyleSheet("QLineEdit#alias_lineEdit{"
-                                          "color: white; "
-                                          "}");
-    }
-}
-
 
 void MainWindow::on_chooseAllPortCheckBox_stateChanged(int arg1)
 {
     if (arg1 == Qt::Checked)
     {
         m_devCtl->readSerialConfig(1616);
-    }
-}
-
-void MainWindow::on_PortNewNameCBox_stateChanged(int arg1)
-{
-    if (arg1 == Qt::Checked)
-    {
-        ui->alias_lineEdit->setEnabled(false);
-    }
-    if (arg1 == Qt::Unchecked)
-    {
-        ui->alias_lineEdit->setEnabled(true);
     }
 }
 
@@ -2821,4 +2399,213 @@ void MainWindow::setConnectionStatus(bool connected, const QString &ip, const QS
         m_connStatusLabel->setText("未连接");
         m_deviceNameStatusLabel->setText("设备名称：--");
     }
+}
+
+QByteArray MainWindow::singlePortPayload(int port) const
+{
+    return portListPayload(QList<int>() << port);
+}
+
+QByteArray MainWindow::portListPayload(const QList<int> &ports) const
+{
+    QByteArray payload;
+    for (int port : ports)
+    {
+        if (port < 1 || port > 16 || payload.contains(static_cast<char>(port))) {
+            continue;
+        }
+        payload.append(static_cast<char>(port));
+    }
+
+    if (payload.isEmpty()) {
+        return QByteArray();
+    }
+
+    payload.prepend(static_cast<char>(payload.size()));
+    return payload;
+}
+
+QList<int> MainWindow::selectedPortButtonPorts() const
+{
+    QList<int> ports;
+    for (int port = 1; port <= 16; ++port)
+    {
+        QToolButton *btn = ui->frame_2->findChild<QToolButton *>(QString("toolButton_%1").arg(port));
+        if (btn && btn->isChecked()) {
+            ports.append(port);
+        }
+    }
+    return ports;
+}
+
+void MainWindow::initPortButtons()
+{
+    for (int port = 1; port <= 16; ++port)
+    {
+        QToolButton *btn = ui->frame_2->findChild<QToolButton *>(QString("toolButton_%1").arg(port));
+        if (!btn || btn->menu()) {
+            continue;
+        }
+
+        btn->setProperty("port", port);
+        btn->setCheckable(true);
+        btn->setPopupMode(QToolButton::MenuButtonPopup);
+        btn->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+
+        QMenu *menu = new QMenu(btn);
+        QAction *paramAction = menu->addAction("参数设置");
+        QAction *modeAction = menu->addAction("模式设置");
+        menu->addSeparator();
+        QAction *lockAction = menu->addAction("锁定端口");
+        QAction *resetAction = menu->addAction("端口重置");
+        QAction *selfCheckAction = menu->addAction("端口自检");
+        QAction *unlockAction = menu->addAction("解锁端口");
+
+        connect(paramAction, &QAction::triggered, this, [this, port]() { openPortParamSettings(port); });
+        connect(modeAction, &QAction::triggered, this, [this, port]() { openPortModeSettings(port); });
+        connect(lockAction, &QAction::triggered, this, [this, port]() { lockPortFromButton(port); });
+        connect(resetAction, &QAction::triggered, this, [this, port]() { resetPortFromButton(port); });
+        connect(selfCheckAction, &QAction::triggered, this, [this, port]() { selfCheckPortFromButton(port); });
+        connect(unlockAction, &QAction::triggered, this, [this, port]() { unlockPortFromButton(port); });
+
+        btn->setMenu(menu);
+    }
+}
+
+void MainWindow::initFramePortOperationButtons()
+{
+    connect(ui->pushButton, &QPushButton::clicked, this, [this]() {
+        openPortParamSettings(selectedPortButtonPorts());
+    });
+    connect(ui->pushButton_2, &QPushButton::clicked, this, [this]() {
+        openPortModeSettings(selectedPortButtonPorts());
+    });
+    connect(ui->pushButton_5, &QPushButton::clicked, this, [this]() {
+        lockPortsFromButtons(selectedPortButtonPorts());
+    });
+    connect(ui->pushButton_4, &QPushButton::clicked, this, [this]() {
+        resetPortsFromButtons(selectedPortButtonPorts());
+    });
+    connect(ui->pushButton_3, &QPushButton::clicked, this, [this]() {
+        selfCheckPortsFromButtons(selectedPortButtonPorts());
+    });
+    connect(ui->pushButton_6, &QPushButton::clicked, this, [this]() {
+        unlockPortsFromButtons(selectedPortButtonPorts());
+    });
+}
+
+void MainWindow::openPortParamSettings(int port)
+{
+    if (port < 1 || port > 16) {
+        return;
+    }
+
+    m_pendingParamPort = port;
+    appendDeviceLog(QString("读取配置：端口%1参数").arg(port));
+    m_devCtl->readSerialConfig(port);
+}
+
+void MainWindow::openPortParamSettings(const QList<int> &ports)
+{
+    if (ports.isEmpty())
+    {
+        QMessageBox::information(this, "提示", "请先选择端口");
+        return;
+    }
+    openPortParamSettings(ports.first());
+}
+
+void MainWindow::openPortModeSettings(int port)
+{
+    if (port < 1 || port > 16) {
+        return;
+    }
+
+    m_pendingModePort = port;
+    appendDeviceLog(QString("读取配置：端口%1工作模式").arg(port));
+    m_devCtl->queryPortMode(port);
+}
+
+void MainWindow::openPortModeSettings(const QList<int> &ports)
+{
+    if (ports.isEmpty())
+    {
+        QMessageBox::information(this, "提示", "请先选择端口");
+        return;
+    }
+    openPortModeSettings(ports.first());
+}
+
+void MainWindow::lockPortFromButton(int port)
+{
+    lockPortsFromButtons(QList<int>() << port);
+}
+
+void MainWindow::lockPortsFromButtons(const QList<int> &ports)
+{
+    const QByteArray payload = portListPayload(ports);
+    if (payload.isEmpty())
+    {
+        QMessageBox::information(this, "提示", "请先选择端口");
+        return;
+    }
+
+    m_pendingLockPortNames = lockPortNamesFromPayload(payload);
+    appendDeviceLog(QString("请求锁定端口：%1").arg(m_pendingLockPortNames.join("，")));
+    m_devCtl->lockPortsWithSync(payload);
+}
+
+void MainWindow::unlockPortFromButton(int port)
+{
+    unlockPortsFromButtons(QList<int>() << port);
+}
+
+void MainWindow::unlockPortsFromButtons(const QList<int> &ports)
+{
+    const QByteArray payload = portListPayload(ports);
+    if (payload.isEmpty())
+    {
+        QMessageBox::information(this, "提示", "请先选择端口");
+        return;
+    }
+
+    m_pendingUnlockPortNames = lockPortNamesFromPayload(payload);
+    appendDeviceLog(QString("请求解锁端口：%1").arg(m_pendingUnlockPortNames.join("，")));
+    m_devCtl->unlockPortsWithSync(payload);
+}
+
+void MainWindow::resetPortFromButton(int port)
+{
+    resetPortsFromButtons(QList<int>() << port);
+}
+
+void MainWindow::resetPortsFromButtons(const QList<int> &ports)
+{
+    const QByteArray payload = portListPayload(ports);
+    if (payload.isEmpty())
+    {
+        QMessageBox::information(this, "提示", "请先选择端口");
+        return;
+    }
+
+    appendDeviceLog(QString("请求重置端口：%1").arg(lockPortNamesFromPayload(payload).join("，")));
+    m_devCtl->buildPortReset(payload);
+}
+
+void MainWindow::selfCheckPortFromButton(int port)
+{
+    selfCheckPortsFromButtons(QList<int>() << port);
+}
+
+void MainWindow::selfCheckPortsFromButtons(const QList<int> &ports)
+{
+    const QByteArray payload = portListPayload(ports);
+    if (payload.isEmpty())
+    {
+        QMessageBox::information(this, "提示", "请先选择端口");
+        return;
+    }
+
+    appendDeviceLog(QString("请求端口自检：%1").arg(lockPortNamesFromPayload(payload).join("，")));
+    m_devCtl->appendSyncBitmap(payload);
 }

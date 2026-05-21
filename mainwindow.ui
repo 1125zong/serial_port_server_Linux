@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>MainWindow</class>
  <widget class="QMainWindow" name="MainWindow">
@@ -194,11 +194,11 @@
               <property name="styleSheet">
                <string notr="true">QTextBrowser#textBrowser
 {
-	border: 2px solid #1F5289;  
-    border-radius: 8px;        
-    padding: 10px;              
+    border: 2px solid #1F5289;
+    border-radius: 8px;
+    padding: 10px;
     font-family: 'Arial';
-	font-size: 15px;   
+    font-size: 15px;
 }</string>
               </property>
               <property name="html">
@@ -219,7 +219,7 @@ p, li { white-space: pre-wrap; }
 
 QTableWidget#tableWidget::item
 {
- 	text-align: center; 
+     text-align: center;
 }
 </string>
               </property>
@@ -512,15 +512,15 @@ QTableWidget#tableWidget::item
                <property name="styleSheet">
                 <string notr="true">QPushButton#name_modify:hover
 {
-	image: url(:/image/reName.png);
-	color: transparent;
-	background-color: #1A3B5F;
+    image: url(:/image/reName.png);
+    color: transparent;
+    background-color: #1A3B5F;
 }
 QPushButton#name_modify:pressed
 {
-	image: none;
-	color: white;
-	background-color: rgba(255,0,0,0.5);
+    image: none;
+    color: white;
+    background-color: rgba(255,0,0,0.5);
 }</string>
                </property>
                <property name="text">
@@ -747,16 +747,16 @@ QPushButton#name_modify:pressed
                   <property name="styleSheet">
                    <string notr="true">QPushButton#browse_btn:hover
 {
-	image: url(:/image/browse.png);
-	color: transparent;
-	background-color: #1A3B5F;
+    image: url(:/image/browse.png);
+    color: transparent;
+    background-color: #1A3B5F;
 }
 
 QPushButton#browse_btn:pressed
 {
-	image: none;
-	color: white;
-	background-color: rgba(255,0,0,0.5);
+    image: none;
+    color: white;
+    background-color: rgba(255,0,0,0.5);
 }</string>
                   </property>
                   <property name="text">
@@ -781,16 +781,16 @@ QPushButton#browse_btn:pressed
                   <property name="styleSheet">
                    <string notr="true">QPushButton#upgrade_btn:hover
 {
-	image: url(:/image/upgrade.png);
-	color: transparent;
-	background-color: #1A3B5F;
+    image: url(:/image/upgrade.png);
+    color: transparent;
+    background-color: #1A3B5F;
 }
 
 QPushButton#upgrade_btn:pressed
 {
-	image: none;
-	color: white;
-	background-color: rgba(255,0,0,0.5);
+    image: none;
+    color: white;
+    background-color: rgba(255,0,0,0.5);
 }</string>
                   </property>
                   <property name="text">
@@ -1313,9 +1313,9 @@ QPushButton#upgrade_btn:pressed
 
 QPushButton#self_check_btn:pressed
 {
-	image: none;
-	color: white;
-   	background-color: rgba(255,0,0,0.5);
+    image: none;
+    color: white;
+       background-color: rgba(255,0,0,0.5);
 }</string>
                         </property>
                         <property name="text">
@@ -1351,9 +1351,9 @@ QPushButton#self_check_btn:pressed
 
 QPushButton#reset_btn:pressed
 {
-	image: none;
-	color: white;
-   	background-color: rgba(255,0,0,0.5);
+    image: none;
+    color: white;
+       background-color: rgba(255,0,0,0.5);
 }</string>
                         </property>
                         <property name="text">
@@ -1743,7 +1743,7 @@ QPushButton#reset_btn:pressed
            </layout>
           </widget>
           <widget class="QWidget" name="page_12">
-           <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0">
+           <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0,0,0,0">
             <property name="spacing">
              <number>0</number>
             </property>
@@ -1760,1481 +1760,292 @@ QPushButton#reset_btn:pressed
              <number>0</number>
             </property>
             <item>
-             <widget class="QTabWidget" name="tabWidget">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
+             <widget class="QFrame" name="frame_2">
+              <property name="frameShape">
+               <enum>QFrame::StyledPanel</enum>
               </property>
-              <property name="currentIndex">
-               <number>0</number>
+              <property name="frameShadow">
+               <enum>QFrame::Raised</enum>
               </property>
-              <widget class="QWidget" name="widget">
-               <attribute name="title">
-                <string>Tab 1</string>
-               </attribute>
-               <layout class="QHBoxLayout" name="horizontalLayout_12" stretch="4,5">
-                <property name="spacing">
-                 <number>10</number>
-                </property>
-                <property name="leftMargin">
-                 <number>8</number>
-                </property>
-                <property name="topMargin">
-                 <number>0</number>
-                </property>
-                <property name="rightMargin">
-                 <number>8</number>
-                </property>
-                <property name="bottomMargin">
-                 <number>8</number>
-                </property>
-                <item>
-                 <widget class="QWidget" name="widget_2" native="true">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <layout class="QVBoxLayout" name="verticalLayout_2">
-                   <item>
-                    <widget class="QGroupBox" name="groupBox_2">
-                     <property name="title">
-                      <string>端口设置</string>
-                     </property>
-                     <widget class="QPushButton" name="duan_can_btn">
-                      <property name="geometry">
-                       <rect>
-                        <x>380</x>
-                        <y>160</y>
-                        <width>101</width>
-                        <height>41</height>
-                       </rect>
-                      </property>
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="minimumSize">
-                       <size>
-                        <width>101</width>
-                        <height>41</height>
-                       </size>
-                      </property>
-                      <property name="font">
-                       <font>
-                        <family>微软雅黑</family>
-                        <weight>75</weight>
-                        <bold>true</bold>
-                       </font>
-                      </property>
-                      <property name="text">
-                       <string>应用配置</string>
-                      </property>
-                     </widget>
-                     <widget class="QWidget" name="layoutWidget">
-                      <property name="geometry">
-                       <rect>
-                        <x>12</x>
-                        <y>82</y>
-                        <width>145</width>
-                        <height>118</height>
-                       </rect>
-                      </property>
-                      <layout class="QHBoxLayout" name="horizontalLayout_20">
-                       <item>
-                        <layout class="QVBoxLayout" name="verticalLayout_9">
-                         <item>
-                          <widget class="QLabel" name="label_22">
-                           <property name="sizePolicy">
-                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                             <horstretch>0</horstretch>
-                             <verstretch>0</verstretch>
-                            </sizepolicy>
-                           </property>
-                           <property name="minimumSize">
-                            <size>
-                             <width>55</width>
-                             <height>28</height>
-                            </size>
-                           </property>
-                           <property name="maximumSize">
-                            <size>
-                             <width>52</width>
-                             <height>28</height>
-                            </size>
-                           </property>
-                           <property name="text">
-                            <string>数据位:</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
-                          <widget class="QLabel" name="label_23">
-                           <property name="sizePolicy">
-                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                             <horstretch>0</horstretch>
-                             <verstretch>0</verstretch>
-                            </sizepolicy>
-                           </property>
-                           <property name="minimumSize">
-                            <size>
-                             <width>55</width>
-                             <height>28</height>
-                            </size>
-                           </property>
-                           <property name="maximumSize">
-                            <size>
-                             <width>40</width>
-                             <height>28</height>
-                            </size>
-                           </property>
-                           <property name="text">
-                            <string>停止位:</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
-                          <widget class="QLabel" name="label_24">
-                           <property name="sizePolicy">
-                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                             <horstretch>0</horstretch>
-                             <verstretch>0</verstretch>
-                            </sizepolicy>
-                           </property>
-                           <property name="minimumSize">
-                            <size>
-                             <width>55</width>
-                             <height>28</height>
-                            </size>
-                           </property>
-                           <property name="maximumSize">
-                            <size>
-                             <width>0</width>
-                             <height>26</height>
-                            </size>
-                           </property>
-                           <property name="text">
-                            <string>校验位:</string>
-                           </property>
-                          </widget>
-                         </item>
-                        </layout>
-                       </item>
-                       <item>
-                        <layout class="QVBoxLayout" name="verticalLayout_12">
-                         <item>
-                          <widget class="QComboBox" name="data_bit_comboBox">
-                           <property name="sizePolicy">
-                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                             <horstretch>0</horstretch>
-                             <verstretch>0</verstretch>
-                            </sizepolicy>
-                           </property>
-                           <item>
-                            <property name="text">
-                             <string>5</string>
-                            </property>
-                           </item>
-                           <item>
-                            <property name="text">
-                             <string>6</string>
-                            </property>
-                           </item>
-                           <item>
-                            <property name="text">
-                             <string>7</string>
-                            </property>
-                           </item>
-                           <item>
-                            <property name="text">
-                             <string>8</string>
-                            </property>
-                           </item>
-                          </widget>
-                         </item>
-                         <item>
-                          <widget class="QComboBox" name="stop_bit_comboBox">
-                           <property name="sizePolicy">
-                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                             <horstretch>0</horstretch>
-                             <verstretch>0</verstretch>
-                            </sizepolicy>
-                           </property>
-                           <item>
-                            <property name="text">
-                             <string>1</string>
-                            </property>
-                           </item>
-                           <item>
-                            <property name="text">
-                             <string>2</string>
-                            </property>
-                           </item>
-                          </widget>
-                         </item>
-                         <item>
-                          <widget class="QComboBox" name="check_bit_comboBox">
-                           <property name="sizePolicy">
-                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                             <horstretch>0</horstretch>
-                             <verstretch>0</verstretch>
-                            </sizepolicy>
-                           </property>
-                           <item>
-                            <property name="text">
-                             <string>None</string>
-                            </property>
-                           </item>
-                           <item>
-                            <property name="text">
-                             <string>Even</string>
-                            </property>
-                           </item>
-                           <item>
-                            <property name="text">
-                             <string>Odd</string>
-                            </property>
-                           </item>
-                           <item>
-                            <property name="text">
-                             <string>Mark</string>
-                            </property>
-                           </item>
-                           <item>
-                            <property name="text">
-                             <string>Space</string>
-                            </property>
-                           </item>
-                          </widget>
-                         </item>
-                        </layout>
-                       </item>
-                      </layout>
-                     </widget>
-                     <widget class="QWidget" name="layoutWidget">
-                      <property name="geometry">
-                       <rect>
-                        <x>162</x>
-                        <y>82</y>
-                        <width>198</width>
-                        <height>118</height>
-                       </rect>
-                      </property>
-                      <layout class="QHBoxLayout" name="horizontalLayout_23">
-                       <item>
-                        <layout class="QVBoxLayout" name="verticalLayout_13">
-                         <item>
-                          <widget class="QLabel" name="label_21">
-                           <property name="sizePolicy">
-                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                             <horstretch>0</horstretch>
-                             <verstretch>0</verstretch>
-                            </sizepolicy>
-                           </property>
-                           <property name="minimumSize">
-                            <size>
-                             <width>52</width>
-                             <height>28</height>
-                            </size>
-                           </property>
-                           <property name="maximumSize">
-                            <size>
-                             <width>40</width>
-                             <height>28</height>
-                            </size>
-                           </property>
-                           <property name="text">
-                            <string>波特率:</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
-                          <widget class="QLabel" name="label_25">
-                           <property name="sizePolicy">
-                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                             <horstretch>0</horstretch>
-                             <verstretch>0</verstretch>
-                            </sizepolicy>
-                           </property>
-                           <property name="minimumSize">
-                            <size>
-                             <width>59</width>
-                             <height>28</height>
-                            </size>
-                           </property>
-                           <property name="maximumSize">
-                            <size>
-                             <width>40</width>
-                             <height>28</height>
-                            </size>
-                           </property>
-                           <property name="text">
-                            <string>流     控:</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
-                          <widget class="QLabel" name="label_26">
-                           <property name="sizePolicy">
-                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                             <horstretch>0</horstretch>
-                             <verstretch>0</verstretch>
-                            </sizepolicy>
-                           </property>
-                           <property name="minimumSize">
-                            <size>
-                             <width>71</width>
-                             <height>28</height>
-                            </size>
-                           </property>
-                           <property name="maximumSize">
-                            <size>
-                             <width>52</width>
-                             <height>28</height>
-                            </size>
-                           </property>
-                           <property name="text">
-                            <string>接口模式:</string>
-                           </property>
-                          </widget>
-                         </item>
-                        </layout>
-                       </item>
-                       <item>
-                        <layout class="QVBoxLayout" name="verticalLayout_14">
-                         <item>
-                          <widget class="QComboBox" name="baud_rate_comboBox">
-                           <property name="sizePolicy">
-                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                             <horstretch>0</horstretch>
-                             <verstretch>0</verstretch>
-                            </sizepolicy>
-                           </property>
-                           <item>
-                            <property name="text">
-                             <string>9600</string>
-                            </property>
-                           </item>
-                           <item>
-                            <property name="text">
-                             <string>19200</string>
-                            </property>
-                           </item>
-                           <item>
-                            <property name="text">
-                             <string>38400</string>
-                            </property>
-                           </item>
-                           <item>
-                            <property name="text">
-                             <string>57600</string>
-                            </property>
-                           </item>
-                           <item>
-                            <property name="text">
-                             <string>115200</string>
-                            </property>
-                           </item>
-                          </widget>
-                         </item>
-                         <item>
-                          <widget class="QComboBox" name="flow_control_comboBox">
-                           <property name="sizePolicy">
-                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                             <horstretch>0</horstretch>
-                             <verstretch>0</verstretch>
-                            </sizepolicy>
-                           </property>
-                           <item>
-                            <property name="text">
-                             <string>None</string>
-                            </property>
-                           </item>
-                           <item>
-                            <property name="text">
-                             <string>RTS/CTS</string>
-                            </property>
-                           </item>
-                           <item>
-                            <property name="text">
-                             <string>XON/XOFF</string>
-                            </property>
-                           </item>
-                           <item>
-                            <property name="text">
-                             <string>DTR/DSR</string>
-                            </property>
-                           </item>
-                          </widget>
-                         </item>
-                         <item>
-                          <widget class="QComboBox" name="interface_mode_comboBox">
-                           <property name="sizePolicy">
-                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                             <horstretch>0</horstretch>
-                             <verstretch>0</verstretch>
-                            </sizepolicy>
-                           </property>
-                           <item>
-                            <property name="text">
-                             <string>RS-232</string>
-                            </property>
-                           </item>
-                           <item>
-                            <property name="text">
-                             <string>RS-422</string>
-                            </property>
-                           </item>
-                           <item>
-                            <property name="text">
-                             <string>RS-485-2</string>
-                            </property>
-                           </item>
-                           <item>
-                            <property name="text">
-                             <string>RS-485-4</string>
-                            </property>
-                           </item>
-                          </widget>
-                         </item>
-                        </layout>
-                       </item>
-                      </layout>
-                     </widget>
-                     <widget class="QWidget" name="layoutWidget">
-                      <property name="geometry">
-                       <rect>
-                        <x>16</x>
-                        <y>31</y>
-                        <width>464</width>
-                        <height>44</height>
-                       </rect>
-                      </property>
-                      <layout class="QHBoxLayout" name="horizontalLayout_16">
-                       <item>
-                        <widget class="QComboBox" name="comboBox_6">
-                         <property name="sizePolicy">
-                          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                           <horstretch>0</horstretch>
-                           <verstretch>0</verstretch>
-                          </sizepolicy>
-                         </property>
-                         <property name="minimumSize">
-                          <size>
-                           <width>110</width>
-                           <height>42</height>
-                          </size>
-                         </property>
-                         <item>
-                          <property name="text">
-                           <string>端口1</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>端口2</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>端口3</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>端口4</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>端口5</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>端口6</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>端口7</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>端口8</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>端口9</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>端口10</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>端口11</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>端口12</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>端口13</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>端口14</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>端口15</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>端口16</string>
-                          </property>
-                         </item>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QLabel" name="label_20">
-                         <property name="sizePolicy">
-                          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                           <horstretch>0</horstretch>
-                           <verstretch>0</verstretch>
-                          </sizepolicy>
-                         </property>
-                         <property name="minimumSize">
-                          <size>
-                           <width>78</width>
-                           <height>42</height>
-                          </size>
-                         </property>
-                         <property name="text">
-                          <string>端口别名:</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QLineEdit" name="alias_lineEdit">
-                         <property name="sizePolicy">
-                          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                           <horstretch>0</horstretch>
-                           <verstretch>0</verstretch>
-                          </sizepolicy>
-                         </property>
-                         <property name="minimumSize">
-                          <size>
-                           <width>234</width>
-                           <height>42</height>
-                          </size>
-                         </property>
-                         <property name="styleSheet">
-                          <string notr="true"/>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QCheckBox" name="PortNewNameCBox">
-                         <property name="text">
-                          <string/>
-                         </property>
-                        </widget>
-                       </item>
-                      </layout>
-                     </widget>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QGroupBox" name="groupBox">
-                     <property name="title">
-                      <string>端口同步</string>
-                     </property>
-                     <widget class="QCheckBox" name="checkBox_33">
-                      <property name="geometry">
-                       <rect>
-                        <x>10</x>
-                        <y>30</y>
-                        <width>87</width>
-                        <height>25</height>
-                       </rect>
-                      </property>
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="text">
-                       <string>启用同步</string>
-                      </property>
-                      <property name="iconSize">
-                       <size>
-                        <width>24</width>
-                        <height>24</height>
-                       </size>
-                      </property>
-                      <property name="checked">
-                       <bool>false</bool>
-                      </property>
-                     </widget>
-                     <widget class="QWidget" name="layoutWidget">
-                      <property name="geometry">
-                       <rect>
-                        <x>10</x>
-                        <y>50</y>
-                        <width>511</width>
-                        <height>171</height>
-                       </rect>
-                      </property>
-                      <layout class="QVBoxLayout" name="verticalLayout_4">
-                       <property name="spacing">
-                        <number>0</number>
-                       </property>
-                       <property name="topMargin">
-                        <number>0</number>
-                       </property>
-                       <property name="rightMargin">
-                        <number>0</number>
-                       </property>
-                       <item>
-                        <layout class="QHBoxLayout" name="horizontalLayout_22">
-                         <item>
-                          <widget class="QCheckBox" name="checkBox_17">
-                           <property name="sizePolicy">
-                            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                             <horstretch>0</horstretch>
-                             <verstretch>0</verstretch>
-                            </sizepolicy>
-                           </property>
-                           <property name="text">
-                            <string>端口1</string>
-                           </property>
-                           <property name="checkable">
-                            <bool>true</bool>
-                           </property>
-                           <property name="checked">
-                            <bool>true</bool>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
-                          <widget class="QCheckBox" name="checkBox_18">
-                           <property name="sizePolicy">
-                            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                             <horstretch>0</horstretch>
-                             <verstretch>0</verstretch>
-                            </sizepolicy>
-                           </property>
-                           <property name="text">
-                            <string>端口2</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
-                          <widget class="QCheckBox" name="checkBox_19">
-                           <property name="sizePolicy">
-                            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                             <horstretch>0</horstretch>
-                             <verstretch>0</verstretch>
-                            </sizepolicy>
-                           </property>
-                           <property name="text">
-                            <string>端口3</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
-                          <widget class="QCheckBox" name="checkBox_20">
-                           <property name="sizePolicy">
-                            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                             <horstretch>0</horstretch>
-                             <verstretch>0</verstretch>
-                            </sizepolicy>
-                           </property>
-                           <property name="text">
-                            <string>端口4</string>
-                           </property>
-                          </widget>
-                         </item>
-                        </layout>
-                       </item>
-                       <item>
-                        <layout class="QHBoxLayout" name="horizontalLayout_24">
-                         <item>
-                          <widget class="QCheckBox" name="checkBox_21">
-                           <property name="sizePolicy">
-                            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                             <horstretch>0</horstretch>
-                             <verstretch>0</verstretch>
-                            </sizepolicy>
-                           </property>
-                           <property name="text">
-                            <string>端口5</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
-                          <widget class="QCheckBox" name="checkBox_22">
-                           <property name="sizePolicy">
-                            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                             <horstretch>0</horstretch>
-                             <verstretch>0</verstretch>
-                            </sizepolicy>
-                           </property>
-                           <property name="text">
-                            <string>端口6</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
-                          <widget class="QCheckBox" name="checkBox_23">
-                           <property name="text">
-                            <string>端口7</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
-                          <widget class="QCheckBox" name="checkBox_24">
-                           <property name="text">
-                            <string>端口8</string>
-                           </property>
-                          </widget>
-                         </item>
-                        </layout>
-                       </item>
-                       <item>
-                        <layout class="QHBoxLayout" name="horizontalLayout_26">
-                         <item>
-                          <widget class="QCheckBox" name="checkBox_25">
-                           <property name="sizePolicy">
-                            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                             <horstretch>0</horstretch>
-                             <verstretch>0</verstretch>
-                            </sizepolicy>
-                           </property>
-                           <property name="text">
-                            <string>端口9</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
-                          <widget class="QCheckBox" name="checkBox_26">
-                           <property name="sizePolicy">
-                            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                             <horstretch>0</horstretch>
-                             <verstretch>0</verstretch>
-                            </sizepolicy>
-                           </property>
-                           <property name="text">
-                            <string>端口10</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
-                          <widget class="QCheckBox" name="checkBox_27">
-                           <property name="text">
-                            <string>端口11</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
-                          <widget class="QCheckBox" name="checkBox_28">
-                           <property name="text">
-                            <string>端口12</string>
-                           </property>
-                          </widget>
-                         </item>
-                        </layout>
-                       </item>
-                       <item>
-                        <layout class="QHBoxLayout" name="horizontalLayout_25">
-                         <item>
-                          <widget class="QCheckBox" name="checkBox_29">
-                           <property name="sizePolicy">
-                            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                             <horstretch>0</horstretch>
-                             <verstretch>0</verstretch>
-                            </sizepolicy>
-                           </property>
-                           <property name="text">
-                            <string>端口13</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
-                          <widget class="QCheckBox" name="checkBox_30">
-                           <property name="sizePolicy">
-                            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                             <horstretch>0</horstretch>
-                             <verstretch>0</verstretch>
-                            </sizepolicy>
-                           </property>
-                           <property name="text">
-                            <string>端口14</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
-                          <widget class="QCheckBox" name="checkBox_31">
-                           <property name="text">
-                            <string>端口15</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
-                          <widget class="QCheckBox" name="checkBox_32">
-                           <property name="text">
-                            <string>端口16</string>
-                           </property>
-                          </widget>
-                         </item>
-                        </layout>
-                       </item>
-                      </layout>
-                     </widget>
-                    </widget>
-                   </item>
-                  </layout>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QGroupBox" name="groupBox_11">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="title">
-                   <string>端口设置读取</string>
-                  </property>
-                  <layout class="QVBoxLayout" name="verticalLayout_19">
-                   <item>
-                    <widget class="QCheckBox" name="chooseAllPortCheckBox">
-                     <property name="text">
-                      <string>显示所有端口</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QTableWidget" name="allPortShowTableWidget"/>
-                   </item>
-                  </layout>
-                 </widget>
-                </item>
-               </layout>
-              </widget>
-              <widget class="QWidget" name="tab_2">
-               <attribute name="title">
-                <string>Tab 2</string>
-               </attribute>
-               <layout class="QHBoxLayout" name="horizontalLayout_13" stretch="3,5">
-                <property name="spacing">
-                 <number>10</number>
-                </property>
-                <property name="leftMargin">
-                 <number>8</number>
-                </property>
-                <property name="topMargin">
-                 <number>0</number>
-                </property>
-                <property name="rightMargin">
-                 <number>8</number>
-                </property>
-                <property name="bottomMargin">
-                 <number>8</number>
-                </property>
-                <item>
-                 <widget class="QWidget" name="widget_3" native="true">
-                  <layout class="QVBoxLayout" name="verticalLayout_21">
-                   <property name="spacing">
-                    <number>0</number>
+              <layout class="QVBoxLayout" name="verticalLayout_portSelector">
+               <item>
+                <layout class="QGridLayout" name="gridLayout_portButtons">
+                 <item row="0" column="0">
+                  <widget class="QToolButton" name="toolButton_1">
+                   <property name="text">
+                    <string>端口01</string>
                    </property>
-                   <property name="leftMargin">
-                    <number>2</number>
+                   <property name="checkable">
+                    <bool>true</bool>
                    </property>
-                   <property name="topMargin">
-                    <number>2</number>
+                   <property name="toolButtonStyle">
+                    <enum>Qt::ToolButtonTextBesideIcon</enum>
                    </property>
-                   <property name="rightMargin">
-                    <number>0</number>
+                  </widget>
+                 </item>
+                 <item row="0" column="1">
+                  <widget class="QToolButton" name="toolButton_2">
+                   <property name="text">
+                    <string>端口02</string>
                    </property>
-                   <property name="bottomMargin">
-                    <number>0</number>
+                   <property name="checkable">
+                    <bool>true</bool>
                    </property>
-                   <item>
-                    <widget class="QGroupBox" name="groupBox_4">
-                     <property name="title">
-                      <string>模式设置</string>
-                     </property>
-                     <widget class="QStackedWidget" name="stackedWidget_3">
-                      <property name="geometry">
-                       <rect>
-                        <x>10</x>
-                        <y>100</y>
-                        <width>371</width>
-                        <height>131</height>
-                       </rect>
-                      </property>
-                      <property name="currentIndex">
-                       <number>0</number>
-                      </property>
-                      <widget class="QWidget" name="page_13">
-                       <widget class="QWidget" name="layoutWidget">
-                        <property name="geometry">
-                         <rect>
-                          <x>0</x>
-                          <y>20</y>
-                          <width>340</width>
-                          <height>111</height>
-                         </rect>
-                        </property>
-                        <layout class="QGridLayout" name="gridLayout_14">
-                         <item row="0" column="0">
-                          <widget class="QLabel" name="label_28">
-                           <property name="text">
-                            <string>TCP存活检测时间(0~99  min)</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="1" column="0">
-                          <widget class="QLabel" name="label_38">
-                           <property name="text">
-                            <string>最大连接数(1~4)</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="1" column="1">
-                          <widget class="QSpinBox" name="spinBox_7"/>
-                         </item>
-                         <item row="0" column="1">
-                          <widget class="QSpinBox" name="spinBox"/>
-                         </item>
-                        </layout>
-                       </widget>
-                      </widget>
-                      <widget class="QWidget" name="page_14">
-                       <widget class="QWidget" name="layoutWidget">
-                        <property name="geometry">
-                         <rect>
-                          <x>0</x>
-                          <y>20</y>
-                          <width>353</width>
-                          <height>111</height>
-                         </rect>
-                        </property>
-                        <layout class="QGridLayout" name="gridLayout_21">
-                         <item row="2" column="1">
-                          <widget class="QSpinBox" name="spinBox_2"/>
-                         </item>
-                         <item row="1" column="0">
-                          <widget class="QLabel" name="label_29">
-                           <property name="text">
-                            <string>TCP存活检测时间(0~99  /min)</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="2" column="0">
-                          <widget class="QLabel" name="label_30">
-                           <property name="text">
-                            <string>最大连接数(1~4)</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="1" column="1">
-                          <widget class="QSpinBox" name="spinBox_3">
-                           <property name="minimumSize">
-                            <size>
-                             <width>124</width>
-                             <height>0</height>
-                            </size>
-                           </property>
-                          </widget>
-                         </item>
-                        </layout>
-                       </widget>
-                      </widget>
-                      <widget class="QWidget" name="page_15">
-                       <widget class="QWidget" name="layoutWidget">
-                        <property name="geometry">
-                         <rect>
-                          <x>0</x>
-                          <y>22</y>
-                          <width>168</width>
-                          <height>37</height>
-                         </rect>
-                        </property>
-                        <layout class="QHBoxLayout" name="horizontalLayout_27">
-                         <item>
-                          <widget class="QLabel" name="label_31">
-                           <property name="sizePolicy">
-                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                             <horstretch>0</horstretch>
-                             <verstretch>0</verstretch>
-                            </sizepolicy>
-                           </property>
-                           <property name="minimumSize">
-                            <size>
-                             <width>94</width>
-                             <height>35</height>
-                            </size>
-                           </property>
-                           <property name="text">
-                            <string>最大连接数:</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
-                          <widget class="QSpinBox" name="spinBox_4">
-                           <property name="minimumSize">
-                            <size>
-                             <width>0</width>
-                             <height>35</height>
-                            </size>
-                           </property>
-                          </widget>
-                         </item>
-                        </layout>
-                       </widget>
-                      </widget>
-                     </widget>
-                     <widget class="QWidget" name="layoutWidget">
-                      <property name="geometry">
-                       <rect>
-                        <x>10</x>
-                        <y>80</y>
-                        <width>274</width>
-                        <height>39</height>
-                       </rect>
-                      </property>
-                      <layout class="QHBoxLayout" name="horizontalLayout_15">
-                       <item>
-                        <widget class="QLabel" name="label_27">
-                         <property name="text">
-                          <string>工作模式选择: </string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QComboBox" name="work_mode_comboBox">
-                         <property name="sizePolicy">
-                          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                           <horstretch>0</horstretch>
-                           <verstretch>0</verstretch>
-                          </sizepolicy>
-                         </property>
-                         <property name="minimumSize">
-                          <size>
-                           <width>161</width>
-                           <height>37</height>
-                          </size>
-                         </property>
-                         <item>
-                          <property name="text">
-                           <string>Real COM Mode </string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>TCP Server Mode</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>Redundant Mode</string>
-                          </property>
-                         </item>
-                        </widget>
-                       </item>
-                      </layout>
-                     </widget>
-                     <widget class="QWidget" name="layoutWidget">
-                      <property name="geometry">
-                       <rect>
-                        <x>10</x>
-                        <y>30</y>
-                        <width>295</width>
-                        <height>43</height>
-                       </rect>
-                      </property>
-                      <layout class="QHBoxLayout" name="horizontalLayout_14">
-                       <item>
-                        <widget class="QComboBox" name="comboBox_7">
-                         <item>
-                          <property name="text">
-                           <string>端口1</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>端口2</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>端口3</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>端口4</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>端口5</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>端口6</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>端口7</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>端口8</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>端口9</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>端口10</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>端口11</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>端口12</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>端口13</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>端口14</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>端口15</string>
-                          </property>
-                         </item>
-                         <item>
-                          <property name="text">
-                           <string>端口16</string>
-                          </property>
-                         </item>
-                        </widget>
-                       </item>
-                       <item>
-                        <spacer name="horizontalSpacer_20">
-                         <property name="orientation">
-                          <enum>Qt::Horizontal</enum>
-                         </property>
-                         <property name="sizeHint" stdset="0">
-                          <size>
-                           <width>98</width>
-                           <height>20</height>
-                          </size>
-                         </property>
-                        </spacer>
-                       </item>
-                       <item>
-                        <widget class="QPushButton" name="work_mode_btn">
-                         <property name="minimumSize">
-                          <size>
-                           <width>101</width>
-                           <height>41</height>
-                          </size>
-                         </property>
-                         <property name="text">
-                          <string>应用配置</string>
-                         </property>
-                        </widget>
-                       </item>
-                      </layout>
-                     </widget>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QGroupBox" name="groupBox_3">
-                     <property name="title">
-                      <string>端口同步</string>
-                     </property>
-                     <widget class="QCheckBox" name="checkBox_34">
-                      <property name="geometry">
-                       <rect>
-                        <x>10</x>
-                        <y>30</y>
-                        <width>87</width>
-                        <height>25</height>
-                       </rect>
-                      </property>
-                      <property name="text">
-                       <string>启用同步</string>
-                      </property>
-                     </widget>
-                     <widget class="QWidget" name="layoutWidget">
-                      <property name="geometry">
-                       <rect>
-                        <x>10</x>
-                        <y>60</y>
-                        <width>451</width>
-                        <height>181</height>
-                       </rect>
-                      </property>
-                      <layout class="QVBoxLayout" name="verticalLayout_8">
-                       <item>
-                        <layout class="QHBoxLayout" name="horizontalLayout_46">
-                         <item>
-                          <widget class="QCheckBox" name="checkBox_35">
-                           <property name="text">
-                            <string>端口1</string>
-                           </property>
-                           <property name="checked">
-                            <bool>true</bool>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
-                          <widget class="QCheckBox" name="checkBox_36">
-                           <property name="text">
-                            <string>端口2</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
-                          <widget class="QCheckBox" name="checkBox_37">
-                           <property name="text">
-                            <string>端口3</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
-                          <widget class="QCheckBox" name="checkBox_38">
-                           <property name="text">
-                            <string>端口4</string>
-                           </property>
-                          </widget>
-                         </item>
-                        </layout>
-                       </item>
-                       <item>
-                        <layout class="QHBoxLayout" name="horizontalLayout_47">
-                         <item>
-                          <widget class="QCheckBox" name="checkBox_39">
-                           <property name="text">
-                            <string>端口5</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
-                          <widget class="QCheckBox" name="checkBox_40">
-                           <property name="text">
-                            <string>端口6</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
-                          <widget class="QCheckBox" name="checkBox_41">
-                           <property name="text">
-                            <string>端口7</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
-                          <widget class="QCheckBox" name="checkBox_42">
-                           <property name="text">
-                            <string>端口8</string>
-                           </property>
-                          </widget>
-                         </item>
-                        </layout>
-                       </item>
-                       <item>
-                        <layout class="QHBoxLayout" name="horizontalLayout_48">
-                         <item>
-                          <widget class="QCheckBox" name="checkBox_43">
-                           <property name="text">
-                            <string>端口9</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
-                          <widget class="QCheckBox" name="checkBox_44">
-                           <property name="text">
-                            <string>端口10</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
-                          <widget class="QCheckBox" name="checkBox_45">
-                           <property name="text">
-                            <string>端口11</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
-                          <widget class="QCheckBox" name="checkBox_46">
-                           <property name="text">
-                            <string>端口12</string>
-                           </property>
-                          </widget>
-                         </item>
-                        </layout>
-                       </item>
-                       <item>
-                        <layout class="QHBoxLayout" name="horizontalLayout_49">
-                         <item>
-                          <widget class="QCheckBox" name="checkBox_47">
-                           <property name="text">
-                            <string>端口13</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
-                          <widget class="QCheckBox" name="checkBox_48">
-                           <property name="text">
-                            <string>端口14</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
-                          <widget class="QCheckBox" name="checkBox_49">
-                           <property name="text">
-                            <string>端口15</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
-                          <widget class="QCheckBox" name="checkBox_50">
-                           <property name="text">
-                            <string>端口16</string>
-                           </property>
-                          </widget>
-                         </item>
-                        </layout>
-                       </item>
-                      </layout>
-                     </widget>
-                    </widget>
-                   </item>
-                  </layout>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QGroupBox" name="groupBox_12">
-                  <property name="title">
-                   <string>模式设置读取</string>
-                  </property>
-                  <layout class="QVBoxLayout" name="verticalLayout_22">
-                   <item>
-                    <layout class="QHBoxLayout" name="horizontalLayout_17" stretch="0,0,0,0">
-                     <property name="spacing">
-                      <number>0</number>
-                     </property>
-                     <item>
-                      <widget class="QCheckBox" name="checkBox_4">
-                       <property name="minimumSize">
-                        <size>
-                         <width>94</width>
-                         <height>25</height>
-                        </size>
-                       </property>
-                       <property name="text">
-                        <string>显示全部</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QCheckBox" name="checkBox">
-                       <property name="minimumSize">
-                        <size>
-                         <width>145</width>
-                         <height>25</height>
-                        </size>
-                       </property>
-                       <property name="text">
-                        <string>Real COM Mode</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QCheckBox" name="checkBox_2">
-                       <property name="minimumSize">
-                        <size>
-                         <width>155</width>
-                         <height>25</height>
-                        </size>
-                       </property>
-                       <property name="text">
-                        <string>TCP Server Mode</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QCheckBox" name="checkBox_3">
-                       <property name="sizePolicy">
-                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
-                       <property name="minimumSize">
-                        <size>
-                         <width>151</width>
-                         <height>25</height>
-                        </size>
-                       </property>
-                       <property name="text">
-                        <string>Redundant Mode</string>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </item>
-                   <item>
-                    <widget class="QTableWidget" name="tableWidget_7"/>
-                   </item>
-                  </layout>
-                 </widget>
-                </item>
-               </layout>
-              </widget>
+                   <property name="toolButtonStyle">
+                    <enum>Qt::ToolButtonTextBesideIcon</enum>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="2">
+                  <widget class="QToolButton" name="toolButton_3">
+                   <property name="text">
+                    <string>端口03</string>
+                   </property>
+                   <property name="checkable">
+                    <bool>true</bool>
+                   </property>
+                   <property name="toolButtonStyle">
+                    <enum>Qt::ToolButtonTextBesideIcon</enum>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="3">
+                  <widget class="QToolButton" name="toolButton_4">
+                   <property name="text">
+                    <string>端口04</string>
+                   </property>
+                   <property name="checkable">
+                    <bool>true</bool>
+                   </property>
+                   <property name="toolButtonStyle">
+                    <enum>Qt::ToolButtonTextBesideIcon</enum>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QToolButton" name="toolButton_5">
+                   <property name="text">
+                    <string>端口05</string>
+                   </property>
+                   <property name="checkable">
+                    <bool>true</bool>
+                   </property>
+                   <property name="toolButtonStyle">
+                    <enum>Qt::ToolButtonTextBesideIcon</enum>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="1">
+                  <widget class="QToolButton" name="toolButton_6">
+                   <property name="text">
+                    <string>端口06</string>
+                   </property>
+                   <property name="checkable">
+                    <bool>true</bool>
+                   </property>
+                   <property name="toolButtonStyle">
+                    <enum>Qt::ToolButtonTextBesideIcon</enum>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="2">
+                  <widget class="QToolButton" name="toolButton_7">
+                   <property name="text">
+                    <string>端口07</string>
+                   </property>
+                   <property name="checkable">
+                    <bool>true</bool>
+                   </property>
+                   <property name="toolButtonStyle">
+                    <enum>Qt::ToolButtonTextBesideIcon</enum>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="3">
+                  <widget class="QToolButton" name="toolButton_8">
+                   <property name="text">
+                    <string>端口08</string>
+                   </property>
+                   <property name="checkable">
+                    <bool>true</bool>
+                   </property>
+                   <property name="toolButtonStyle">
+                    <enum>Qt::ToolButtonTextBesideIcon</enum>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="0">
+                  <widget class="QToolButton" name="toolButton_9">
+                   <property name="text">
+                    <string>端口09</string>
+                   </property>
+                   <property name="checkable">
+                    <bool>true</bool>
+                   </property>
+                   <property name="toolButtonStyle">
+                    <enum>Qt::ToolButtonTextBesideIcon</enum>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="1">
+                  <widget class="QToolButton" name="toolButton_10">
+                   <property name="text">
+                    <string>端口10</string>
+                   </property>
+                   <property name="checkable">
+                    <bool>true</bool>
+                   </property>
+                   <property name="toolButtonStyle">
+                    <enum>Qt::ToolButtonTextBesideIcon</enum>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="2">
+                  <widget class="QToolButton" name="toolButton_11">
+                   <property name="text">
+                    <string>端口11</string>
+                   </property>
+                   <property name="checkable">
+                    <bool>true</bool>
+                   </property>
+                   <property name="toolButtonStyle">
+                    <enum>Qt::ToolButtonTextBesideIcon</enum>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="3">
+                  <widget class="QToolButton" name="toolButton_12">
+                   <property name="text">
+                    <string>端口12</string>
+                   </property>
+                   <property name="checkable">
+                    <bool>true</bool>
+                   </property>
+                   <property name="toolButtonStyle">
+                    <enum>Qt::ToolButtonTextBesideIcon</enum>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="0">
+                  <widget class="QToolButton" name="toolButton_13">
+                   <property name="text">
+                    <string>端口13</string>
+                   </property>
+                   <property name="checkable">
+                    <bool>true</bool>
+                   </property>
+                   <property name="toolButtonStyle">
+                    <enum>Qt::ToolButtonTextBesideIcon</enum>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="1">
+                  <widget class="QToolButton" name="toolButton_14">
+                   <property name="text">
+                    <string>端口14</string>
+                   </property>
+                   <property name="checkable">
+                    <bool>true</bool>
+                   </property>
+                   <property name="toolButtonStyle">
+                    <enum>Qt::ToolButtonTextBesideIcon</enum>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="2">
+                  <widget class="QToolButton" name="toolButton_15">
+                   <property name="text">
+                    <string>端口15</string>
+                   </property>
+                   <property name="checkable">
+                    <bool>true</bool>
+                   </property>
+                   <property name="toolButtonStyle">
+                    <enum>Qt::ToolButtonTextBesideIcon</enum>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="3">
+                  <widget class="QToolButton" name="toolButton_16">
+                   <property name="text">
+                    <string>端口16</string>
+                   </property>
+                   <property name="checkable">
+                    <bool>true</bool>
+                   </property>
+                   <property name="toolButtonStyle">
+                    <enum>Qt::ToolButtonTextBesideIcon</enum>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+              </layout>
              </widget>
+            </item>
+            <item>
+             <widget class="QFrame" name="frame_3">
+              <property name="frameShape">
+               <enum>QFrame::StyledPanel</enum>
+              </property>
+              <property name="frameShadow">
+               <enum>QFrame::Raised</enum>
+              </property>
+              <layout class="QHBoxLayout" name="horizontalLayout_portActions">
+               <item>
+                <widget class="QPushButton" name="pushButton">
+                 <property name="text">
+                  <string>参数设置</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="pushButton_2">
+                 <property name="text">
+                  <string>模式设置</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="pushButton_5">
+                 <property name="text">
+                  <string>锁定端口</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="pushButton_4">
+                 <property name="text">
+                  <string>端口重置</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="pushButton_3">
+                 <property name="text">
+                  <string>端口自检</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="pushButton_6">
+                 <property name="text">
+                  <string>解锁端口</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="chooseAllPortCheckBox">
+              <property name="text">
+               <string>显示全部端口</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QTableWidget" name="allPortShowTableWidget"/>
             </item>
            </layout>
           </widget>

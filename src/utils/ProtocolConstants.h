@@ -64,7 +64,7 @@ namespace OverviewOffset {
 }
 
 namespace SerialConfigOffset {
-    // 串口配置块偏移量
+    // 端口配置块偏移量
     constexpr int PORT_INDEX = 0;
     constexpr int ALIAS_LEN = 1;
     constexpr int ALIAS_MAX_LEN = 19;
