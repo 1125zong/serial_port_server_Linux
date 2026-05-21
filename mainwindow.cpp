@@ -8,7 +8,13 @@
 #include <QGuiApplication>
 #include <QDockWidget>
 #include <QAction>
+#include <QComboBox>
+#include <QDialog>
+#include <QDialogButtonBox>
+#include <QFormLayout>
+#include <QLineEdit>
 #include <QPushButton>
+#include <QSpinBox>
 #include <QToolButton>
 #include "src/config/views/ConfigDialog.h"  //2026.01.20新增
 #include "src/utils/Logger.h"  // 日志系统
@@ -677,6 +683,12 @@ void MainWindow::onOperationSuccess(const QString &op)
 
         m_lastSerialPortConfig = m_serialPort;
         m_hasLastSerialPortConfig = true;
+        if (m_waitOpenParamDialog && m_pendingParamPort == m_serialPort.index)
+        {
+            m_waitOpenParamDialog = false;
+            m_pendingParamPort = 0;
+            showPortParamDialog(m_serialPort);
+        }
         appendDeviceLog(QString("读取配置成功：串口%1配置").arg(m_serialPort.index));
     }
     if (op == "Write Serial Config")
@@ -699,16 +711,17 @@ void MainWindow::onOperationSuccess(const QString &op)
     {
         appendDeviceLog("设置看门狗成功");
     }
-//    if (op == "Read Port Mode")
-//    {
-//        ui->tableWidget_7->setRowCount(1);     // 创建1行
-//        SerialPortMode portMode = m_devCtl->currentDevice()->seriaPortModes();
-//        portMode.alias = m_serialPort.alias;
-//        ui->tableWidget_7->setItem(0, 0, new QTableWidgetItem(QString::number(portMode.index)));
-//        ui->tableWidget_7->setItem(0, 1, new QTableWidgetItem(portMode.alias));
-//        ui->tableWidget_7->setItem(0, 2, new QTableWidgetItem(QStringList{"", "Real COM Mode", "TCP Server Mode", "Redundant Mode"}.value(portMode.workMode)));
-
-//    }
+    if (op == "Read Port Mode")
+    {
+        SerialPortMode portMode = m_devCtl->currentDevice()->seriaPortModes();
+        if (m_waitOpenModeDialog && m_pendingModePort == portMode.index)
+        {
+            m_waitOpenModeDialog = false;
+            m_pendingModePort = 0;
+            showPortModeDialog(portMode);
+        }
+        appendDeviceLog(QString("读取配置成功：端口%1工作模式").arg(portMode.index));
+    }
 }
 
 /* ============================================================
@@ -756,6 +769,17 @@ void MainWindow::on_Basic_Config_Btn_clicked()
 
 void MainWindow::onOperationFailed(const QString &op, const QString &err)
 {
+    if (op == "Read Serial Config")
+    {
+        m_waitOpenParamDialog = false;
+        m_pendingParamPort = 0;
+    }
+    else if (op == "Read Port Mode")
+    {
+        m_waitOpenModeDialog = false;
+        m_pendingModePort = 0;
+    }
+
     QMessageBox::warning(this, op + "失败", err);
     Logger::instance()->log(Logger::Error, "MainWindow", QString("操作失败: %1, 错误: %2").arg(op).arg(err));
     appendDeviceLog(QString("操作失败：%1，原因：%2").arg(op, err));
@@ -2501,6 +2525,7 @@ void MainWindow::openPortParamSettings(int port)
     }
 
     m_pendingParamPort = port;
+    m_waitOpenParamDialog = true;
     appendDeviceLog(QString("读取配置：端口%1参数").arg(port));
     m_devCtl->readSerialConfig(port);
 }
@@ -2522,6 +2547,7 @@ void MainWindow::openPortModeSettings(int port)
     }
 
     m_pendingModePort = port;
+    m_waitOpenModeDialog = true;
     appendDeviceLog(QString("读取配置：端口%1工作模式").arg(port));
     m_devCtl->queryPortMode(port);
 }
@@ -2534,6 +2560,138 @@ void MainWindow::openPortModeSettings(const QList<int> &ports)
         return;
     }
     openPortModeSettings(ports.first());
+}
+
+void MainWindow::showPortParamDialog(const SerialPortConfig &cfg)
+{
+    QDialog dialog(this);
+    dialog.setWindowTitle(QString("端口%1 参数设置").arg(cfg.index));
+
+    QFormLayout *form = new QFormLayout(&dialog);
+
+    QLineEdit *aliasEdit = new QLineEdit(cfg.alias, &dialog);
+    aliasEdit->setMaxLength(19);
+
+    QComboBox *baudCombo = new QComboBox(&dialog);
+    baudCombo->addItems({"9600", "115200", "921600"});
+    baudCombo->setCurrentText(QString::number(cfg.baudRate));
+
+    QComboBox *dataCombo = new QComboBox(&dialog);
+    dataCombo->addItems({"5", "6", "7", "8"});
+    dataCombo->setCurrentText(QString::number(cfg.dataBits));
+
+    QComboBox *stopCombo = new QComboBox(&dialog);
+    stopCombo->addItems({"1", "2"});
+    stopCombo->setCurrentText(QString::number(cfg.stopBits));
+
+    QComboBox *parityCombo = new QComboBox(&dialog);
+    parityCombo->addItems({"None", "Odd", "Even", "Mark", "Space"});
+    parityCombo->setCurrentIndex(qMin<int>(cfg.parity, parityCombo->count() - 1));
+
+    QComboBox *flowCombo = new QComboBox(&dialog);
+    flowCombo->addItems({"None", "RTS/CTS", "XON/XOFF", "DTR/DSR"});
+    flowCombo->setCurrentIndex(qMin<int>(cfg.flowControl, flowCombo->count() - 1));
+
+    QComboBox *interfaceCombo = new QComboBox(&dialog);
+    interfaceCombo->addItems({"RS-232", "RS-422", "RS-485-2", "RS-485-4"});
+    interfaceCombo->setCurrentIndex(qMin<int>(cfg.interface, interfaceCombo->count() - 1));
+
+    form->addRow("端口别名", aliasEdit);
+    form->addRow("波特率", baudCombo);
+    form->addRow("数据位", dataCombo);
+    form->addRow("停止位", stopCombo);
+    form->addRow("校验位", parityCombo);
+    form->addRow("流控", flowCombo);
+    form->addRow("接口模式", interfaceCombo);
+
+    QDialogButtonBox *buttons = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, &dialog);
+    form->addRow(buttons);
+    connect(buttons, &QDialogButtonBox::accepted, &dialog, &QDialog::accept);
+    connect(buttons, &QDialogButtonBox::rejected, &dialog, &QDialog::reject);
+
+    if (dialog.exec() != QDialog::Accepted) {
+        return;
+    }
+
+    SerialPortConfig newCfg = cfg;
+    newCfg.alias = aliasEdit->text();
+    newCfg.baudRate = baudCombo->currentText().toUInt();
+    newCfg.dataBits = static_cast<quint8>(dataCombo->currentText().toUInt());
+    newCfg.stopBits = static_cast<quint8>(stopCombo->currentText().toUInt());
+    newCfg.parity = static_cast<quint8>(parityCombo->currentIndex());
+    newCfg.flowControl = static_cast<quint8>(flowCombo->currentIndex());
+    newCfg.interface = static_cast<quint8>(interfaceCombo->currentIndex());
+
+    appendDeviceLog(QString("写入配置：端口%1参数").arg(cfg.index));
+    m_devCtl->writeSerialConfig(newCfg, 1);
+}
+
+void MainWindow::showPortModeDialog(const SerialPortMode &modeCfg)
+{
+    QDialog dialog(this);
+    dialog.setWindowTitle(QString("端口%1 模式设置").arg(modeCfg.index));
+
+    QFormLayout *form = new QFormLayout(&dialog);
+
+    QComboBox *modeCombo = new QComboBox(&dialog);
+    modeCombo->addItems({"Real COM Mode", "TCP Server Mode", "Redundant Mode"});
+    if (modeCfg.workMode == 0x03) {
+        modeCombo->setCurrentText("TCP Server Mode");
+    } else if (modeCfg.workMode == 0x07 || modeCfg.workMode == 0x05) {
+        modeCombo->setCurrentText("Redundant Mode");
+    } else {
+        modeCombo->setCurrentText("Real COM Mode");
+    }
+
+    QSpinBox *aliveSpin = new QSpinBox(&dialog);
+    aliveSpin->setRange(0, 255);
+    aliveSpin->setValue(modeCfg.TcpTime);
+
+    QSpinBox *maxConnectSpin = new QSpinBox(&dialog);
+    maxConnectSpin->setRange(1, 8);
+    maxConnectSpin->setValue(modeCfg.TcpConMaxNum > 0 ? modeCfg.TcpConMaxNum : 1);
+
+    QSpinBox *groupSpin = new QSpinBox(&dialog);
+    groupSpin->setRange(1, 16);
+    groupSpin->setValue(1);
+
+    form->addRow("工作模式", modeCombo);
+    form->addRow("TCP存活检测", aliveSpin);
+    form->addRow("最大连接数", maxConnectSpin);
+    form->addRow("冗余组号", groupSpin);
+
+    QDialogButtonBox *buttons = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, &dialog);
+    form->addRow(buttons);
+    connect(buttons, &QDialogButtonBox::accepted, &dialog, &QDialog::accept);
+    connect(buttons, &QDialogButtonBox::rejected, &dialog, &QDialog::reject);
+
+    if (dialog.exec() != QDialog::Accepted) {
+        return;
+    }
+
+    quint8 mode = 0x01;
+    QVariantMap params;
+    const QString modeText = modeCombo->currentText();
+    if (modeText == "TCP Server Mode")
+    {
+        mode = 0x03;
+        params["TCPServerModeTCPaliveCheckTime"] = aliveSpin->value();
+        params["TCPServerTCPmaxConnectNum"] = maxConnectSpin->value();
+    }
+    else if (modeText == "Redundant Mode")
+    {
+        mode = 0x07;
+        params["group"] = groupSpin->value();
+    }
+    else
+    {
+        params["RealComModeTCPaliveCheckTime"] = aliveSpin->value();
+        params["RealComModeTCPmaxConnectNum"] = maxConnectSpin->value();
+    }
+
+    SerialPortConfig cfg;
+    appendDeviceLog(QString("写入配置：端口%1工作模式").arg(modeCfg.index));
+    m_devCtl->writeModeConfig(modeCfg.index, mode, params, cfg, 1);
 }
 
 void MainWindow::lockPortFromButton(int port)

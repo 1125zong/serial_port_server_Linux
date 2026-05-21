@@ -154,6 +154,8 @@ private:
     void openPortParamSettings(const QList<int> &ports);
     void openPortModeSettings(int port);
     void openPortModeSettings(const QList<int> &ports);
+    void showPortParamDialog(const SerialPortConfig &cfg);
+    void showPortModeDialog(const SerialPortMode &modeCfg);
     void lockPortFromButton(int port);
     void lockPortsFromButtons(const QList<int> &ports);
     void unlockPortFromButton(int port);
@@ -183,6 +185,8 @@ private:
     bool m_hasLastSerialPortConfig = false;
     int m_pendingParamPort = 0;
     int m_pendingModePort = 0;
+    bool m_waitOpenParamDialog = false;
+    bool m_waitOpenModeDialog = false;
     QStringList m_pendingLockPortNames;
     QStringList m_pendingUnlockPortNames;
     QString m_pendingDeviceName;
